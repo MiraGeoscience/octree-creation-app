@@ -1,0 +1,10 @@
+{"title": "octree-creation-app Hello World",
+ "run_command": "octree_creation_app.commands.hello",
+  "conda_environment": "octree_creation_app",
+  "name": {
+    "main": true,
+    "label": "Name",
+    "value": "World",
+    "tooltip": "Name to say hello to"
+  }
+}

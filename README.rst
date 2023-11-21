@@ -1,42 +1,42 @@
 |coverage| |maintainability| |precommit_ci| |docs| |style| |version| |status| |pyversions|
 
 
-.. |docs| image:: https://readthedocs.org/projects/my-app/badge/
+.. |docs| image:: https://readthedocs.org/projects/octree-creation-app/badge/
     :alt: Documentation Status
-    :target: https://my-app.readthedocs.io/en/latest/?badge=latest
+    :target: https://octree-creation-app.readthedocs.io/en/latest/?badge=latest
 
-.. |coverage| image:: https://codecov.io/gh/MiraGeoscience/my-app/branch/develop/graph/badge.svg
+.. |coverage| image:: https://codecov.io/gh/MiraGeoscience/octree-creation-app/branch/develop/graph/badge.svg
     :alt: Code coverage
-    :target: https://codecov.io/gh/MiraGeoscience/my-app
+    :target: https://codecov.io/gh/MiraGeoscience/octree-creation-app
 
 .. |style| image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :alt: Coding style
     :target: https://github.com/pf/black
 
-.. |version| image:: https://img.shields.io/pypi/v/my-app.svg
+.. |version| image:: https://img.shields.io/pypi/v/octree-creation-app.svg
     :alt: version on PyPI
-    :target: https://pypi.python.org/pypi/my-app/
+    :target: https://pypi.python.org/pypi/octree-creation-app/
 
-.. |status| image:: https://img.shields.io/pypi/status/my-app.svg
+.. |status| image:: https://img.shields.io/pypi/status/octree-creation-app.svg
     :alt: version status on PyPI
-    :target: https://pypi.python.org/pypi/my-app/
+    :target: https://pypi.python.org/pypi/octree-creation-app/
 
-.. |pyversions| image:: https://img.shields.io/pypi/pyversions/my-app.svg
+.. |pyversions| image:: https://img.shields.io/pypi/pyversions/octree-creation-app.svg
     :alt: Python versions
-    :target: https://pypi.python.org/pypi/my-app/
+    :target: https://pypi.python.org/pypi/octree-creation-app/
 
-.. |precommit_ci| image:: https://results.pre-commit.ci/badge/github/MiraGeoscience/my-app/develop.svg
+.. |precommit_ci| image:: https://results.pre-commit.ci/badge/github/MiraGeoscience/octree-creation-app/develop.svg
     :alt: pre-commit.ci status
-    :target: https://results.pre-commit.ci/latest/github/MiraGeoscience/my-app/develop
+    :target: https://results.pre-commit.ci/latest/github/MiraGeoscience/octree-creation-app/develop
 
 .. |maintainability| image:: https://api.codeclimate.com/v1/badges/_token_/maintainability
-   :target: https://codeclimate.com/github/MiraGeoscience/my-app/maintainability
+   :target: https://codeclimate.com/github/MiraGeoscience/octree-creation-app/maintainability
    :alt: Maintainability
 
 
-my-app: # TODO: SHORT DESCRIPTION
+octree-creation-app: # TODO: SHORT DESCRIPTION
 =========================================================================
-The **my-app** library # TODO: PACKAGE DESCRIPTION
+The **octree-creation-app** library # TODO: PACKAGE DESCRIPTION
 
 .. contents:: Table of Contents
    :local:
@@ -44,17 +44,17 @@ The **my-app** library # TODO: PACKAGE DESCRIPTION
 
 Documentation
 ^^^^^^^^^^^^^
-`Online documentation <https://my-app.readthedocs.io/en/latest/>`_
+`Online documentation <https://octree-creation-app.readthedocs.io/en/latest/>`_
 
 
 Installation
 ^^^^^^^^^^^^
-**my-app** is currently written for Python 3.10 or higher.
+**octree-creation-app** is currently written for Python 3.10 or higher.
 
 Install Conda
 -------------
 
-To install **my-app**, you need to install **Conda** first.
+To install **octree-creation-app**, you need to install **Conda** first.
 
 We recommend to install **Conda** using `miniforge`_.
 
@@ -63,7 +63,7 @@ We recommend to install **Conda** using `miniforge`_.
 Within a conda environment
 --------------------------
 
-You can install (or update) a conda environment with all the requires packages to run **my-app**.
+You can install (or update) a conda environment with all the requires packages to run **octree-creation-app**.
 To do so you can directly run the **Install_or_Update.bat** file by double left clicking on it.
 
 Install with conda
@@ -84,11 +84,11 @@ Still, you can install it in a conda environment without its dependencies (``--n
 From PyPI
 ~~~~~~~~~
 
-To install the **my-app** package published on PyPI:
+To install the **octree-creation-app** package published on PyPI:
 
 .. code-block:: bash
 
-    pip install -U --no-deps my-app
+    pip install -U --no-deps octree-creation-app
 
 From a Git tag or branch
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,13 +96,13 @@ If the package is not on PiPY yet, you can install it from a Git tag:
 
 .. code-block:: bash
 
-    pip install -U --no-deps --force-reinstall https://github.com/MiraGeoscience/my-app/archive/refs/tags/TAG.zip
+    pip install -U --no-deps --force-reinstall https://github.com/MiraGeoscience/octree-creation-app/archive/refs/tags/TAG.zip
 
 Or to install the latest changes available on a given Git branch:
 
 .. code-block:: bash
 
-    pip install -U --no-deps --force-reinstall https://github.com/MiraGeoscience/my-app/archive/refs/heads/BRANCH.zip
+    pip install -U --no-deps --force-reinstall https://github.com/MiraGeoscience/octree-creation-app/archive/refs/heads/BRANCH.zip
 
 .. note::
     The ``--force-reinstall`` option is used to make sure the updated version
@@ -113,7 +113,7 @@ Or to install the latest changes available on a given Git branch:
 From a local copy of the sources
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 If you have a git clone of the package sources locally,
-you can install **my-app** from the local copy of the sources with:
+you can install **octree-creation-app** from the local copy of the sources with:
 
 .. code-block:: bash
 
@@ -136,7 +136,7 @@ To do so, double click on ``devtools\run-conda-lock.bat`` or execute it from com
 
 .. code-block:: bash
 
-    $ [path/to/my-app]/devtools/run_conda_lock.bat
+    $ [path/to/octree-creation-app]/devtools/run_conda_lock.bat
 
 It will create ``.lock`` in the ``environments`` folder.
 The created ``.lock`` files are the combination of python version and platforms.
@@ -164,7 +164,7 @@ For development, you need a **conda** environments. you can install it running t
 
 .. code-block:: bash
 
-    $ [path/to/my-app]/devtools/setup-dev.bat
+    $ [path/to/octree-creation-app]/devtools/setup-dev.bat
 
 This command install a local environment at the base of your repository: ``.conda-env``.
 This environment should automatically be recognized by the conda installation.
@@ -261,7 +261,7 @@ You can run the tests from the console with coverage:
 
 .. code-block:: bash
 
-    (my-env) pytest --cov=my_app --cov-report html tests
+    (my-env) pytest --cov=octree_creation_app --cov-report html tests
 
 The html report is generated in the folder ``htmlcov`` at the root of the project.
 You can then explore the report by opening ``index.html`` in a browser.
@@ -325,7 +325,7 @@ and select the desired environment from the list (the one in the ``.conda-env`` 
         :width: 80%
 
 Then you can check the list of installed packages in the ``Packages`` table. You should see
-**my-app** and its dependencies. Make sure to turn off the ``Use Conda Package Manager``
+**octree-creation-app** and its dependencies. Make sure to turn off the ``Use Conda Package Manager``
 option to see also the packages installed through pip:
 
     ..  image:: devtools/images/pycharm-list_all_conda_packages.png
@@ -375,7 +375,7 @@ select ``pytest in tests``, and add the following option in the ``Additional Arg
 
 ..code-block:: bash
 
-    --cov=my_app --cov-report html
+    --cov=octree_creation_app --cov-report html
 
 Then, run the tests as usual, and you will get a nice report of the code coverage.
 
@@ -402,7 +402,7 @@ License
 
 Third Party Software
 ^^^^^^^^^^^^^^^^^^^^
-The my-app Software may provide links to third party libraries or code (collectively “Third Party Software”)
+The octree-creation-app Software may provide links to third party libraries or code (collectively “Third Party Software”)
 to implement various functions. Third Party Software does not comprise part of the Software.
 The use of Third Party Software is governed by the terms of such software license(s).
 Third Party Software notices and/or additional terms and conditions are located in the
