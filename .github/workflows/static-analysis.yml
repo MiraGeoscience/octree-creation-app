@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  source_dir: octree_creation_app
+  source_dir: octree_creation
 
 jobs:
   pre-commit:

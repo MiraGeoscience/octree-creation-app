@@ -15,11 +15,12 @@ my_app_hello = 'octree_creation_app.commands.hello'
 python = "^3.9, <3.11"
 numpy = "~1.23.5" # also geoh5py, simpeg and geoana
 scipy = "~1.10.1"
-pandas = "~1.5.3"
+discretize = {version = "~0.8.3", optional = true }
 
 ## pip dependencies
 geoh5py = {version = "~0.8.0rc3", source = "pypi", allow-prereleases = true}
 #geoh5py = { url = "https://github.com/MiraGeoscience/geoh5py/archive/refs/heads/main.tar.gz#sha256=" }
+geoapps-utils = {url = "https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/GEOPY-764.zip#sha256="}
 
 ## indirect dependencies, forcing them here for installation through Conda not pip
 h5py = "*" # from geoh5py
