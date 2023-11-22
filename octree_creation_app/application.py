@@ -48,6 +48,7 @@ class OctreeMesh(ObjectDataSelection):
     Widget used for the creation of an octree mesh
     """
 
+    _main: VBox | None = None
     _param_class = OctreeParams
     _object_types = (Curve, Octree, Points, Surface)
     _u_cell_size = None
