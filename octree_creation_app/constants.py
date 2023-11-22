@@ -8,11 +8,13 @@
 from __future__ import annotations
 
 from copy import deepcopy
+
 from geoh5py.ui_json.constants import default_ui_json as base_ui_json
-import octree_creation
+
+import octree_creation_app
 
 defaults = {
-    "version": octree_creation.__version__,
+    "version": octree_creation_app.__version__,
     "title": "octree Mesh Creator",
     "geoh5": None,
     "objects": None,
@@ -24,7 +26,7 @@ defaults = {
     "depth_core": 500.0,
     "ga_group_name": "Octree_Mesh",
     "generate_sweep": False,
-    "run_command": "geoapps.octree_creation.driver",
+    "run_command": "geoapps.octree_creation_app.driver",
     "monitoring_directory": None,
     "workspace_geoh5": None,
     "conda_environment": "geoapps",
@@ -34,7 +36,7 @@ defaults = {
 default_ui_json = deepcopy(base_ui_json)
 default_ui_json.update(
     {
-        "version": octree_creation.__version__,
+        "version": octree_creation_app.__version__,
         "title": "octree Mesh Creator",
         "geoh5": None,
         "objects": {
@@ -124,7 +126,7 @@ default_ui_json.update(
         },
         "conda_environment": "geoapps",
         "workspace_geoh5": None,
-        "run_command": "geoapps.octree_creation.driver",
+        "run_command": "geoapps.octree_creation_app.driver",
     }
 )
 

@@ -13,17 +13,17 @@ import sys
 import numpy as np
 from discretize import TreeMesh
 from discretize.utils import mesh_builder_xyz
+from geoapps_utils.conversions import treemesh_2_octree
+from geoapps_utils.driver.driver import BaseDriver
+from geoapps_utils.numerical import densify_curve, get_locations
 from geoh5py.objects import Curve, ObjectBase, Octree, Surface
 from geoh5py.shared.utils import fetch_active_workspace
 from geoh5py.ui_json import utils
 from scipy import interpolate
 from scipy.spatial import Delaunay, cKDTree
 
-from geoapps_utils.driver.driver import BaseDriver
-from geoapps_utils.conversions import treemesh_2_octree
-from octree_creation.constants import validations
-from octree_creation.params import OctreeParams
-from geoapps_utils.numerical import densify_curve, get_locations
+from octree_creation_app.constants import validations
+from octree_creation_app.params import OctreeParams
 
 
 class OctreeDriver(BaseDriver):
@@ -131,7 +131,8 @@ class OctreeDriver(BaseDriver):
         :param curve: Curve object to use for refinement.
         :param levels: Number of cells requested at each refinement level.
             Defined in reversed order from the highest octree to lowest.
-        :param diagonal_balance: Whether to balance cells along the diagonal of the tree during construction.
+        :param diagonal_balance: Whether to balance cells along the diagonal
+            of the tree during construction.
         :param finalize: Finalize the tree mesh after refinement.
 
         """
@@ -166,7 +167,8 @@ class OctreeDriver(BaseDriver):
         :param points: Object to use for refinement.
         :param levels: Number of cells requested at each refinement level.
             Defined in reversed order from the highest octree to lowest.
-        :param diagonal_balance: Whether to balance cells along the diagonal of the tree during construction.
+        :param diagonal_balance: Whether to balance cells along the diagonal of
+            the tree during construction.
         :param finalize: Finalize the tree mesh after refinement.
 
         :return: Refined tree mesh.
@@ -199,7 +201,7 @@ class OctreeDriver(BaseDriver):
         return mesh
 
     @staticmethod
-    def refine_tree_from_surface(
+    def refine_tree_from_surface(  # pylint: disable=too-many-arguments, too-many-locals
         mesh: TreeMesh,
         surface: ObjectBase,
         levels: list[int] | np.ndarray,
@@ -215,7 +217,8 @@ class OctreeDriver(BaseDriver):
         :param levels: Number of cells requested at each refinement level.
             Defined in reversed order from the highest octree to lowest.
         :param max_distance: Maximum distance from the surface to refine.
-        :param diagonal_balance: Whether to balance cells along the diagonal of the tree during construction.
+        :param diagonal_balance: Whether to balance cells along the diagonal
+            of the tree during construction.
         :param finalize: Finalize the tree mesh after refinement.
 
         :return: Refined tree mesh.
@@ -224,13 +227,13 @@ class OctreeDriver(BaseDriver):
             levels = np.array(levels)
 
         xyz = get_locations(surface.workspace, surface)
-        tri2D = Delaunay(xyz[:, :2])
+        triang = Delaunay(xyz[:, :2])
         tree = cKDTree(xyz[:, :2])
 
         if isinstance(surface, Surface):
-            tri2D.simplices = surface.cells
+            triang.simplices = surface.cells
 
-        F = interpolate.LinearNDInterpolator(tri2D, xyz[:, -1])
+        interp = interpolate.LinearNDInterpolator(triang, xyz[:, -1])
         levels = np.array(levels)
 
         depth = 0
@@ -251,11 +254,11 @@ class OctreeDriver(BaseDriver):
             xy = np.c_[cell_center_x.reshape(-1), cell_center_y.reshape(-1)]
 
             # Only keep points within triangulation
-            inside = tri2D.find_simplex(xy) != -1
+            inside = triang.find_simplex(xy) != -1
             r, _ = tree.query(xy)
             keeper = np.logical_and(r < max_distance, inside)
             nnz = keeper.sum()
-            elevation = F(xy[keeper])
+            elevation = interp(xy[keeper])
 
             # Apply vertical padding for current octree level
             for _ in range(int(n_cells)):
@@ -287,7 +290,8 @@ class OctreeDriver(BaseDriver):
         :param surface: Surface object to use for refinement.
         :param levels: Number of cells requested at each refinement level.
             Defined in reversed order from highest octree to lowest.
-        :param diagonal_balance: Whether to balance cells along the diagonal of the tree during construction.
+        :param diagonal_balance: Whether to balance cells along the diagonal of
+            the tree during construction.
         :param finalize: Finalize the tree mesh after refinement.
 
         :return: Refined tree mesh.

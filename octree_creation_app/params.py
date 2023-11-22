@@ -9,14 +9,13 @@ from __future__ import annotations
 
 from copy import deepcopy
 
-from geoh5py.ui_json import InputFile
-
 from geoapps_utils.driver.params import BaseParams
+from geoh5py.ui_json import InputFile
 
 from .constants import default_ui_json, defaults, template_dict, validations
 
 
-class OctreeParams(BaseParams):
+class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
     """
     Parameter class for octree mesh creation application.
     """

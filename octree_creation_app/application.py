@@ -15,22 +15,18 @@ import warnings
 from pathlib import Path
 from time import time
 
+from geoapps_utils.application.application import BaseApplication
+from geoapps_utils.application.selection import ObjectDataSelection
+from geoapps_utils.importing import warn_module_not_found
 from geoh5py.objects import Curve, ObjectBase, Octree, Points, Surface
 from geoh5py.shared import Entity
 from geoh5py.shared.utils import fetch_active_workspace
 from geoh5py.ui_json import InputFile
 from geoh5py.workspace import Workspace
 
-from geoapps_utils.application.application import BaseApplication
-from geoapps_utils.application.selection import ObjectDataSelection
-
-from octree_creation.constants import app_initializer
-from octree_creation.driver import OctreeDriver
-from octree_creation.params import OctreeParams
-
-from geoapps_utils.importing import warn_module_not_found
-
-from traitlets import TraitError
+from octree_creation_app.constants import app_initializer
+from octree_creation_app.driver import OctreeDriver
+from octree_creation_app.params import OctreeParams
 
 with warn_module_not_found():
     from ipywidgets import (
@@ -362,8 +358,8 @@ class OctreeMesh(ObjectDataSelection):
 if __name__ == "__main__":
     file = sys.argv[1]
     warnings.warn(
-        "'geoapps.octree_creation.application' replaced by "
-        "'geoapps.octree_creation.driver' in version 0.7.0. "
+        "'geoapps.octree_creation_app.application' replaced by "
+        "'geoapps.octree_creation_app.driver' in version 0.7.0. "
         "This warning is likely due to the execution of older ui.json files. Please update."
     )
     params_class = OctreeParams(InputFile.read_ui_json(file))
