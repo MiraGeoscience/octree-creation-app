@@ -11,9 +11,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 from discretize.utils import mesh_builder_xyz
-from geoapps_utils.application.application import BaseApplication
 from geoh5py.objects import Curve, Points, Surface
-from geoh5py.shared.utils import compare_entities
+from geoh5py.shared.utils import compare_entities, fetch_active_workspace
 from geoh5py.ui_json.utils import str2list
 from geoh5py.workspace import Workspace
 from scipy.spatial import Delaunay
@@ -70,7 +69,9 @@ def setup_test_octree():
     )
 
 
-def test_create_octree_radial(tmp_path: Path, setup_test_octree):
+def test_create_octree_radial(
+    tmp_path: Path, setup_test_octree
+):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -122,12 +123,16 @@ def test_create_octree_radial(tmp_path: Path, setup_test_octree):
         app.trigger_click(None)
 
         # Re-load the new mesh and compare
-        with Workspace(BaseApplication.get_output_workspace(tmp_path)) as workspace:
+        with fetch_active_workspace(
+            Workspace(tmp_path / "testOctree.geoh5")
+        ) as workspace:
             rec_octree = workspace.get_entity("Octree_Mesh")[0]
             compare_entities(octree, rec_octree, ignore=["_uid"])
 
 
-def test_create_octree_curve(tmp_path: Path, setup_test_octree):
+def test_create_octree_curve(
+    tmp_path: Path, setup_test_octree
+):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -139,7 +144,7 @@ def test_create_octree_curve(tmp_path: Path, setup_test_octree):
         vertical_padding,
     ) = setup_test_octree
 
-    with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
+    with fetch_active_workspace(Workspace(tmp_path / "testOctree.geoh5")) as workspace:
         curve = Curve.create(workspace, vertices=locations)
         curve.remove_cells([-1])
         treemesh.refine(
@@ -181,12 +186,16 @@ def test_create_octree_curve(tmp_path: Path, setup_test_octree):
         app.trigger_click(None)
 
         # Re-load the new mesh and compare
-        with Workspace(BaseApplication.get_output_workspace(tmp_path)) as workspace:
+        with fetch_active_workspace(
+            Workspace(tmp_path / "testOctree.geoh5")
+        ) as workspace:
             rec_octree = workspace.get_entity("Octree_Mesh")[0]
             compare_entities(octree, rec_octree, ignore=["_uid"])
 
 
-def test_create_octree_surface(tmp_path: Path, setup_test_octree):
+def test_create_octree_surface(
+    tmp_path: Path, setup_test_octree
+):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -242,7 +251,9 @@ def test_create_octree_surface(tmp_path: Path, setup_test_octree):
         app.trigger_click(None)
 
         # Re-load the new mesh and compare
-        with Workspace(BaseApplication.get_output_workspace(tmp_path)) as workspace:
+        with fetch_active_workspace(
+            Workspace(tmp_path / "testOctree.geoh5")
+        ) as workspace:
             rec_octree = workspace.get_entity("Octree_Mesh")[0]
             compare_entities(octree, rec_octree, ignore=["_uid"])
 
@@ -257,7 +268,9 @@ def test_create_octree_driver(tmp_path: Path):
         compare_entities(results[0], results[1], ignore=["_uid"])
 
 
-def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):
+def test_create_octree_triangulation(
+    tmp_path: Path, setup_test_octree
+):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -323,7 +336,9 @@ def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):
         app.trigger_click(None)
 
         # Re-load the new mesh and compare
-        with Workspace(BaseApplication.get_output_workspace(tmp_path)) as workspace:
+        with fetch_active_workspace(
+            Workspace(tmp_path / "testOctree.geoh5")
+        ) as workspace:
             rec_octree = workspace.get_entity("Octree_Mesh")[0]
             compare_entities(octree, rec_octree, ignore=["_uid"])
 
@@ -332,7 +347,7 @@ def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):
     "diagonal_balance, exp_values, exp_counts",
     [(True, [0, 1], [22, 10]), (False, [0, 1, 2], [22, 8, 2])],
 )
-def test_octree_diagonal_balance(
+def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
     tmp_path: Path, diagonal_balance, exp_values, exp_counts
 ):
     workspace = Workspace.create(tmp_path / "testDiagonalBalance.geoh5")
