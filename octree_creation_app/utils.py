@@ -9,7 +9,7 @@ from discretize import TreeMesh
 from geoh5py.objects import Octree
 
 
-def octree_2_treemesh(mesh):
+def octree_2_treemesh(mesh):  # pylint: disable=too-many-locals
     """
     Convert a geoh5 octree mesh to discretize.TreeMesh
     Modified code from module discretize.TreeMesh.readUBC function.
