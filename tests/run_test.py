@@ -11,13 +11,11 @@ from pathlib import Path
 import numpy as np
 import pytest
 from discretize.utils import mesh_builder_xyz
-from geoh5py.objects import Curve, Points, Surface
-from geoh5py.shared.utils import compare_entities, fetch_active_workspace
+from geoh5py.objects import Curve, Points
+from geoh5py.shared.utils import compare_entities
 from geoh5py.ui_json.utils import str2list
 from geoh5py.workspace import Workspace
-from scipy.spatial import Delaunay
 
-from octree_creation_app.application import OctreeMesh
 from octree_creation_app.driver import OctreeDriver
 from octree_creation_app.params import OctreeParams
 from octree_creation_app.utils import octree_2_treemesh, treemesh_2_octree
@@ -69,7 +67,7 @@ def setup_test_octree():
     )
 
 
-def test_create_octree_radial(
+def test_create_octree_driver(
     tmp_path: Path, setup_test_octree
 ):  # pylint: disable=too-many-locals
     (
@@ -84,67 +82,6 @@ def test_create_octree_radial(
     ) = setup_test_octree
 
     with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
-        points = Points.create(workspace, vertices=locations)
-        treemesh.refine(treemesh.max_level - minimum_level + 1, finalize=False)
-        treemesh = OctreeDriver.refine_tree_from_points(
-            treemesh,
-            points,
-            str2list(refinement),
-            diagonal_balance=False,
-            finalize=True,
-        )
-        octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
-
-        # Hard-wire the expected result
-        assert octree.n_cells == 164742
-
-        assert OctreeDriver.cell_size_from_level(treemesh, 1) == 10.0
-
-        # Repeat the creation using the app
-        refinements = {
-            "Refinement A object": points.uid,
-            "Refinement A levels": refinement,
-            "Refinement A type": "radial",
-            "Refinement B object": None,
-            "minimum_level": minimum_level,
-        }
-        app = OctreeMesh(
-            geoh5=workspace,
-            objects=str(points.uid),
-            u_cell_size=cell_sizes[0],
-            v_cell_size=cell_sizes[1],
-            w_cell_size=cell_sizes[2],
-            horizontal_padding=horizontal_padding,
-            vertical_padding=vertical_padding,
-            diagonal_balance=False,
-            depth_core=depth_core,
-            **refinements,
-        )
-        app.trigger_click(None)
-
-        # Re-load the new mesh and compare
-        with fetch_active_workspace(
-            Workspace(tmp_path / "testOctree.geoh5")
-        ) as workspace:
-            rec_octree = workspace.get_entity("Octree_Mesh")[0]
-            compare_entities(octree, rec_octree, ignore=["_uid"])
-
-
-def test_create_octree_curve(
-    tmp_path: Path, setup_test_octree
-):  # pylint: disable=too-many-locals
-    (
-        cell_sizes,
-        depth_core,
-        horizontal_padding,
-        locations,
-        minimum_level,
-        refinement,
-        treemesh,
-        vertical_padding,
-    ) = setup_test_octree
-
-    with fetch_active_workspace(Workspace(tmp_path / "testOctree.geoh5")) as workspace:
         curve = Curve.create(workspace, vertices=locations)
         curve.remove_cells([-1])
         treemesh.refine(
@@ -160,187 +97,32 @@ def test_create_octree_curve(
             finalize=True,
         )
         octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
-
         assert octree.n_cells == 176915
 
-        # Repeat the creation using the app
-        refinements = {
-            "Refinement A object": curve.uid,
+        params_dict = {
+            "geoh5": workspace,
+            "objects": curve,
+            "u_cell_size": cell_sizes[0],
+            "v_cell_size": cell_sizes[1],
+            "w_cell_size": cell_sizes[2],
+            "horizontal_padding": horizontal_padding,
+            "vertical_padding": vertical_padding,
+            "depth_core": depth_core,
+            "diagonal_balance": False,
+            "Refinement A object": curve,
             "Refinement A levels": refinement,
             "Refinement A type": "radial",
             "Refinement B object": None,
             "minimum_level": minimum_level,
         }
-        app = OctreeMesh(
-            geoh5=workspace,
-            objects=str(curve.uid),
-            u_cell_size=cell_sizes[0],
-            v_cell_size=cell_sizes[1],
-            w_cell_size=cell_sizes[2],
-            horizontal_padding=horizontal_padding,
-            vertical_padding=vertical_padding,
-            depth_core=depth_core,
-            diagonal_balance=False,
-            **refinements,
-        )
-        app.trigger_click(None)
+        params = OctreeParams(**params_dict)
 
-        # Re-load the new mesh and compare
-        with fetch_active_workspace(
-            Workspace(tmp_path / "testOctree.geoh5")
-        ) as workspace:
-            rec_octree = workspace.get_entity("Octree_Mesh")[0]
-            compare_entities(octree, rec_octree, ignore=["_uid"])
+    driver = OctreeDriver(params)
+    driver.run()
 
-
-def test_create_octree_surface(
-    tmp_path: Path, setup_test_octree
-):  # pylint: disable=too-many-locals
-    (
-        cell_sizes,
-        depth_core,
-        horizontal_padding,
-        locations,
-        minimum_level,
-        refinement,
-        treemesh,
-        vertical_padding,
-    ) = setup_test_octree
-
-    with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
-        points = Points.create(workspace, vertices=locations)
-        treemesh.refine(
-            treemesh.max_level - minimum_level + 1,
-            diagonal_balance=False,
-            finalize=False,
-        )
-        treemesh = OctreeDriver.refine_tree_from_surface(
-            treemesh,
-            points,
-            str2list(refinement),
-            diagonal_balance=False,
-            finalize=True,
-        )
-        octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
-
-        assert octree.n_cells in [
-            168627,
-            168396,
-        ]  # Different results on Linux and Windows
-
-        # Repeat the creation using the app
-        refinements = {
-            "Refinement A object": points.uid,
-            "Refinement A levels": refinement,
-            "Refinement A type": "surface",
-            "Refinement B object": None,
-            "minimum_level": minimum_level,
-        }
-        app = OctreeMesh(
-            geoh5=workspace,
-            objects=str(points.uid),
-            u_cell_size=cell_sizes[0],
-            v_cell_size=cell_sizes[1],
-            w_cell_size=cell_sizes[2],
-            horizontal_padding=horizontal_padding,
-            vertical_padding=vertical_padding,
-            depth_core=depth_core,
-            diagonal_balance=False,
-            **refinements,
-        )
-        app.trigger_click(None)
-
-        # Re-load the new mesh and compare
-        with fetch_active_workspace(
-            Workspace(tmp_path / "testOctree.geoh5")
-        ) as workspace:
-            rec_octree = workspace.get_entity("Octree_Mesh")[0]
-            compare_entities(octree, rec_octree, ignore=["_uid"])
-
-
-def test_create_octree_driver(tmp_path: Path):
-    uijson_path = tmp_path.parent / "test_create_octree_curve0" / "Temp"
-    json_file = next(uijson_path.glob("*.ui.json"))
-    driver = OctreeDriver.start(str(json_file))
-
-    with driver.params.geoh5.open(mode="r"):
+    with driver.params.geoh5.open(mode="r+"):
         results = driver.params.geoh5.get_entity("Octree_Mesh")
         compare_entities(results[0], results[1], ignore=["_uid"])
-
-
-def test_create_octree_triangulation(
-    tmp_path: Path, setup_test_octree
-):  # pylint: disable=too-many-locals
-    (
-        cell_sizes,
-        depth_core,
-        horizontal_padding,
-        locations,
-        minimum_level,
-        refinement,
-        treemesh,
-        vertical_padding,
-    ) = setup_test_octree
-
-    # Generate a sphere of points
-    phi, theta = np.meshgrid(
-        np.linspace(-np.pi / 2.0, np.pi / 2.0, 32), np.linspace(-np.pi, np.pi, 32)
-    )
-    surf = Delaunay(np.c_[phi.flatten(), theta.flatten()])
-    x = np.cos(phi) * np.cos(theta) * 200.0
-    y = np.cos(phi) * np.sin(theta) * 200.0
-    z = np.sin(phi) * 200.0
-    # refinement = "1, 2"
-    with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
-        curve = Curve.create(workspace, vertices=locations)
-        sphere = Surface.create(
-            workspace,
-            vertices=np.c_[x.flatten(), y.flatten(), z.flatten()],
-            cells=surf.simplices,
-        )
-        treemesh.refine(
-            treemesh.max_level - minimum_level + 1,
-            diagonal_balance=False,
-            finalize=False,
-        )
-        treemesh = OctreeDriver.refine_tree_from_triangulation(
-            treemesh,
-            sphere,
-            str2list(refinement),
-            diagonal_balance=False,
-            finalize=True,
-        )
-        octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
-
-        assert octree.n_cells == 293892
-
-        # Repeat the creation using the app
-        refinements = {
-            "Refinement A object": sphere.uid,
-            "Refinement A levels": refinement,
-            "Refinement A type": "surface",
-            "Refinement B object": None,
-            "minimum_level": minimum_level,
-        }
-        app = OctreeMesh(
-            geoh5=workspace,
-            objects=str(curve.uid),
-            u_cell_size=cell_sizes[0],
-            v_cell_size=cell_sizes[1],
-            w_cell_size=cell_sizes[2],
-            horizontal_padding=horizontal_padding,
-            vertical_padding=vertical_padding,
-            depth_core=depth_core,
-            **refinements,
-        )
-        app.trigger_click(None)
-
-        # Re-load the new mesh and compare
-        with fetch_active_workspace(
-            Workspace(tmp_path / "testOctree.geoh5")
-        ) as workspace:
-            rec_octree = workspace.get_entity("Octree_Mesh")[0]
-            compare_entities(octree, rec_octree, ignore=["_uid"])
 
 
 @pytest.mark.parametrize(

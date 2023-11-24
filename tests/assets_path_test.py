@@ -5,13 +5,17 @@
 #  All rights reserved.
 #
 
-from octree_creation_app import assets_path
+from geoapps_utils.importing import assets_path
+
+import octree_creation_app
 
 
 def test_assets_directory_exist():
-    assert assets_path().is_dir()
+    assert assets_path(octree_creation_app.__assets_dir__).is_dir()
 
 
 def test_uijson_files_exists():
-    assert (assets_path() / "uijson").is_dir()
-    assert list((assets_path() / "uijson").iterdir())[0].is_file()
+    assert (assets_path(octree_creation_app.__assets_dir__) / "uijson").is_dir()
+    assert list((assets_path(octree_creation_app.__assets_dir__) / "uijson").iterdir())[
+        0
+    ].is_file()

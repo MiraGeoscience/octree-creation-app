@@ -21,13 +21,13 @@ from geoh5py.ui_json import utils
 from scipy import interpolate
 from scipy.spatial import Delaunay, cKDTree
 
-from octree_creation_app.constants import validations
 from octree_creation_app.params import OctreeParams
 from octree_creation_app.utils import treemesh_2_octree
 
 
 class OctreeDriver(BaseDriver):
     _params_class = OctreeParams
+    _validations: dict = {}
 
     def __init__(self, params: OctreeParams):
         super().__init__(params)
