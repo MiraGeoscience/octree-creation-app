@@ -4,16 +4,24 @@
 #
 #  All rights reserved.
 #
+import discretize
 import numpy as np
 from discretize import TreeMesh
+from geoh5py import Workspace
 from geoh5py.objects import Octree
 
 
-def octree_2_treemesh(mesh):  # pylint: disable=too-many-locals
+def octree_2_treemesh(  # pylint: disable=too-many-locals
+    mesh: Octree,
+) -> discretize.TreeMesh:
     """
     Convert a geoh5 octree mesh to discretize.TreeMesh
 
     Modified code from module discretize.TreeMesh.readUBC function.
+
+    :param mesh: Octree mesh to convert.
+
+    :return: Resulting TreeMesh.
     """
     tsw_corner = np.asarray(mesh.origin.tolist())
     small_cell = [mesh.u_cell_size, mesh.v_cell_size, mesh.w_cell_size]
@@ -33,10 +41,14 @@ def octree_2_treemesh(mesh):  # pylint: disable=too-many-locals
 
     # Convert array_ind to points in coordinates of underlying cpp tree
     # array_ind is ix, iy, iz(top-down) need it in ix, iy, iz (bottom-up)
+    if mesh.octree_cells is None:
+        return None
     cells = np.vstack(mesh.octree_cells.tolist())
     levels = cells[:, -1]
     array_ind = cells[:, :-1]
     array_ind = 2 * array_ind + levels[:, None]  # get cell center index
+    if n_cell_dim[2] is None:
+        return None
     array_ind[:, 2] = 2 * n_cell_dim[2] - array_ind[:, 2]  # switch direction of iz
     levels = max_level - np.log2(levels)  # calculate level
 
@@ -45,9 +57,16 @@ def octree_2_treemesh(mesh):  # pylint: disable=too-many-locals
     return treemesh
 
 
-def treemesh_2_octree(workspace, treemesh, **kwargs):
+def treemesh_2_octree(
+    workspace: Workspace, treemesh: discretize.TreeMesh, **kwargs
+) -> Octree:
     """
     Converts a :obj:`discretize.TreeMesh` to :obj:`geoh5py.objects.Octree` entity.
+
+    :param workspace: Workspace to create the octree in.
+    :param treemesh: TreeMesh to convert.
+
+    :return: Octree entity.
     """
     index_array, levels = getattr(treemesh, "_ubc_indArr")
     ubc_order = getattr(treemesh, "_ubc_order")

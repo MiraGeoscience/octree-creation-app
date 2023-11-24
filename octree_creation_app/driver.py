@@ -1,9 +1,8 @@
-#  Copyright (c) 2023 Mira Geoscience Ltd.
+#  Copyright (c) 2022-2023 Mira Geoscience Ltd.
 #
-#  This file is part of geoapps.
+#  This file is part of octree_creation_app package.
 #
-#  geoapps is distributed under the terms and conditions of the MIT License
-#  (see LICENSE file at the root of this source code package).
+#  All rights reserved.
 
 
 from __future__ import annotations
@@ -26,6 +25,10 @@ from octree_creation_app.utils import treemesh_2_octree
 
 
 class OctreeDriver(BaseDriver):
+    """
+    Driver for octree mesh creation.
+    """
+
     _params_class = OctreeParams
     _validations: dict = {}
 
