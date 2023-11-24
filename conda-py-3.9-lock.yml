@@ -15,8 +15,8 @@
 version: 1
 metadata:
   content_hash:
-    win-64: fe8ab5279f6d83aae3d3afc832eabd561a10c5d5f2d194a3769fd24404766ae3
-    linux-64: a82267f451112d5888c8805f15424acde6ee6dc3c1dd9ef63053f382c309b654
+    win-64: 0110b8fd4a694b9dc3304aad69bc93a4563f14afb682579525901176e39ff49f
+    linux-64: f475ec8f9b17e7cd559f82ad341f68ac766819c5e257e33b9dd87e83c5a31708
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -689,15 +689,15 @@ package:
   category: dev
   optional: true
 - name: idna
-  version: '3.4'
+  version: '3.5'
   manager: conda
   platform: linux-64
   dependencies:
     python: '>=3.6'
-  url: https://conda.anaconda.org/conda-forge/noarch/idna-3.4-pyhd8ed1ab_0.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/noarch/idna-3.5-pyhd8ed1ab_0.conda
   hash:
-    md5: 34272b248891bddccc64479f9a7fffed
-    sha256: 9887c35c374ec1847f167292d3fde023cb4c994a4ceeec283072b95440131f09
+    md5: f8ae6c63eca96e5ad3074f4a27bcfc08
+    sha256: 23c4e822fef052e45250e9186d2bf9bdb2ecb1cb78e05221a19fa6455205b360
   category: main
   optional: false
 - name: iniconfig
@@ -1264,19 +1264,19 @@ package:
   manager: pip
   platform: linux-64
   dependencies:
-    scipy: '>=1.10.1,<1.11.0'
     numpy: '>=1.23.5,<1.24.0'
-    geoh5py: '>=0.8.0rc1,<0.9.0'
+    scipy: '>=1.10.1,<1.11.0'
     pillow: '*'
-    h5py: '*'
     plotly: '>=5.13.1,<5.14.0'
-  url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/GEOPY-764.zip
+    h5py: '*'
+    geoh5py: '>=0.8.0rc1,<0.9.0'
+  url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/develop.zip
   hash:
     sha256: ''
   category: main
   source:
     type: url
-    url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/GEOPY-764.zip#sha256=
+    url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/develop.zip#sha256=
   optional: false
 - name: ca-certificates
   version: 2023.11.17
@@ -1842,15 +1842,15 @@ package:
   category: main
   optional: false
 - name: idna
-  version: '3.4'
+  version: '3.5'
   manager: conda
   platform: win-64
   dependencies:
     python: '>=3.6'
-  url: https://conda.anaconda.org/conda-forge/noarch/idna-3.4-pyhd8ed1ab_0.tar.bz2
+  url: https://conda.anaconda.org/conda-forge/noarch/idna-3.5-pyhd8ed1ab_0.conda
   hash:
-    md5: 34272b248891bddccc64479f9a7fffed
-    sha256: 9887c35c374ec1847f167292d3fde023cb4c994a4ceeec283072b95440131f09
+    md5: f8ae6c63eca96e5ad3074f4a27bcfc08
+    sha256: 23c4e822fef052e45250e9186d2bf9bdb2ecb1cb78e05221a19fa6455205b360
   category: main
   optional: false
 - name: iniconfig
@@ -2558,17 +2558,17 @@ package:
   manager: pip
   platform: win-64
   dependencies:
-    scipy: '>=1.10.1,<1.11.0'
     numpy: '>=1.23.5,<1.24.0'
-    geoh5py: '>=0.8.0rc1,<0.9.0'
+    scipy: '>=1.10.1,<1.11.0'
     pillow: '*'
-    h5py: '*'
     plotly: '>=5.13.1,<5.14.0'
-  url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/GEOPY-764.zip
+    h5py: '*'
+    geoh5py: '>=0.8.0rc1,<0.9.0'
+  url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/develop.zip
   hash:
     sha256: ''
   category: main
   source:
     type: url
-    url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/GEOPY-764.zip#sha256=
+    url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/develop.zip#sha256=
   optional: false
