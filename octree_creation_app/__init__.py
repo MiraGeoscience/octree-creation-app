@@ -7,4 +7,4 @@
 from __future__ import annotations
 
 __version__ = "0.1.0-alpha.1"
-__assets_dir__ = __file__
+ASSETS_DIR = __file__

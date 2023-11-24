@@ -11,11 +11,11 @@ import octree_creation_app
 
 
 def test_assets_directory_exist():
-    assert assets_path(octree_creation_app.__assets_dir__).is_dir()
+    assert assets_path(octree_creation_app.ASSETS_DIR).is_dir()
 
 
 def test_uijson_files_exists():
-    assert (assets_path(octree_creation_app.__assets_dir__) / "uijson").is_dir()
-    assert list((assets_path(octree_creation_app.__assets_dir__) / "uijson").iterdir())[
+    assert (assets_path(octree_creation_app.ASSETS_DIR) / "uijson").is_dir()
+    assert list((assets_path(octree_creation_app.ASSETS_DIR) / "uijson").iterdir())[
         0
     ].is_file()
