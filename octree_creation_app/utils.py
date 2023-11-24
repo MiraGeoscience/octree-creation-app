@@ -12,6 +12,7 @@ from geoh5py.objects import Octree
 def octree_2_treemesh(mesh):  # pylint: disable=too-many-locals
     """
     Convert a geoh5 octree mesh to discretize.TreeMesh
+
     Modified code from module discretize.TreeMesh.readUBC function.
     """
     tsw_corner = np.asarray(mesh.origin.tolist())
@@ -45,6 +46,9 @@ def octree_2_treemesh(mesh):  # pylint: disable=too-many-locals
 
 
 def treemesh_2_octree(workspace, treemesh, **kwargs):
+    """
+    Converts a :obj:`discretize.TreeMesh` to :obj:`geoh5py.objects.Octree` entity.
+    """
     index_array, levels = getattr(treemesh, "_ubc_indArr")
     ubc_order = getattr(treemesh, "_ubc_order")
 

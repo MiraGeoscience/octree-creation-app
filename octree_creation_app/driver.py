@@ -28,7 +28,6 @@ from octree_creation_app.utils import treemesh_2_octree
 
 class OctreeDriver(BaseDriver):
     _params_class = OctreeParams
-    _validations = validations
 
     def __init__(self, params: OctreeParams):
         super().__init__(params)

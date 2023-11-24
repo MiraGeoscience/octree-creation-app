@@ -168,6 +168,4 @@ template_dict = {
     },
 }
 
-validations: dict = {}
 
-app_initializer: dict = {}
