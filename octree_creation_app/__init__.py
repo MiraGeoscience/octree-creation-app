@@ -6,5 +6,5 @@
 
 from __future__ import annotations
 
-__version__ = "0.1.0"
+__version__ = "0.1.0-alpha.1"
 ASSETS_DIR = __file__
