@@ -15,8 +15,8 @@
 version: 1
 metadata:
   content_hash:
-    win-64: 7595aea29d1d7b1516dc4cb243b8212b71f26a05c3ea6dad5342e0cadf25075f
-    linux-64: c61e764aef09c9f4c889904c4396046c347b1a83ab81b87e9c1f19a15a8d6567
+    win-64: f7b0209292c1d5afeb609f14440174803ff18f9c7698812bee38166b5c92b26d
+    linux-64: 2c1d05e7b450ce0389d3883db309f49dfa95df2e5ed6b8bdab8e4734f9004162
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -1239,22 +1239,19 @@ package:
   category: main
   optional: false
 - name: geoapps-utils
-  version: 0.1.0
+  version: 0.2.0a1
   manager: pip
   platform: linux-64
   dependencies:
-    numpy: '>=1.23.5,<1.24.0'
     pillow: '*'
-    h5py: '*'
     geoh5py: '>=0.8.0rc1,<0.9.0'
+    h5py: '*'
+    numpy: '>=1.23.5,<1.24.0'
     scipy: '>=1.10.1,<1.11.0'
-  url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/develop.zip
+  url: https://files.pythonhosted.org/packages/b4/0f/4a7ee1c9df35b98e8c6812eae72eb0790e1a4ccb492ed27e7ba9331b27e6/geoapps_utils-0.2.0a1-py3-none-any.whl
   hash:
-    sha256: ''
+    sha256: 15606061ed4056fdd35981d9a51b7f202554d3e19ac4a0f73ec58147179d8fc6
   category: main
-  source:
-    type: url
-    url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/develop.zip#sha256=
   optional: false
 - name: ca-certificates
   version: 2023.11.17
@@ -2511,20 +2508,17 @@ package:
   category: main
   optional: false
 - name: geoapps-utils
-  version: 0.1.0
+  version: 0.2.0a1
   manager: pip
   platform: win-64
   dependencies:
-    numpy: '>=1.23.5,<1.24.0'
     pillow: '*'
-    h5py: '*'
     geoh5py: '>=0.8.0rc1,<0.9.0'
+    h5py: '*'
+    numpy: '>=1.23.5,<1.24.0'
     scipy: '>=1.10.1,<1.11.0'
-  url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/develop.zip
+  url: https://files.pythonhosted.org/packages/b4/0f/4a7ee1c9df35b98e8c6812eae72eb0790e1a4ccb492ed27e7ba9331b27e6/geoapps_utils-0.2.0a1-py3-none-any.whl
   hash:
-    sha256: ''
+    sha256: 15606061ed4056fdd35981d9a51b7f202554d3e19ac4a0f73ec58147179d8fc6
   category: main
-  source:
-    type: url
-    url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/develop.zip#sha256=
   optional: false
