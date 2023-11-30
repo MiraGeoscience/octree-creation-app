@@ -6,13 +6,13 @@
 #
 from __future__ import annotations
 
-from logging import warn
+from logging import warning
 
 import numpy as np
 from discretize import TreeMesh
 from geoh5py.objects import Octree
 from geoh5py.shared.utils import fetch_active_workspace
-from scipy.spatial._ckdtree import cKDTree
+from scipy.spatial import cKDTree
 
 
 def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
@@ -47,8 +47,8 @@ def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
     for ind in range(3):
         if dimensions is not None:
             extent = dimensions[ind]
-            maxLevel = int(np.ceil(np.log2(extent / cell_size[ind])))
-            cells += [np.ones(2**maxLevel) * cell_size[ind]]
+            max_level = int(np.ceil(np.log2(extent / cell_size[ind])))
+            cells += [np.ones(2**max_level) * cell_size[ind]]
 
     # Define the mesh and origin
     treemesh = TreeMesh(cells, origin=origin)
@@ -95,7 +95,7 @@ def collocate_octrees(global_mesh: Octree, local_meshes: list[Octree]):
     for local_mesh in local_meshes:
         attributes = get_octree_attributes(local_mesh)
 
-        if cell_size and not cell_size == attributes["cell_size"]:
+        if cell_size and cell_size != attributes["cell_size"]:
             raise ValueError(
                 f"Cell size mismatch in dimension {cell_size} != {attributes['cell_size']}"
             )
@@ -105,7 +105,7 @@ def collocate_octrees(global_mesh: Octree, local_meshes: list[Octree]):
 
         if np.any(shift != 0.0):
             with fetch_active_workspace(local_mesh.workspace) as workspace:
-                warn(
+                warning(
                     f"Shifting {local_mesh.name} mesh origin by {shift} m to match inversion mesh."
                 )
                 local_mesh.origin = attributes["origin"] + shift
