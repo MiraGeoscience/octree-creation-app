@@ -15,8 +15,8 @@
 version: 1
 metadata:
   content_hash:
-    win-64: adbd3b6a4606775b360eb8eb3a25ba7bdc4e41e19b9bf21afd8350b61531a469
-    linux-64: 6822b110fea446bd834e50ca2d3401d90220dce867a22c0bf16ec82c175be248
+    win-64: a0b5ea9fa1d6e7dade74da042a4c76586fc716c9acf5d45913125ba0ca160fe4
+    linux-64: 4b61304c8eb08e3e77795ed3109f0937389103f9328496a456fb1030dbacae4a
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -2641,31 +2641,28 @@ package:
   category: main
   optional: false
 - name: geoh5py
-  version: 0.8.0rc2
+  version: 0.8.0rc3
   manager: pip
   platform: linux-64
   dependencies:
     pillow: '>=10.0.1,<11.0.0'
     h5py: '>=3.2.1,<4.0.0'
     numpy: '>=1.23.5,<1.24.0'
-  url: https://github.com/MiraGeoscience/geoh5py/archive/refs/tags/v0.8.0-rc.2.zip
+  url: https://files.pythonhosted.org/packages/e5/af/48085dcd9f49f8f5755d857e08c715c340cbf376da4ccc1765ca548bf9ac/geoh5py-0.8.0rc3-py3-none-any.whl
   hash:
-    sha256: ''
+    sha256: 76625e1fccdf20f102d310c2bfae989bfb3995fb24b5f8091ada0c5e1474184c
   category: main
-  source:
-    type: url
-    url: https://github.com/MiraGeoscience/geoh5py/archive/refs/tags/v0.8.0-rc.2.zip#sha256=
   optional: false
 - name: geoapps-utils
   version: 0.1.0
   manager: pip
   platform: linux-64
   dependencies:
-    pillow: '*'
     geoh5py: '>=0.8.0rc1,<0.9.0'
-    h5py: '*'
     scipy: '>=1.10.1,<1.11.0'
+    pillow: '*'
     numpy: '>=1.23.5,<1.24.0'
+    h5py: '*'
   url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/develop.zip
   hash:
     sha256: ''
@@ -5372,31 +5369,28 @@ package:
   category: main
   optional: false
 - name: geoh5py
-  version: 0.8.0rc2
+  version: 0.8.0rc3
   manager: pip
   platform: win-64
   dependencies:
     pillow: '>=10.0.1,<11.0.0'
     h5py: '>=3.2.1,<4.0.0'
     numpy: '>=1.23.5,<1.24.0'
-  url: https://github.com/MiraGeoscience/geoh5py/archive/refs/tags/v0.8.0-rc.2.zip
+  url: https://files.pythonhosted.org/packages/e5/af/48085dcd9f49f8f5755d857e08c715c340cbf376da4ccc1765ca548bf9ac/geoh5py-0.8.0rc3-py3-none-any.whl
   hash:
-    sha256: ''
+    sha256: 76625e1fccdf20f102d310c2bfae989bfb3995fb24b5f8091ada0c5e1474184c
   category: main
-  source:
-    type: url
-    url: https://github.com/MiraGeoscience/geoh5py/archive/refs/tags/v0.8.0-rc.2.zip#sha256=
   optional: false
 - name: geoapps-utils
   version: 0.1.0
   manager: pip
   platform: win-64
   dependencies:
-    pillow: '*'
     geoh5py: '>=0.8.0rc1,<0.9.0'
-    h5py: '*'
     scipy: '>=1.10.1,<1.11.0'
+    pillow: '*'
     numpy: '>=1.23.5,<1.24.0'
+    h5py: '*'
   url: https://github.com/MiraGeoscience/geoapps-utils/archive/refs/heads/develop.zip
   hash:
     sha256: ''
