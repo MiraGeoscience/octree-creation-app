@@ -45,14 +45,17 @@ def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
     cell_size = np.min(np.vstack(cell_size), axis=0)
     cells = []
     for ind in range(3):
-        extent = dimensions[ind]
-        maxLevel = int(np.ceil(np.log2(extent / cell_size[ind])))
-        cells += [np.ones(2**maxLevel) * cell_size[ind]]
+        if dimensions is not None:
+            extent = dimensions[ind]
+            maxLevel = int(np.ceil(np.log2(extent / cell_size[ind])))
+            cells += [np.ones(2**maxLevel) * cell_size[ind]]
 
     # Define the mesh and origin
     treemesh = TreeMesh(cells, origin=origin)
 
     for mesh in meshes:
+        if mesh.octree_cells is None:
+            continue
         if isinstance(mesh, Octree):
             centers = mesh.centroids
             levels = treemesh.max_level - np.log2(mesh.octree_cells["NCells"])
@@ -80,7 +83,8 @@ def collocate_octrees(global_mesh: Octree, local_meshes: list[Octree]):
     """
     attributes = get_octree_attributes(global_mesh)
     cell_size = attributes["cell_size"]
-
+    if global_mesh.octree_cells is None:
+        raise ValueError("Mesh octree cells must be defined.")
     u_grid = global_mesh.octree_cells["I"] * global_mesh.u_cell_size
     v_grid = global_mesh.octree_cells["J"] * global_mesh.v_cell_size
     w_grid = global_mesh.octree_cells["K"] * global_mesh.w_cell_size
@@ -122,18 +126,19 @@ def get_octree_attributes(mesh: Octree | TreeMesh) -> dict[str, list]:
     cell_count = []
     dimensions = []
     if isinstance(mesh, TreeMesh):
-        for dim in range(3):
-            cell_size.append(mesh.h[dim][0])
-            cell_count.append(mesh.h[dim].size)
-            dimensions.append(mesh.h[dim].sum())
+        for int_dim in range(3):
+            cell_size.append(mesh.h[int_dim][0])
+            cell_count.append(mesh.h[int_dim].size)
+            dimensions.append(mesh.h[int_dim].sum())
         origin = mesh.origin
     else:
         with fetch_active_workspace(mesh.workspace):
-            for dim in "uvw":
-                cell_size.append(np.abs(getattr(mesh, f"{dim}_cell_size")))
-                cell_count.append(getattr(mesh, f"{dim}_count"))
+            for str_dim in "uvw":
+                cell_size.append(np.abs(getattr(mesh, f"{str_dim}_cell_size")))
+                cell_count.append(getattr(mesh, f"{str_dim}_count"))
                 dimensions.append(
-                    getattr(mesh, f"{dim}_cell_size") * getattr(mesh, f"{dim}_count")
+                    getattr(mesh, f"{str_dim}_cell_size")
+                    * getattr(mesh, f"{str_dim}_count")
                 )
             origin = np.r_[mesh.origin["x"], mesh.origin["y"], mesh.origin["z"]]
 

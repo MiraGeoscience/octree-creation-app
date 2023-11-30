@@ -1,9 +1,8 @@
-#  Copyright (c) 2023 Mira Geoscience Ltd.
+#  Copyright (c) 2022-2023 Mira Geoscience Ltd.
 #
-#  This file is part of geoapps.
+#  This file is part of octree_creation_app package.
 #
-#  geoapps is distributed under the terms and conditions of the MIT License
-#  (see LICENSE file at the root of this source code package).
+#  All rights reserved.
 
 from __future__ import annotations
 
@@ -167,7 +166,3 @@ template_dict = {
         "value": 1000.0,
     },
 }
-
-validations: dict = {}
-
-app_initializer: dict = {}

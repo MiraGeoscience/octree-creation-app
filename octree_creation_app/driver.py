@@ -1,9 +1,8 @@
-#  Copyright (c) 2023 Mira Geoscience Ltd.
+#  Copyright (c) 2022-2023 Mira Geoscience Ltd.
 #
-#  This file is part of geoapps.
+#  This file is part of octree_creation_app package.
 #
-#  geoapps is distributed under the terms and conditions of the MIT License
-#  (see LICENSE file at the root of this source code package).
+#  All rights reserved.
 
 
 from __future__ import annotations
@@ -21,14 +20,17 @@ from geoh5py.ui_json import utils
 from scipy import interpolate
 from scipy.spatial import Delaunay, cKDTree
 
-from octree_creation_app.constants import validations
 from octree_creation_app.params import OctreeParams
 from octree_creation_app.utils import treemesh_2_octree
 
 
 class OctreeDriver(BaseDriver):
+    """
+    Driver for octree mesh creation.
+    """
+
     _params_class = OctreeParams
-    _validations = validations
+    _validations: dict = {}
 
     def __init__(self, params: OctreeParams):
         super().__init__(params)

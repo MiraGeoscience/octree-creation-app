@@ -34,9 +34,9 @@
    :alt: Maintainability
 
 
-octree-creation-app: # TODO: SHORT DESCRIPTION
-=========================================================================
-The **octree-creation-app** library # TODO: PACKAGE DESCRIPTION
+Octree Creation
+===============
+The **octree-creation-app** library lets the user create an octree mesh object with local refinement based on ``Objects`` stored in a ``geoh5`` file.
 
 .. contents:: Table of Contents
    :local:
