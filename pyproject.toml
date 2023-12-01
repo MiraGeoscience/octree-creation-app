@@ -28,13 +28,12 @@ classifiers = [
 ]
 
 [tool.poetry.scripts]
-my_app_hello = 'octree_creation_app.commands.hello'
 
 [tool.poetry.dependencies]
 python = "^3.9, <3.11"
-numpy = "~1.23.5" # also geoh5py, simpeg and geoana
+numpy = "~1.23.5"
 scipy = "~1.10.1"
-discretize = {version = "~0.8.3", optional = true }
+discretize = {version = "~0.10.0"}
 
 ## pip dependencies
 geoh5py = {version = "~0.8.0rc3", source = "pypi", allow-prereleases = true}

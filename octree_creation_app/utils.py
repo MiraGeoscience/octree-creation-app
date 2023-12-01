@@ -114,6 +114,38 @@ def collocate_octrees(global_mesh: Octree, local_meshes: list[Octree]):
                 workspace.update_attribute(local_mesh, "attributes")
 
 
+def get_neighbouring_cells(mesh: TreeMesh, indices: list | np.ndarray) -> tuple:
+    """
+    Get the indices of neighbouring cells along a given axis for a given list of
+    cell indices.
+
+    :param mesh: discretize.TreeMesh object.
+    :param indices: List of cell indices.
+
+    :return: Two lists of neighbouring cell indices for every axis.
+        axis[0] = (west, east)
+        axis[1] = (south, north)
+        axis[2] = (down, up)
+    """
+    if not isinstance(indices, (list, np.ndarray)):
+        raise TypeError("Input 'indices' must be a list or numpy.ndarray of indices.")
+
+    if not isinstance(mesh, TreeMesh):
+        raise TypeError("Input 'mesh' must be a discretize.TreeMesh object.")
+
+    neighbors: dict[int, list] = {ax: [[], []] for ax in range(mesh.dim)}
+
+    for ind in indices:
+        for ax in range(mesh.dim):
+            neighbors[ax][0].append(np.r_[mesh[ind].neighbors[ax * 2]])
+            neighbors[ax][1].append(np.r_[mesh[ind].neighbors[ax * 2 + 1]])
+
+    return tuple(
+        (np.r_[tuple(neighbors[ax][0])], np.r_[tuple(neighbors[ax][1])])
+        for ax in range(mesh.dim)
+    )
+
+
 def get_octree_attributes(mesh: Octree | TreeMesh) -> dict[str, list]:
     """
     Get mesh attributes.
