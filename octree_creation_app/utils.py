@@ -12,8 +12,9 @@ import discretize
 import numpy as np
 from discretize import TreeMesh
 from geoh5py import Workspace
-from geoh5py.objects import Octree
+from geoh5py.objects import Curve, Octree
 from geoh5py.shared.utils import fetch_active_workspace
+from scipy.interpolate import interp1d
 from scipy.spatial import cKDTree
 
 
@@ -112,6 +113,27 @@ def collocate_octrees(global_mesh: Octree, local_meshes: list[Octree]):
                 )
                 local_mesh.origin = attributes["origin"] + shift
                 workspace.update_attribute(local_mesh, "attributes")
+
+
+def densify_curve(curve: Curve, increment: float) -> np.ndarray:
+    """
+    Refine a curve by adding points along the curve at a given increment.
+
+    :param curve: Curve object to be refined.
+    :param increment: Distance between points along the curve.
+
+    :return: Array of shape (n, 3) of x, y, z locations.
+    """
+    locations = []
+    for part in curve.unique_parts:
+        if curve.cells is not None and curve.vertices is not None:
+            logic = curve.parts == part
+            cells = curve.cells[np.all(logic[curve.cells], axis=1)]
+            vert_ind = np.r_[cells[:, 0], cells[-1, 1]]
+            locs = curve.vertices[vert_ind, :]
+            locations.append(resample_locations(locs, increment))
+
+    return np.vstack(locations)
 
 
 def get_neighbouring_cells(mesh: TreeMesh, indices: list | np.ndarray) -> tuple:
@@ -231,6 +253,30 @@ def octree_2_treemesh(  # pylint: disable=too-many-locals
     treemesh.__setstate__((array_ind, levels))
 
     return treemesh
+
+
+def resample_locations(locations: np.ndarray, increment: float) -> np.ndarray:
+    """
+    Resample locations along a sequence of positions at a given increment.
+
+    :param locations: Array of shape (n, 3) of x, y, z locations.
+    :param increment: Minimum distance between points along the curve.
+
+    :return: Array of shape (n, 3) of x, y, z locations.
+    """
+    distance = np.cumsum(
+        np.r_[0, np.linalg.norm(locations[1:, :] - locations[:-1, :], axis=1)]
+    )
+    new_distances = np.sort(
+        np.unique(np.r_[distance, np.arange(0, distance[-1], increment)])
+    )
+
+    resampled = []
+    for axis in locations.T:
+        interpolator = interp1d(distance, axis, kind="linear")
+        resampled.append(interpolator(new_distances))
+
+    return np.c_[resampled].T
 
 
 def treemesh_2_octree(

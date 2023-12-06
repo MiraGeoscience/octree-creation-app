@@ -13,7 +13,7 @@ import numpy as np
 from discretize import TreeMesh
 from discretize.utils import mesh_builder_xyz
 from geoapps_utils.driver.driver import BaseDriver
-from geoapps_utils.numerical import densify_curve, get_locations
+from geoapps_utils.locations import get_locations
 from geoh5py.objects import Curve, ObjectBase, Octree, Surface
 from geoh5py.shared.utils import fetch_active_workspace
 from geoh5py.ui_json import utils
@@ -21,7 +21,7 @@ from scipy import interpolate
 from scipy.spatial import Delaunay, cKDTree
 
 from octree_creation_app.params import OctreeParams
-from octree_creation_app.utils import treemesh_2_octree
+from octree_creation_app.utils import densify_curve, treemesh_2_octree
 
 
 class OctreeDriver(BaseDriver):
