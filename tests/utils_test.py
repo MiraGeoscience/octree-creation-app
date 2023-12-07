@@ -14,6 +14,7 @@ from geoh5py.objects import Curve
 from geoh5py.shared.utils import fetch_active_workspace
 
 from octree_creation_app.utils import (
+    collocate_octrees,
     create_octree_from_octrees,
     densify_curve,
     get_neighbouring_cells,
@@ -23,21 +24,59 @@ from octree_creation_app.utils import (
 )
 
 
-def test_create_octree_from_octrees(tmp_path: Path):
+def test_collocate_octrees(tmp_path: Path):
     workspace = Workspace(tmp_path / "test.geoh5")
 
+    local_mesh1 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [1000, 0, 0])
+    local_mesh1.insert_cells([120, 120, -40], local_mesh1.max_level, finalize=True)
+    local_omesh1 = treemesh_2_octree(workspace, local_mesh1)
+
+    local_mesh2 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [-500, 500, -500])
+    local_mesh2.insert_cells([40, 40, -120], local_mesh2.max_level, finalize=True)
+    local_omesh2 = treemesh_2_octree(workspace, local_mesh2)
+
+    global_mesh = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [0, 0, 0])
+    global_mesh.insert_cells([620, 300, -300], global_mesh.max_level, finalize=True)
+    global_omesh = treemesh_2_octree(workspace, global_mesh)
+
+    original_global_extent = global_omesh.extent
+
+    # Bounds do not overlap initially
+    for mesh in [local_omesh1, local_omesh2]:
+        if mesh.extent is not None and original_global_extent is not None:
+            for i in range(3):
+                assert (mesh.extent[0][i] >= original_global_extent[0][i]) or (
+                    mesh.extent[1][i] <= original_global_extent[1][i]
+                )
+
+    # Collocate octrees
+    collocate_octrees(global_omesh, [local_omesh1, local_omesh2])
+    global_extent = global_omesh.extent
+    assert np.all(global_extent == original_global_extent)
+
+    # Check that bounds overlap
+    for mesh in [local_omesh1, local_omesh2]:
+        if mesh.extent is not None and global_extent is not None:
+            for i in range(3):
+                assert (mesh.extent[0][i] >= global_extent[0][i]) or (
+                    mesh.extent[1][i] <= global_extent[1][i]
+                )
+
+
+def test_create_octree_from_octrees():
+    workspace = Workspace()
     mesh1 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [0, 0, 0])
     mesh1.insert_cells([120, 120, -40], mesh1.max_level, finalize=True)
-    omesh1 = treemesh_2_octree(workspace, mesh1, name="oct1")
+    omesh1 = treemesh_2_octree(workspace, mesh1)
 
     mesh2 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [0, 0, 0])
     mesh2.insert_cells([40, 40, -120], mesh2.max_level, finalize=True)
-    omesh2 = treemesh_2_octree(workspace, mesh2, name="oct2")
+    omesh2 = treemesh_2_octree(workspace, mesh2)
 
     assert omesh1.n_cells == omesh2.n_cells == 57
 
     resulting_mesh = create_octree_from_octrees([omesh1, omesh2])
-    resulting_omesh = treemesh_2_octree(workspace, resulting_mesh, name="octrres")
+    resulting_omesh = treemesh_2_octree(workspace, resulting_mesh)
 
     in_both = []
     for cell in resulting_omesh.centroids:
