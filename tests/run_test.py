@@ -10,62 +10,17 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-from discretize.utils import mesh_builder_xyz
 from geoh5py.objects import Curve, Octree, Points, Surface
 from geoh5py.shared.utils import compare_entities
 from geoh5py.ui_json.utils import str2list
 from geoh5py.workspace import Workspace
-from scipy.spatial._qhull import Delaunay
+from scipy.spatial import Delaunay
 
 from octree_creation_app.driver import OctreeDriver
 from octree_creation_app.params import OctreeParams
 from octree_creation_app.utils import octree_2_treemesh, treemesh_2_octree
 
-# pylint: disable=redefined-outer-name
-
-
-@pytest.fixture
-def setup_test_octree():
-    """
-    Create a circle of points and treemesh from extent.
-    """
-    refinement = "4, 4"
-    minimum_level = 4
-    cell_sizes = [5.0, 5.0, 5.0]
-    n_data = 16
-    degree = np.linspace(0, 2 * np.pi, n_data)
-    locations = np.c_[
-        np.cos(degree) * 200.0, np.sin(degree) * 200.0, np.sin(degree * 2.0) * 40.0
-    ]
-    # Add point at origin
-    locations = np.r_[locations, np.zeros((1, 3))]
-    depth_core = 400.0
-    horizontal_padding = 500.0
-    vertical_padding = 200.0
-    paddings = [
-        [horizontal_padding, horizontal_padding],
-        [horizontal_padding, horizontal_padding],
-        [vertical_padding, vertical_padding],
-    ]
-    # Create a tree mesh from discretize
-    treemesh = mesh_builder_xyz(
-        locations,
-        cell_sizes,
-        padding_distance=paddings,
-        mesh_type="tree",
-        depth_core=depth_core,
-    )
-
-    return (
-        cell_sizes,
-        depth_core,
-        horizontal_padding,
-        locations,
-        minimum_level,
-        refinement,
-        treemesh,
-        vertical_padding,
-    )
+# pylint: disable=redefined-outer-name, duplicate-code
 
 
 def test_create_octree_radial(
