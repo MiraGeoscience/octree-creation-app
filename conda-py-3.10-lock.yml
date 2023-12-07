@@ -15,8 +15,8 @@
 version: 1
 metadata:
   content_hash:
-    win-64: f7b0209292c1d5afeb609f14440174803ff18f9c7698812bee38166b5c92b26d
-    linux-64: 2c1d05e7b450ce0389d3883db309f49dfa95df2e5ed6b8bdab8e4734f9004162
+    win-64: 5734a8d13040b62c54afbf923fcc830e25edfb1beac69137e6e6b147cdfe98c6
+    linux-64: f571703665bfdeedd28744e6fabe1a9440bddb9a8412bde9a28bdde52ff7c698
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -144,15 +144,15 @@ package:
   category: main
   optional: false
 - name: c-ares
-  version: 1.22.1
+  version: 1.23.0
   manager: conda
   platform: linux-64
   dependencies:
     libgcc-ng: '>=12'
-  url: https://conda.anaconda.org/conda-forge/linux-64/c-ares-1.22.1-hd590300_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/c-ares-1.23.0-hd590300_0.conda
   hash:
-    md5: 8430bd266c7b2cfbda403f7585d5ee86
-    sha256: d41cf87938ba66de538b91afed3ece9b4cf5ed082a7d1c1add46b70f482f34b9
+    md5: d459949bc10f64dee1595c176c2e6291
+    sha256: 6b0eee827bade11c2964a05867499a50ad2a9d1b14dfe18fb867a3bc9357f56f
   category: main
   optional: false
 - name: keyutils
@@ -1209,20 +1209,20 @@ package:
   category: main
   optional: false
 - name: discretize
-  version: 0.8.3
+  version: 0.10.0
   manager: conda
   platform: linux-64
   dependencies:
     libgcc-ng: '>=12'
     libstdcxx-ng: '>=12'
-    numpy: '>=1.21.6,<2.0a0'
+    numpy: '>=1.22.4,<2.0a0'
     python: '>=3.10,<3.11.0a0'
     python_abi: 3.10.*
-    scipy: '>=0.13'
-  url: https://conda.anaconda.org/conda-forge/linux-64/discretize-0.8.3-py310h5a539fb_0.conda
+    scipy: '>=1.8'
+  url: https://conda.anaconda.org/conda-forge/linux-64/discretize-0.10.0-py310hcb52e73_1.conda
   hash:
-    md5: e99dbe732683f3bbee6b866e15364f32
-    sha256: 68602e2e77296cd339dc7bd4b73806f4c4667f23cb71ba51cfc680c97cb7e5b0
+    md5: 1f0f0e9eb694f1d36ea44e167622fd97
+    sha256: 3cfbc4e072448f7e1bbcfdff0c01b18ae67d6d83d12b7585567a4dd057b8c02e
   category: main
   optional: false
 - name: geoh5py
@@ -2477,21 +2477,21 @@ package:
   category: main
   optional: false
 - name: discretize
-  version: 0.8.3
+  version: 0.10.0
   manager: conda
   platform: win-64
   dependencies:
-    numpy: '>=1.21.6,<2.0a0'
+    numpy: '>=1.22.4,<2.0a0'
     python: '>=3.10,<3.11.0a0'
     python_abi: 3.10.*
-    scipy: '>=0.13'
+    scipy: '>=1.8'
     ucrt: '>=10.0.20348.0'
     vc: '>=14.2,<15'
-    vs2015_runtime: '>=14.29.30139'
-  url: https://conda.anaconda.org/conda-forge/win-64/discretize-0.8.3-py310h220cb41_0.conda
+    vc14_runtime: '>=14.29.30139'
+  url: https://conda.anaconda.org/conda-forge/win-64/discretize-0.10.0-py310h4856b71_1.conda
   hash:
-    md5: eb163df36e7c567ec372f4af8f305e6e
-    sha256: 0e12ec04d5fa226fcfc724344c74b526dd3c4222de9bd6f5fc9da88d65a61969
+    md5: 7af88a12920a5b2b5ae459a5dd032019
+    sha256: 6170c71a13541cd570afde2d6acfb24f19ced2f3a082c94157ed31d34c92c563
   category: main
   optional: false
 - name: geoh5py
