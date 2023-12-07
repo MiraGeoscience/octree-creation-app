@@ -57,12 +57,10 @@ def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
     treemesh = TreeMesh(cells, origin=origin)
 
     for mesh in meshes:
-        if mesh.octree_cells is None:
-            continue
-        if isinstance(mesh, Octree):
+        if isinstance(mesh, Octree) and mesh.octree_cells is not None:
             centers = mesh.centroids
             levels = treemesh.max_level - np.log2(mesh.octree_cells["NCells"])
-        else:
+        elif isinstance(mesh, TreeMesh):
             centers = mesh.cell_centers
             levels = (
                 treemesh.max_level

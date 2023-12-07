@@ -75,6 +75,7 @@ def test_create_octree_from_octrees():
 
     assert omesh1.n_cells == omesh2.n_cells == 57
 
+    # Create mesh from octrees
     resulting_mesh = create_octree_from_octrees([omesh1, omesh2])
     resulting_omesh = treemesh_2_octree(workspace, resulting_mesh)
 
@@ -83,6 +84,37 @@ def test_create_octree_from_octrees():
         in_both.append(cell in omesh1.centroids or cell in omesh2.centroids)
 
     assert np.all(in_both)
+
+    # Compare with mesh from treemeshes
+    new_mesh = create_octree_from_octrees([mesh1, mesh2])
+
+    assert [np.all(new_mesh.h[dim] == resulting_mesh.h[dim]) for dim in range(3)]
+    assert np.all(new_mesh.shape_cells == resulting_mesh.shape_cells)
+
+
+def test_create_octree_from_octrees_errors():
+    workspace = Workspace()
+    mesh = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [0, 0, 0])
+    mesh.insert_cells([120, 120, -40], mesh.max_level, finalize=True)
+    omesh = treemesh_2_octree(workspace, mesh)
+
+    mesh_invalid_dimension = TreeMesh([[10] * 16, [10] * 32, [-10] * 16], [0, 0, 0])
+    mesh_invalid_dimension.insert_cells(
+        [40, 40, -120], mesh_invalid_dimension.max_level, finalize=True
+    )
+    omesh_invalid_dimension = treemesh_2_octree(workspace, mesh_invalid_dimension)
+
+    mesh_invalid_origin = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [1, 0, 0])
+    mesh_invalid_origin.insert_cells(
+        [40, 40, -120], mesh_invalid_origin.max_level, finalize=True
+    )
+    omesh_invalid_origin = treemesh_2_octree(workspace, mesh_invalid_origin)
+
+    with pytest.raises(ValueError, match="Meshes must have same dimensions"):
+        create_octree_from_octrees([omesh, omesh_invalid_dimension])
+
+    with pytest.raises(ValueError, match="Meshes must have same origin"):
+        create_octree_from_octrees([omesh, omesh_invalid_origin])
 
 
 def test_densify_curve(tmp_path: Path):
