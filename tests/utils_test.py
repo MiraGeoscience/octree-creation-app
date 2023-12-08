@@ -3,7 +3,6 @@
 #  This file is part of octree_creation_app package.
 #
 #  All rights reserved.
-import itertools
 from pathlib import Path
 
 import numpy as np
@@ -81,8 +80,9 @@ def test_create_octree_from_octrees():
 
     in_both = []
     for cell in resulting_omesh.centroids:
-        in_both.append(cell in omesh1.centroids or cell in omesh2.centroids)
-
+        in_mesh1 = np.any(np.all(cell == omesh1.centroids, axis=1))
+        in_mesh2 = np.any(np.all(cell == omesh2.centroids, axis=1))
+        in_both.append(in_mesh1 or in_mesh2)
     assert np.all(in_both)
 
     # Compare with mesh from treemeshes
@@ -90,6 +90,7 @@ def test_create_octree_from_octrees():
 
     assert [np.all(new_mesh.h[dim] == resulting_mesh.h[dim]) for dim in range(3)]
     assert np.all(new_mesh.shape_cells == resulting_mesh.shape_cells)
+    assert np.all(new_mesh.origin == resulting_mesh.origin)
 
 
 def test_create_octree_from_octrees_errors():
@@ -162,7 +163,6 @@ def test_get_octree_attributes_with_treemesh(setup_test_octree):
     _, _, _, _, _, _, treemesh, _ = setup_test_octree
     treemesh.insert_cells([0, 0, 0], treemesh.max_level, finalize=True)
 
-    # with treemesh
     attributes = get_octree_attributes(treemesh)
     assert np.all(treemesh.origin == attributes["origin"])
     assert np.all(list(treemesh.shape_cells) == attributes["cell_count"])
@@ -177,7 +177,6 @@ def test_get_octree_attributes_with_octree(setup_test_octree):
     _, _, _, _, _, _, treemesh, _ = setup_test_octree
     treemesh.insert_cells([0, 0, 0], treemesh.max_level, finalize=True)
 
-    # with octree
     workspace = Workspace()
     otree = treemesh_2_octree(workspace, treemesh)
     attributes = get_octree_attributes(otree)
@@ -197,7 +196,7 @@ def test_get_octree_attributes_with_octree(setup_test_octree):
         and otree.v_cell_size is not None
         and otree.w_cell_size is not None
     ):
-        assert [otree.u_cell_size, otree.v_cell_size, -otree.w_cell_size] == attributes[
+        assert [otree.u_cell_size, otree.v_cell_size, otree.w_cell_size] == attributes[
             "cell_size"
         ]
         assert np.all(
@@ -215,18 +214,9 @@ def test_octree_2_treemesh():
         mesh = TreeMesh([[10] * 4, [10] * 4, [10] * 4], [0, 0, 0])
         mesh.insert_cells([5, 5, 5], mesh.max_level, finalize=True)
         omesh = treemesh_2_octree(workspace, mesh)
-        for prod in itertools.product("uvw", repeat=3):
-            omesh.origin = [0, 0, 0]
-            for axis in "uvw":
-                attr = axis + "_cell_size"
-                setattr(omesh, attr, np.abs(getattr(omesh, attr)))
-            for axis in np.unique(prod):
-                attr = axis + "_cell_size"
-                setattr(omesh, attr, -1 * getattr(omesh, attr))
-                omesh.origin["xyz"["uvw".find(axis)]] = 40  # type: ignore
+        tmesh = octree_2_treemesh(omesh)
 
-            tmesh = octree_2_treemesh(omesh)
-            assert np.all((tmesh.cell_centers - mesh.cell_centers) < 1e-14)
+        assert np.all((tmesh.cell_centers - mesh.cell_centers) < 1e-14)
 
 
 def test_treemesh_2_octree(tmp_path: Path):
@@ -236,10 +226,18 @@ def test_treemesh_2_octree(tmp_path: Path):
         mesh = TreeMesh([[10] * 16, [10] * 4, [10] * 8], [0, 0, 0])
         mesh.insert_cells([10, 10, 10], mesh.max_level, finalize=True)
         omesh = treemesh_2_octree(workspace, mesh, name="test_mesh")
+
+        mesh_attrs = get_octree_attributes(mesh)
+        omesh_attrs = get_octree_attributes(omesh)
+        for key, value in mesh_attrs.items():
+            assert np.all(value == omesh_attrs[key])
+
         assert omesh.n_cells == mesh.n_cells
-        assert np.all(
-            (omesh.centroids - mesh.cell_centers[getattr(mesh, "_ubc_order")]) < 1e-14
-        )
+
+        tmesh = octree_2_treemesh(omesh)
+        assert np.all((tmesh.cell_centers - mesh.cell_centers) < 1e-14)
+
+        assert np.all((omesh.centroids - mesh.cell_centers) < 1e-14)
         expected_refined_cells = [
             (0, 0, 6),
             (0, 0, 7),

@@ -50,7 +50,7 @@ def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
     for ind in range(3):
         if dimensions is not None and cell_size is not None:
             extent = dimensions[ind]
-            max_level = int(np.ceil(np.log2(extent / cell_size[ind])))
+            max_level = int(np.ceil(np.log2(np.abs(extent / cell_size[ind]))))
             cells += [np.ones(2**max_level) * cell_size[ind]]
 
     # Define the mesh and origin
@@ -188,7 +188,7 @@ def get_octree_attributes(mesh: Octree | TreeMesh) -> dict[str, list]:
     else:
         with fetch_active_workspace(mesh.workspace):
             for str_dim in "uvw":
-                cell_size.append(np.abs(getattr(mesh, f"{str_dim}_cell_size")))
+                cell_size.append(getattr(mesh, f"{str_dim}_cell_size"))
                 cell_count.append(getattr(mesh, f"{str_dim}_count"))
                 dimensions.append(
                     getattr(mesh, f"{str_dim}_cell_size")
@@ -223,9 +223,9 @@ def octree_2_treemesh(  # pylint: disable=too-many-locals
     small_cell = [mesh.u_cell_size, mesh.v_cell_size, mesh.w_cell_size]
     n_cell_dim = [mesh.u_count, mesh.v_count, mesh.w_count]
     cell_sizes = [np.ones(nr) * sz for nr, sz in zip(n_cell_dim, small_cell)]
-    u_shift, v_shift, w_shift = (np.sum(h[h < 0]) for h in cell_sizes)
-    h1, h2, h3 = (np.abs(h) for h in cell_sizes)
-    x0 = tsw_corner + np.array([u_shift, v_shift, w_shift])
+
+    h1, h2, h3 = cell_sizes
+    x0 = tsw_corner
     ls = np.log2(n_cell_dim).astype(int)
 
     if ls[0] == ls[1] and ls[1] == ls[2]:
@@ -289,13 +289,11 @@ def treemesh_2_octree(
     :return: Octree entity.
     """
     index_array, levels = getattr(treemesh, "_ubc_indArr")
-    ubc_order = getattr(treemesh, "_ubc_order")
 
-    index_array = index_array[ubc_order] - 1
-    levels = levels[ubc_order]
+    index_array = index_array - 1
 
     origin = treemesh.x0.copy()
-    origin[2] += treemesh.h[2].size * treemesh.h[2][0]
+
     mesh_object = Octree.create(
         workspace,
         origin=origin,
@@ -304,7 +302,7 @@ def treemesh_2_octree(
         w_count=treemesh.h[2].size,
         u_cell_size=treemesh.h[0][0],
         v_cell_size=treemesh.h[1][0],
-        w_cell_size=-treemesh.h[2][0],
+        w_cell_size=treemesh.h[2][0],
         octree_cells=np.c_[index_array, levels],
         **kwargs,
     )
