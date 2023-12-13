@@ -62,6 +62,39 @@ def test_collocate_octrees(tmp_path: Path):
                 )
 
 
+def test_jamie(tmp_path):
+    workspace = Workspace(tmp_path / "test.geoh5")
+    mesh = TreeMesh([[10] * 16, [10] * 4, [10] * 8], [0, 0, 0])
+    mesh.insert_cells([10, 10, 10], mesh.max_level, finalize=True)
+    # mesh.insert_cells([0, 0, 0], mesh.max_level, finalize=True)
+    """
+    from matplotlib import pyplot as plt
+    ax = mesh.plot_grid()
+    plt.xlim([0, 160])
+    plt.ylim([0, 40])
+    ax.set_zlim([0, 80])
+    plt.show()
+    """
+
+    omesh = treemesh_2_octree(workspace, mesh)
+
+    mesh2 = octree_2_treemesh(omesh)
+    omesh2 = treemesh_2_octree(workspace, mesh2)
+
+    mesh_attrs = get_octree_attributes(mesh)
+    omesh_attrs = get_octree_attributes(omesh)
+
+    mesh2_attrs = get_octree_attributes(mesh2)
+    omesh2_attrs = get_octree_attributes(omesh2)
+
+    # print(mesh.cell_centers - omesh.centroids)
+    # print(mesh.cell_centers - mesh2.cell_centers)
+
+    for key, value in mesh_attrs.items():
+        print(key)
+        print(value, omesh_attrs[key], mesh2_attrs[key], omesh2_attrs[key])
+
+
 def test_create_octree_from_octrees():
     workspace = Workspace()
     mesh1 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [0, 0, 0])

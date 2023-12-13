@@ -245,7 +245,7 @@ def octree_2_treemesh(  # pylint: disable=too-many-locals
     array_ind = 2 * array_ind + levels[:, None]  # get cell center index
     if n_cell_dim[2] is None:
         return None
-    array_ind[:, 2] = 2 * n_cell_dim[2] - array_ind[:, 2]  # switch direction of iz
+    # array_ind[:, 2] = 2 * n_cell_dim[2] - array_ind[:, 2]  # switch direction of iz
     levels = max_level - np.log2(levels)  # calculate level
 
     treemesh.__setstate__((array_ind, levels))
