@@ -86,26 +86,6 @@ def test_collocate_octrees(tmp_path: Path):
                 )
 
 
-def test_jamie(tmp_path):
-    with Workspace(tmp_path / "test.geoh5") as workspace:
-        points = np.vstack(
-            [
-                [10, 10, -10],
-                [42, 21, -21],
-            ]
-        )
-        Points.create(workspace, vertices=points)
-        mesh = TreeMesh([[10] * 16, [10] * 4, [10] * 8], [0, 0, 0])
-        mesh.insert_cells(points, [mesh.max_level] * points.shape[0], finalize=True)
-        omesh = treemesh_2_octree(workspace, mesh, name="first")
-
-        np.testing.assert_allclose(mesh.cell_centers, omesh.centroids)
-
-        mesh2 = octree_2_treemesh(omesh)
-
-        np.testing.assert_allclose(mesh.cell_centers, mesh2.cell_centers)
-
-
 def test_create_octree_from_octrees():
     workspace = Workspace()
     mesh1 = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
@@ -262,6 +242,26 @@ def test_octree_2_treemesh():
         tmesh = octree_2_treemesh(omesh)
 
         np.testing.assert_allclose(tmesh.cell_centers, mesh.cell_centers)
+
+
+def test_roundtrip_octree_conversion(tmp_path):
+    with Workspace(tmp_path / "test.geoh5") as workspace:
+        points = np.vstack(
+            [
+                [10, 10, -10],
+                [42, 21, -21],
+            ]
+        )
+        Points.create(workspace, vertices=points)
+        mesh = TreeMesh([[10] * 16, [10] * 4, [10] * 8], [0, 0, 0])
+        mesh.insert_cells(points, [mesh.max_level] * points.shape[0], finalize=True)
+        omesh = treemesh_2_octree(workspace, mesh, name="first")
+
+        np.testing.assert_allclose(mesh.cell_centers, omesh.centroids)
+
+        mesh2 = octree_2_treemesh(omesh)
+
+        np.testing.assert_allclose(mesh.cell_centers, mesh2.cell_centers)
 
 
 def test_treemesh_2_octree(tmp_path: Path):
