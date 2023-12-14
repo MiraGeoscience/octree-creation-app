@@ -209,7 +209,7 @@ def get_octree_attributes(mesh: Octree | TreeMesh) -> dict[str, list]:
 
 def octree_2_treemesh(  # pylint: disable=too-many-locals
     mesh: Octree,
-) -> discretize.TreeMesh:
+) -> discretize.TreeMesh | None:
     """
     Convert a geoh5 octree mesh to discretize.TreeMesh
 
@@ -219,36 +219,28 @@ def octree_2_treemesh(  # pylint: disable=too-many-locals
 
     :return: Resulting TreeMesh.
     """
-    tsw_corner = np.asarray(mesh.origin.tolist())
+    if mesh.octree_cells is None:
+        return None
+
     small_cell = [mesh.u_cell_size, mesh.v_cell_size, mesh.w_cell_size]
     n_cell_dim = [mesh.u_count, mesh.v_count, mesh.w_count]
     cell_sizes = [np.ones(nr) * sz for nr, sz in zip(n_cell_dim, small_cell)]
 
-    h1, h2, h3 = cell_sizes
-    x0 = tsw_corner
+    if any(np.any(cell_size < 0) for cell_size in cell_sizes):
+        raise NotImplementedError("Negative cell sizes not supported.")
+
     ls = np.log2(n_cell_dim).astype(int)
 
-    if ls[0] == ls[1] and ls[1] == ls[2]:
+    if len(set(ls)) == 1:
         max_level = ls[0]
     else:
         max_level = min(ls) + 1
 
-    treemesh = TreeMesh([h1, h2, h3], x0=x0)
-
-    # Convert array_ind to points in coordinates of underlying cpp tree
-    # array_ind is ix, iy, iz(top-down) need it in ix, iy, iz (bottom-up)
-    if mesh.octree_cells is None:
-        return None
     cells = np.vstack(mesh.octree_cells.tolist())
-    levels = cells[:, -1]
-    array_ind = cells[:, :-1]
-    array_ind = 2 * array_ind + levels[:, None]  # get cell center index
-    if n_cell_dim[2] is None:
-        return None
-    # array_ind[:, 2] = 2 * n_cell_dim[2] - array_ind[:, 2]  # switch direction of iz
-    levels = max_level - np.log2(levels)  # calculate level
-
-    treemesh.__setstate__((array_ind, levels))
+    indexes = cells[:, :-1] * 2 + cells[:, -1][:, None]  # convert to cpp index
+    levels = max_level - np.log2(cells[:, -1])
+    treemesh = TreeMesh(cell_sizes, x0=np.asarray(mesh.origin.tolist()))
+    treemesh.__setstate__((indexes, levels))
 
     return treemesh
 
@@ -288,9 +280,15 @@ def treemesh_2_octree(
 
     :return: Octree entity.
     """
-    index_array, levels = getattr(treemesh, "_ubc_indArr")
 
-    index_array = index_array - 1
+    if any(np.any(cell_size < 0) for cell_size in treemesh.h):
+        raise NotImplementedError("Negative cell sizes not supported.")
+
+    index_array = np.asarray(treemesh.cell_state["indexes"])
+    levels = np.asarray(treemesh.cell_state["levels"])
+
+    new_levels = 2 ** (treemesh.max_level - levels)
+    new_index_array = (index_array - new_levels[:, None]) / 2
 
     origin = treemesh.x0.copy()
 
@@ -303,7 +301,7 @@ def treemesh_2_octree(
         u_cell_size=treemesh.h[0][0],
         v_cell_size=treemesh.h[1][0],
         w_cell_size=treemesh.h[2][0],
-        octree_cells=np.c_[index_array, levels],
+        octree_cells=np.c_[new_index_array, new_levels],
         **kwargs,
     )
 
