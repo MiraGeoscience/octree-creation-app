@@ -3,14 +3,13 @@
 #  This file is part of octree_creation_app package.
 #
 #  All rights reserved.
-import itertools
 from pathlib import Path
 
 import numpy as np
 import pytest
 from discretize import TreeMesh
 from geoh5py import Workspace
-from geoh5py.objects import Curve
+from geoh5py.objects import Curve, Octree, Points
 from geoh5py.shared.utils import fetch_active_workspace
 
 from octree_creation_app.utils import (
@@ -24,18 +23,42 @@ from octree_creation_app.utils import (
 )
 
 
+def test_not_implemented_negative():
+    workspace = Workspace()
+
+    local_mesh1 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [1000, 0, 0])
+    local_mesh1.refine(3, finalize=True)
+
+    with pytest.raises(NotImplementedError, match="Negative cell sizes not supported."):
+        treemesh_2_octree(workspace, local_mesh1)
+
+    octree = Octree.create(
+        workspace,
+        origin=[0, 0, 0],
+        u_count=8,
+        v_count=8,
+        w_count=8,
+        u_cell_size=-5.0,
+        v_cell_size=5.0,
+        w_cell_size=5.0,
+    )
+
+    with pytest.raises(NotImplementedError, match="Negative cell sizes not supported."):
+        octree_2_treemesh(octree)
+
+
 def test_collocate_octrees(tmp_path: Path):
     workspace = Workspace(tmp_path / "test.geoh5")
 
-    local_mesh1 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [1000, 0, 0])
+    local_mesh1 = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [1000, 0, 0])
     local_mesh1.insert_cells([120, 120, -40], local_mesh1.max_level, finalize=True)
     local_omesh1 = treemesh_2_octree(workspace, local_mesh1)
 
-    local_mesh2 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [-500, 500, -500])
+    local_mesh2 = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [-500, 500, -500])
     local_mesh2.insert_cells([40, 40, -120], local_mesh2.max_level, finalize=True)
     local_omesh2 = treemesh_2_octree(workspace, local_mesh2)
 
-    global_mesh = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [0, 0, 0])
+    global_mesh = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
     global_mesh.insert_cells([620, 300, -300], global_mesh.max_level, finalize=True)
     global_omesh = treemesh_2_octree(workspace, global_mesh)
 
@@ -65,11 +88,11 @@ def test_collocate_octrees(tmp_path: Path):
 
 def test_create_octree_from_octrees():
     workspace = Workspace()
-    mesh1 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [0, 0, 0])
+    mesh1 = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
     mesh1.insert_cells([120, 120, -40], mesh1.max_level, finalize=True)
     omesh1 = treemesh_2_octree(workspace, mesh1)
 
-    mesh2 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [0, 0, 0])
+    mesh2 = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
     mesh2.insert_cells([40, 40, -120], mesh2.max_level, finalize=True)
     omesh2 = treemesh_2_octree(workspace, mesh2)
 
@@ -81,7 +104,9 @@ def test_create_octree_from_octrees():
 
     in_both = []
     for cell in resulting_omesh.centroids:
-        in_both.append(cell in omesh1.centroids or cell in omesh2.centroids)
+        in_mesh1 = np.any(np.all(cell == omesh1.centroids, axis=1))
+        in_mesh2 = np.any(np.all(cell == omesh2.centroids, axis=1))
+        in_both.append(in_mesh1 or in_mesh2)
 
     assert np.all(in_both)
 
@@ -90,21 +115,22 @@ def test_create_octree_from_octrees():
 
     assert [np.all(new_mesh.h[dim] == resulting_mesh.h[dim]) for dim in range(3)]
     assert np.all(new_mesh.shape_cells == resulting_mesh.shape_cells)
+    assert np.all(new_mesh.origin == resulting_mesh.origin)
 
 
 def test_create_octree_from_octrees_errors():
     workspace = Workspace()
-    mesh = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [0, 0, 0])
+    mesh = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
     mesh.insert_cells([120, 120, -40], mesh.max_level, finalize=True)
     omesh = treemesh_2_octree(workspace, mesh)
 
-    mesh_invalid_dimension = TreeMesh([[10] * 16, [10] * 32, [-10] * 16], [0, 0, 0])
+    mesh_invalid_dimension = TreeMesh([[10] * 16, [10] * 32, [10] * 16], [0, 0, 0])
     mesh_invalid_dimension.insert_cells(
         [40, 40, -120], mesh_invalid_dimension.max_level, finalize=True
     )
     omesh_invalid_dimension = treemesh_2_octree(workspace, mesh_invalid_dimension)
 
-    mesh_invalid_origin = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [1, 0, 0])
+    mesh_invalid_origin = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [1, 0, 0])
     mesh_invalid_origin.insert_cells(
         [40, 40, -120], mesh_invalid_origin.max_level, finalize=True
     )
@@ -162,7 +188,6 @@ def test_get_octree_attributes_with_treemesh(setup_test_octree):
     _, _, _, _, _, _, treemesh, _ = setup_test_octree
     treemesh.insert_cells([0, 0, 0], treemesh.max_level, finalize=True)
 
-    # with treemesh
     attributes = get_octree_attributes(treemesh)
     assert np.all(treemesh.origin == attributes["origin"])
     assert np.all(list(treemesh.shape_cells) == attributes["cell_count"])
@@ -177,7 +202,6 @@ def test_get_octree_attributes_with_octree(setup_test_octree):
     _, _, _, _, _, _, treemesh, _ = setup_test_octree
     treemesh.insert_cells([0, 0, 0], treemesh.max_level, finalize=True)
 
-    # with octree
     workspace = Workspace()
     otree = treemesh_2_octree(workspace, treemesh)
     attributes = get_octree_attributes(otree)
@@ -197,7 +221,7 @@ def test_get_octree_attributes_with_octree(setup_test_octree):
         and otree.v_cell_size is not None
         and otree.w_cell_size is not None
     ):
-        assert [otree.u_cell_size, otree.v_cell_size, -otree.w_cell_size] == attributes[
+        assert [otree.u_cell_size, otree.v_cell_size, otree.w_cell_size] == attributes[
             "cell_size"
         ]
         assert np.all(
@@ -215,18 +239,29 @@ def test_octree_2_treemesh():
         mesh = TreeMesh([[10] * 4, [10] * 4, [10] * 4], [0, 0, 0])
         mesh.insert_cells([5, 5, 5], mesh.max_level, finalize=True)
         omesh = treemesh_2_octree(workspace, mesh)
-        for prod in itertools.product("uvw", repeat=3):
-            omesh.origin = [0, 0, 0]
-            for axis in "uvw":
-                attr = axis + "_cell_size"
-                setattr(omesh, attr, np.abs(getattr(omesh, attr)))
-            for axis in np.unique(prod):
-                attr = axis + "_cell_size"
-                setattr(omesh, attr, -1 * getattr(omesh, attr))
-                omesh.origin["xyz"["uvw".find(axis)]] = 40  # type: ignore
+        tmesh = octree_2_treemesh(omesh)
 
-            tmesh = octree_2_treemesh(omesh)
-            assert np.all((tmesh.cell_centers - mesh.cell_centers) < 1e-14)
+        np.testing.assert_allclose(tmesh.cell_centers, mesh.cell_centers)
+
+
+def test_roundtrip_octree_conversion(tmp_path):
+    with Workspace(tmp_path / "test.geoh5") as workspace:
+        points = np.vstack(
+            [
+                [10, 10, -10],
+                [42, 21, -21],
+            ]
+        )
+        Points.create(workspace, vertices=points)
+        mesh = TreeMesh([[10] * 16, [10] * 4, [10] * 8], [0, 0, 0])
+        mesh.insert_cells(points, [mesh.max_level] * points.shape[0], finalize=True)
+        omesh = treemesh_2_octree(workspace, mesh, name="first")
+
+        np.testing.assert_allclose(mesh.cell_centers, omesh.centroids)
+
+        mesh2 = octree_2_treemesh(omesh)
+
+        np.testing.assert_allclose(mesh.cell_centers, mesh2.cell_centers)
 
 
 def test_treemesh_2_octree(tmp_path: Path):
@@ -236,24 +271,14 @@ def test_treemesh_2_octree(tmp_path: Path):
         mesh = TreeMesh([[10] * 16, [10] * 4, [10] * 8], [0, 0, 0])
         mesh.insert_cells([10, 10, 10], mesh.max_level, finalize=True)
         omesh = treemesh_2_octree(workspace, mesh, name="test_mesh")
+
+        mesh_attrs = get_octree_attributes(mesh)
+        omesh_attrs = get_octree_attributes(omesh)
+        for key, value in mesh_attrs.items():
+            assert np.all(value == omesh_attrs[key])
+
         assert omesh.n_cells == mesh.n_cells
-        assert np.all(
-            (omesh.centroids - mesh.cell_centers[getattr(mesh, "_ubc_order")]) < 1e-14
-        )
-        expected_refined_cells = [
-            (0, 0, 6),
-            (0, 0, 7),
-            (1, 0, 6),
-            (1, 0, 7),
-            (0, 1, 6),
-            (0, 1, 7),
-            (1, 1, 6),
-            (1, 1, 7),
-        ]
-        ijk_refined = []
-        if omesh.octree_cells is not None:
-            ijk_refined = omesh.octree_cells[["I", "J", "K"]][
-                omesh.octree_cells["NCells"] == 1
-            ].tolist()
-        assert np.all([k in ijk_refined for k in expected_refined_cells])
-        assert np.all([k in expected_refined_cells for k in ijk_refined])
+
+        tmesh = octree_2_treemesh(omesh)
+        np.testing.assert_allclose(tmesh.cell_centers, mesh.cell_centers)
+        np.testing.assert_allclose(omesh.centroids, mesh.cell_centers)
