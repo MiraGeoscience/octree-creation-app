@@ -55,7 +55,6 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
 
             input_file = InputFile(
                 ui_json=ui_json,
-                validations=self.validations,
                 validate=False,
             )
 
