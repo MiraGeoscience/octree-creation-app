@@ -52,7 +52,7 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
                 for key, form in forms.items():
                     form["group"] = group
                     ui_json[f"{group} {key}"] = form
-                    self._defaults[f"{group} {key}"] = form["value"]  # type: ignore
+                    self._defaults[f"{group} {key}"] = form["value"]
 
             input_file = InputFile(
                 ui_json=ui_json,

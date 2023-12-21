@@ -8,12 +8,13 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from typing import Any
 
 from geoh5py.ui_json.constants import default_ui_json as base_ui_json
 
 import octree_creation_app
 
-defaults = {
+defaults: dict[str, Any] = {
     "version": octree_creation_app.__version__,
     "title": "octree Mesh Creator",
     "geoh5": None,
@@ -130,7 +131,7 @@ default_ui_json.update(
     }
 )
 
-template_dict = {
+template_dict: dict[str, dict] = {
     "object": {
         "groupOptional": True,
         "enabled": False,
