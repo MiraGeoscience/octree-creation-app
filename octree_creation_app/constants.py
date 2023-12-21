@@ -1,18 +1,20 @@
 #  Copyright (c) 2022-2023 Mira Geoscience Ltd.
 #
-#  This file is part of octree_creation_app package.
+#  This file is part of octree-creation-app package.
 #
-#  All rights reserved.
+#  octree-creation-app is distributed under the terms and conditions of the MIT License
+#  (see LICENSE file at the root of this source code package).
 
 from __future__ import annotations
 
 from copy import deepcopy
+from typing import Any
 
 from geoh5py.ui_json.constants import default_ui_json as base_ui_json
 
 import octree_creation_app
 
-defaults = {
+defaults: dict[str, Any] = {
     "version": octree_creation_app.__version__,
     "title": "octree Mesh Creator",
     "geoh5": None,
@@ -129,7 +131,7 @@ default_ui_json.update(
     }
 )
 
-template_dict = {
+template_dict: dict[str, dict] = {
     "object": {
         "groupOptional": True,
         "enabled": False,

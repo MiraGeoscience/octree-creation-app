@@ -1,21 +1,17 @@
 #  Copyright (c) 2023 Mira Geoscience Ltd.
 #
-#  This file is part of octree_creation_app package.
+#  This file is part of octree-creation-app package.
 #
-#  All rights reserved.
-#
+#  octree-creation-app is distributed under the terms and conditions of the MIT License
+#  (see LICENSE file at the root of this source code package).
 
-from geoapps_utils.importing import assets_path
-
-import octree_creation_app
+from octree_creation_app import assets_path
 
 
 def test_assets_directory_exist():
-    assert assets_path(octree_creation_app.ASSETS_DIR).is_dir()
+    assert assets_path().is_dir()
 
 
 def test_uijson_files_exists():
-    assert (assets_path(octree_creation_app.ASSETS_DIR) / "uijson").is_dir()
-    assert list((assets_path(octree_creation_app.ASSETS_DIR) / "uijson").iterdir())[
-        0
-    ].is_file()
+    assert (assets_path() / "uijson").is_dir()
+    assert list((assets_path() / "uijson").iterdir())[0].is_file()

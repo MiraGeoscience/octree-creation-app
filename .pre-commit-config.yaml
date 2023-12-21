@@ -1,7 +1,7 @@
 
 default_language_version:
     python: python3
-exclude: (docs/(conf.py|_ext/)|assets/)
+exclude: (^docs/(conf.py|_ext/)|^octree_creation_app-assets/)
 default_stages: [commit,push]
 fail_fast: false
 
@@ -39,9 +39,9 @@ repos:
     -   id: mypy
         additional_dependencies: [
             types-toml,
+            types-PyYAML,
             tomli # to read config from pyproject.toml
         ]
-        exclude: tests
 -   repo: https://github.com/codingjoe/relint
     rev: 3.1.0
     hooks:
@@ -62,7 +62,7 @@ repos:
         language: python
         types: [text]
         files: (^LICENSE|^README(|-dev).rst|\.py|\.pyi)$
-        exclude: (^\.|\b(docs|assets)/)
+        exclude: (^\.|^docs/)
     -   id: prepare-commit-msg
         stages: [prepare-commit-msg]
         name: Prepare commit message
@@ -77,7 +77,7 @@ repos:
     rev: v2.2.6
     hooks:
     -   id: codespell
-        exclude: (.lock|\.ipynb|^THIRD_PARTY_SOFTWARE\.rst)$
+        exclude: (-lock\.ya?ml|\benvironments/.*\.ya?ml|\.ipynb|^THIRD_PARTY_SOFTWARE\.rst)$
         entry: codespell -I .codespellignore
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0

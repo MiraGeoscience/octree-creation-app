@@ -1,8 +1,9 @@
 #  Copyright (c) 2022-2023 Mira Geoscience Ltd.
 #
-#  This file is part of octree_creation_app package.
+#  This file is part of octree-creation-app package.
 #
-#  All rights reserved.
+#  octree-creation-app is distributed under the terms and conditions of the MIT License
+#  (see LICENSE file at the root of this source code package).
 
 from __future__ import annotations
 
@@ -51,11 +52,10 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
                 for key, form in forms.items():
                     form["group"] = group
                     ui_json[f"{group} {key}"] = form
-                    self._defaults[f"{group} {key}"] = form["value"]  # type: ignore
+                    self._defaults[f"{group} {key}"] = form["value"]
 
             input_file = InputFile(
                 ui_json=ui_json,
-                validations=self.validations,
                 validate=False,
             )
 

@@ -1,11 +1,11 @@
-|coverage| |maintainability| |precommit_ci| |docs| |style| |version| |status| |pyversions|
+|coverage| |maintainability| |precommit_ci| |style| |version| |status| |pyversions|
 
+..
+    .. |docs| image:: https://readthedocs.org/projects/octree-creation-app/badge/
+        :alt: Documentation Status
+        :target: https://octree-creation-app.readthedocs.io/en/latest/?badge=latest
 
-.. |docs| image:: https://readthedocs.org/projects/octree-creation-app/badge/
-    :alt: Documentation Status
-    :target: https://octree-creation-app.readthedocs.io/en/latest/?badge=latest
-
-.. |coverage| image:: https://codecov.io/gh/MiraGeoscience/octree-creation-app/branch/develop/graph/badge.svg
+.. |coverage| image:: https://codecov.io/gh/MiraGeoscience/octree-creation-app/branch/main/graph/badge.svg
     :alt: Code coverage
     :target: https://codecov.io/gh/MiraGeoscience/octree-creation-app
 
@@ -25,26 +25,27 @@
     :alt: Python versions
     :target: https://pypi.python.org/pypi/octree-creation-app/
 
-.. |precommit_ci| image:: https://results.pre-commit.ci/badge/github/MiraGeoscience/octree-creation-app/develop.svg
+.. |precommit_ci| image:: https://results.pre-commit.ci/badge/github/MiraGeoscience/octree-creation-app/main.svg
     :alt: pre-commit.ci status
-    :target: https://results.pre-commit.ci/latest/github/MiraGeoscience/octree-creation-app/develop
+    :target: https://results.pre-commit.ci/latest/github/MiraGeoscience/octree-creation-app/main
 
-.. |maintainability| image:: https://api.codeclimate.com/v1/badges/_token_/maintainability
-   :target: https://codeclimate.com/github/MiraGeoscience/octree-creation-app/maintainability
-   :alt: Maintainability
+.. |maintainability| image:: https://api.codeclimate.com/v1/badges/078c1e4de5e0bd8091c1/maintainability
+    :alt: Maintainability
+    :target: https://codeclimate.com/github/MiraGeoscience/octree-creation-app/maintainability
 
 
 Octree Creation
 ===============
-The **octree-creation-app** library lets the user create an octree mesh object with local refinement based on ``Objects`` stored in a ``geoh5`` file.
+The **octree-creation-app** package lets users create Octree mesh objects with local refinements using the SimPEG.discretize package. The refinements can be performed on any number of ``Objects`` stored in a ``geoh5`` file.
 
 .. contents:: Table of Contents
    :local:
    :depth: 3
 
-Documentation
-^^^^^^^^^^^^^
-`Online documentation <https://octree-creation-app.readthedocs.io/en/latest/>`_
+..
+    Documentation
+    ^^^^^^^^^^^^^
+    `Online documentation <https://octree-creation-app.readthedocs.io/en/latest/>`_
 
 
 Installation
@@ -133,7 +134,28 @@ To configure the development environment and tools, please see `README-dev.rst`_
 
 License
 ^^^^^^^
-# TODO: ADD LICENSE TERMS
+MIT License
+
+Copyright (c) 2023 Mira Geoscience
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 
 Third Party Software
 ^^^^^^^^^^^^^^^^^^^^
