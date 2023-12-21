@@ -311,7 +311,8 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
         mesh_obj = workspace.get_entity("mesh")[0]
         if not isinstance(mesh_obj, Octree):
             pytest.fail("Mesh is None")
-        treemesh = octree_2_treemesh(mesh_obj)  # type: ignore
+        treemesh = octree_2_treemesh(mesh_obj)
+        assert treemesh is not None
 
         ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
             point

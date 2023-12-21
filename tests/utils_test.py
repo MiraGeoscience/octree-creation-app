@@ -242,6 +242,7 @@ def test_octree_2_treemesh():
         mesh.insert_cells([5, 5, 5], mesh.max_level, finalize=True)
         omesh = treemesh_2_octree(workspace, mesh)
         tmesh = octree_2_treemesh(omesh)
+        assert tmesh is not None
 
         np.testing.assert_allclose(tmesh.cell_centers, mesh.cell_centers)
 
@@ -262,6 +263,7 @@ def test_roundtrip_octree_conversion(tmp_path):
         np.testing.assert_allclose(mesh.cell_centers, omesh.centroids)
 
         mesh2 = octree_2_treemesh(omesh)
+        assert mesh2 is not None
 
         np.testing.assert_allclose(mesh.cell_centers, mesh2.cell_centers)
 
@@ -282,5 +284,6 @@ def test_treemesh_2_octree(tmp_path: Path):
         assert omesh.n_cells == mesh.n_cells
 
         tmesh = octree_2_treemesh(omesh)
+        assert tmesh is not None
         np.testing.assert_allclose(tmesh.cell_centers, mesh.cell_centers)
         np.testing.assert_allclose(omesh.centroids, mesh.cell_centers)
