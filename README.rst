@@ -5,7 +5,7 @@
         :alt: Documentation Status
         :target: https://octree-creation-app.readthedocs.io/en/latest/?badge=latest
 
-.. |coverage| image:: https://codecov.io/gh/MiraGeoscience/octree-creation-app/branch/main/graph/badge.svg
+.. |coverage| image:: https://codecov.io/gh/MiraGeoscience/octree-creation-app/graph/badge.svg?token=8DzYB9EWdR
     :alt: Code coverage
     :target: https://codecov.io/gh/MiraGeoscience/octree-creation-app
 
