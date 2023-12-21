@@ -29,9 +29,9 @@
     :alt: pre-commit.ci status
     :target: https://results.pre-commit.ci/latest/github/MiraGeoscience/octree-creation-app/main
 
-.. |maintainability| image:: https://api.codeclimate.com/v1/badges/_token_/maintainability
-   :target: https://codeclimate.com/github/MiraGeoscience/octree-creation-app/maintainability
-   :alt: Maintainability
+.. |maintainability| image:: https://api.codeclimate.com/v1/badges/078c1e4de5e0bd8091c1/maintainability
+    :alt: Maintainability
+    :target: https://codeclimate.com/github/MiraGeoscience/octree-creation-app/maintainability
 
 
 Octree Creation
