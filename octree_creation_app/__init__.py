@@ -1,10 +1,20 @@
 #  Copyright (c) 2022-2023 Mira Geoscience Ltd.
 #
-#  This file is part of octree_creation_app package.
+#  This file is part of octree-creation-app package.
 #
-#  All rights reserved.
+#  octree-creation-app is distributed under the terms and conditions of the MIT License
+#  (see LICENSE file at the root of this source code package).
 
 from __future__ import annotations
 
+from pathlib import Path
+
+from geoapps_utils.importing import assets_path as assets_path_impl
+
 __version__ = "0.1.0-rc.1"
-ASSETS_DIR = __file__
+
+
+def assets_path() -> Path:
+    """Return the path to the assets folder."""
+
+    return assets_path_impl(__file__)
