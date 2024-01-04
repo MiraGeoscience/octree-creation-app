@@ -3,49 +3,57 @@
 Basic usage
 ===========
 
-The main entry point is the ui.json (stored under ``assets``) for the octree-creation application that can be rendered by Geoscience ANALYST.
-The interface has two sections:
+The main entry point is the ui.json (stored under ``assets``) for the octree-creation application that can be rendered
+by Geoscience ANALYST. The interface has two sections:
 
- - :ref:`Core parameters <General Parameters>`
- - :ref:`Optional Parameters <Optional Parameters>`
-
-
-ui.json interface
-~~~~~~~~~~~~~~~~~
-
-The ui.json interface has two sections:
-
-.. _General Parameters:
-
-1. General Parameters
-_____________________
-
-The general parameters control the core parameters that define the position and extent of mesh.
+ - :ref:`Mesh creation parameters <mesh_creation>`
+ - :ref:`Refinement parameters <refinements>`
 
 .. figure:: /images/ui_json.png
     :scale: 40%
 
+From ANALYST Pro
+----------------
 
-- *Core hull extent*: List of objects available to define the core region extent.
-- *Core cell size*:
-    - *Easting (m)*: Smallest cell size along East-West axis, in meters.
-    - *Northing (m)*: Smallest cell size along North-South axis, in meters.
-    - *Vertical (m)*: Smallest cell size along vertical acis, in meters.
-- *Depth Core*: Thickness of the mesh added below the lowest point of the
-- *Minimum Refinement*: Largest octree level allowed after refinement.
-    The equivalent cell dimension =
+At this point, you will have all required packages to run the applications.
+ users can run the application with a **ui.json** file by drag-and-drop:
 
-    .. math::
+.. figure:: /images/getting_started/drag_and_drop.png
+    :align: center
+    :width: 75%
 
-        h \times 2^{level}
+or by Python menu dropdown by placing a **ui.json** file
+in the Python scripts folder.
 
-    where $h$ are the *core cell size*
+**1.**
 
+.. figure:: /images/getting_started/python_scripts_folder.png
+    :align: center
+    :width: 75%
 
-.. _Optional Parameters:
+**2.**
 
-2. Refinement Parameters
-________________________
+.. figure:: /images/getting_started/python_menu_uijson.png
+    :align: center
+    :width: 75%
 
+**3.**
 
-The second tab defines the refinement strategies applied to the mesh.
+.. figure:: /images/getting_started/dropdown_scripts.png
+    :align: center
+    :width: 75%
+
+Either operation will result in the rendering of a ui.json file within the
+Geoscience ANALYST viewport.  To learn about the ui.json interface and how
+to run the application in one of two modes, proceed to the
+:ref:`Basic Usage <usage>` section.
+
+From command line
+-----------------
+
+The application can also be run from the command line.  This is useful for more advanced users that may want to automate
+the mesh creation process, or re-run an existing mesh with different parameters.  To run the application from the command line,
+
+``python -m octree_creation_app.driver input_file.json``
+
+where ``input_file.json`` is the path to the input file.
