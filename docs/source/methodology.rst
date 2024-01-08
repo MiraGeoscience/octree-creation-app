@@ -4,72 +4,111 @@ Methodology
 ===========
 
 This section provides technical details regarding the algorithm used for the
-creation and refinement of octree meshes.
+creation octree meshes. The entire process can be broken down into two main parts:
 
-This section provides algorithmic details about the mesh creation. The entire process can be broken down into three main parts:
+- `General Parameters (Mesh extents) <mesh_creation>`_: Define the outer limits of the mesh and the core cell size.
+- `Optional Parameters (Refinements) <refinement>`_: Refine the mesh based on a set of rules.
 
 .. _mesh_creation:
 
-Mesh creation parameters
-------------------------
+Mesh extents
+------------
 
-The first stage relies on the `discretize.utils.mesh_builder_xyz <http://discretize.simpeg.xyz/en/main/api/generated/discretize.utils.mesh_builder_xyz.html?highlight=xyz#discretize-utils-mesh-builder-xyz>`_
-method to define the outer limits of the mesh.
-
-The general parameters control the core parameters that define the position and extent of mesh.
-
-.. figure:: /images/ui_json.png
-    :scale: 40%
+The general parameters control the core parameters that define the position and extent of mesh. This step relies on the
+`discretize.utils.mesh_builder_xyz <http://discretize.simpeg.xyz/en/main/api/generated/discretize.utils.mesh_builder_xyz.html?highlight=xyz#discretize-utils-mesh-builder-xyz>`_
+method to create the mesh.
 
 
-Core hull extent
-^^^^^^^^^^^^^^^^
-List of objects available to define the core region extent.
+.. figure:: /images/extent_parameters.png
+    :scale: 100%
 
-Core cell size
-^^^^^^^^^^^^^^
-- *Easting (m)*: Smallest cell size along East-West axis, in meters.
-- *Northing (m)*: Smallest cell size along North-South axis, in meters.
-- *Vertical (m)*: Smallest cell size along vertical acis, in meters.
 
-Depth Core
-^^^^^^^^^^
-Thickness of the mesh added below the lowest point of the
+- **Core hull extent**: List of objects available to define the core region extent.
 
-Minimum Refinement
-^^^^^^^^^^^^^^^^^^
-Largest octree level allowed after refinement.
-The equivalent cell dimension =
+- **Core cell size**:
+    - *Easting (m)*: Smallest cell size along East-West axis, in meters.
+    - *Northing (m)*: Smallest cell size along North-South axis, in meters.
+    - *Vertical (m)*: Smallest cell size along vertical acis, in meters.
 
-.. math::
+- **Depth Core**: Thickness of the mesh added below the lowest point of the
 
-    h \times 2^{level}
+- **Minimum Refinement**:
 
-where $h$ are the *core cell size*
+    Largest octree level allowed after refinement.
+    The equivalent cell dimension =
 
-The example below demonstrates this process with the default parameters:
+    .. math::
+
+        h \times 2^{level}
+
+    where *h* is the *core cell size* in a given direction.
+
+Example
+^^^^^^^
+
+The example below demonstrates this process with simple line survey shown below and the following parameters:
 
 .. image:: images/octree_padding_distance.png
-  :width: 400
+  :scale: 100%
   :alt: paddings
 
 
-**Horizontal extent (East-West):**
+Horizontal extent
+#################
 
-    Input: 5600 m (hull) + 2*1000 m (pad) = 7600 m
+    - Input:
+        - 5,600 m (survey hull)
+        - 2 * 1,000 m (padding distance)
 
-    Round: 7600 m / 25 m/cell = 304 cells -> 512 cells
+        **Total: 7,600 m**
 
-    Final: 512 cells * 25 m/cell = 12800 m
+    - Number of cells:
+
+        .. math::
+
+            \frac{7,600 \;m}{25 \; m/cell} = 304 \; cells \\
+
+        **Round up -> 512 cells**
+
+    - Final dimensions:
+
+        512 cells * 25 m/cell = 12,800 m
 
 
-**Vertical extent:**
+Vertical extent
+###############
 
-    Input: 46 m (hull) + 2*1000 m (pad) + 500 (core) m = 2546 m
+    - Input dimensions:
+        - 46 m (survey hull)
+        - 2*1000 m (vertical padding)
+        - 500 m (depth core)
 
-    Round: 2546 m / 25 m/cell = 102 cells -> 128 cells
+        **Total: 2,546 m**
 
-    Final: 128 cells * 25 m/cell = 3,200 m
+    - Number of cells
+        .. math::
+
+            \frac{2546 \; m}{25\; \frac{m}{cell}} = 102\; cells \\
+
+        **Round up -> 128 cells**
+
+    - Final dimensions:
+        .. math::
+
+            128 \; cells * 25 \frac{m}{cell} = 3,200\;m
+
+Minimum refinement
+##################
+
+    - Input:
+        - 25 m (core cell size)
+        - 5 (minimum refinement)
+
+    **Largest cell dimension: 25 m * 2^5 = 800 m**
+
+
+The final mesh expected would be a 512 x 512 x 128 cells mesh, with an extent of 12,800 x 12,800 x 3,200 m. Note that the
+cell size is uniform and equal to the minimum level of 5, as defined in the parameters.
 
 
 .. _refinements:
