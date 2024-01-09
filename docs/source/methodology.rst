@@ -6,40 +6,58 @@ Methodology
 This section provides technical details regarding the algorithm used for the
 creation octree meshes. The entire process can be broken down into two main parts:
 
-- `General Parameters (Mesh extents) <mesh_creation>`_: Define the outer limits of the mesh and the core cell size.
-- `Optional Parameters (Refinements) <refinement>`_: Refine the mesh based on a set of rules.
+- `Creating the base mesh (General Parameters) <mesh_creation>`_ that defines the outer extents and the core cell parameters.
+- `Refinining the grid (Optional Parameters) <refinement>`_ to increase the resolution of the mesh in specific regions based on a set of rules.
 
 .. _mesh_creation:
 
-Mesh extents
-------------
+Creating the base
+-----------------
 
-The general parameters control the core parameters that define the position and extent of mesh. This step relies on the
+This step relies on the
 `discretize.utils.mesh_builder_xyz <http://discretize.simpeg.xyz/en/main/api/generated/discretize.utils.mesh_builder_xyz.html?highlight=xyz#discretize-utils-mesh-builder-xyz>`_
-method to create the mesh.
+method to create the base mesh (single large box). The following general parameters provide controls on the position and
+outer limits of the mesh.
 
 
 .. figure:: /images/extent_parameters.png
-    :scale: 100%
+    :width: 800
 
+- **Core hull extent**:
 
-- **Core hull extent**: List of objects available to define the core region extent.
+    List of objects available in the target ``geoh5`` project. The base mesh will be centered on the
+    selected object and extend beyond its hull.
+
+- **Minimum depth**:
+
+    Thickness of the mesh added below the core region. This is useful to ensure
+    a minimum thickness of the mesh that extends below the lowest point of the input object.
 
 - **Core cell size**:
-    - *Easting (m)*: Smallest cell size along East-West axis, in meters.
-    - *Northing (m)*: Smallest cell size along North-South axis, in meters.
-    - *Vertical (m)*: Smallest cell size along vertical acis, in meters.
 
-- **Depth Core**: Thickness of the mesh added below the lowest point of the
+    - *Easting (m)*: Smallest cell size along X-axis, in meters.
+    - *Northing (m)*: Smallest cell size along Y-axis, in meters.
+    - *Vertical (m)*: Smallest cell size along Z-axis, in meters.
+
+- **Padding distance**:
+
+    - *Horizontal (m)*: Distance to extend the mesh along the XY-plane.
+    - *Vertical (m)*: Distance to extend the mesh above and below the core + minimum depth.
+
+    .. note::
+        Setting the *vertical padding = 0* will place the top of the mesh at the highest elevation of **Core hull extent** object.
+        This is useful for creating a mesh that minimizes the amount of air cells.
+
+.. _mimimum_refinement:
 
 - **Minimum Refinement**:
 
     Largest octree level allowed after refinement.
-    The equivalent cell dimension =
+    The equivalent cell dimension is given by:
 
     .. math::
 
-        h \times 2^{level}
+        h \times 2^{level - 1}
 
     where *h* is the *core cell size* in a given direction.
 
@@ -49,8 +67,8 @@ Example
 The example below demonstrates this process with simple line survey shown below and the following parameters:
 
 .. image:: images/octree_padding_distance.png
-  :scale: 100%
-  :alt: paddings
+    :width: 800
+    :alt: paddings
 
 
 Horizontal extent
@@ -72,7 +90,9 @@ Horizontal extent
 
     - Final dimensions:
 
-        512 cells * 25 m/cell = 12,800 m
+        .. math::
+
+            512\;cells \times 25 \frac{m}{cell} = 12,800\;m
 
 
 Vertical extent
@@ -95,7 +115,7 @@ Vertical extent
     - Final dimensions:
         .. math::
 
-            128 \; cells * 25 \frac{m}{cell} = 3,200\;m
+            128 \; cells \times 25 \frac{m}{cell} = 3,200\;m
 
 Minimum refinement
 ##################
@@ -104,11 +124,15 @@ Minimum refinement
         - 25 m (core cell size)
         - 5 (minimum refinement)
 
-    **Largest cell dimension: 25 m * 2^5 = 800 m**
+    **Largest cell dimension**:
+
+        .. math::
+
+            25\;m \times 2^{(5-1)} = 400 m
 
 
 The final mesh expected would be a 512 x 512 x 128 cells mesh, with an extent of 12,800 x 12,800 x 3,200 m. Note that the
-cell size is uniform and equal to the minimum level of 5, as defined in the parameters.
+cell size is uniform and equal to the minimum level of 5 (400 m cell size), as defined in the parameters.
 
 
 .. _refinements:
@@ -116,48 +140,119 @@ cell size is uniform and equal to the minimum level of 5, as defined in the para
 Refinements
 -----------
 
-Once the extent of the mesh has been defined, the program can proceed with refinement of the mesh.
-The following section describe the different refinement strategies available.
+Once the extent of the mesh has been defined, the user can increase the resolution (add small cells) in specific regions of the mesh
+based on a set of rules. In regions where no refinement is provided, the cell size will double in size until reaching
+the `minimum refinement <minimum_refinement>`_ level. Up to three refinement strategies can be applied to the mesh.
+For every refinement strategy, the user must specify the following parameters:
 
+- **Object**:
+    Geoh5 entity to be used for refinement. The type of the object dictates the method of refinement.
+        - **Points** -> Add concentric shells of cells around each vertices.
+
+            Uses the `refine_tree_from_points <refine_points>`_ method.
+        - **Curve** -> Add concentric cylinders of cells around each segment of the curve.
+
+            Uses the `refine_tree_from_curve <refine_curve>`_ method.
+        - **Surface** -> Refine the mesh on the faces of a triangulated surface in 3D.
+
+            Uses the `refine_tree_from_triangulation <refine_triangulation>`_ method.
+
+- **Levels**:
+    List of integers defining the number of cells requested at each octree level.
+
+    .. math::
+        [1^{st}, 2^{nd}, 3^{rd}, ...]
+
+- [Optional] **Define as horizon**:
+    If checked, the object will be used to define a horizon. The vertices of the object are used to first
+    create a Delaunay surface, which is then used to refine the mesh as layers of cells below the surface.
+    Uses the `refine_tree_from_surface <refine_surface>`_ method.
+
+    - **Maximum distance**:
+        Maximum distance from the object's node to allow refinement.
+        Cells are allowed to expand in size beyond this distance.
+
+.. _refine_points:
 
 Refine from points
-------------------
+^^^^^^^^^^^^^^^^^^
+
+This method refines an octree mesh radially from the vertices of an object. It relies on the ``refine_tree_from_points`` method
 
 .. automethod:: octree_creation_app.driver.OctreeDriver.refine_tree_from_points
 
-This method refines an octree mesh radially from the vertices of an object.
+
+Example
+#######
+
+In the example below, the mesh is refined from the vertices of Points object. The parameters are as follows:
+
 
 .. image:: images/octree_radial.png
   :width: 400
   :alt: radial
 
 
+.. _refine_curve:
+
 Refine from curve
------------------
+^^^^^^^^^^^^^^^^^
+
+This method refines an octree mesh along the segments of a ``Curve`` object, adding cells as concentric cylinders (tubes).
 
 .. automethod:: octree_creation_app.driver.OctreeDriver.refine_tree_from_curve
 
-This method refines an octree mesh along the segments of a curve object.
+Example
+#######
 
+In the example below, the mesh is refined along a closed curve. The parameters are as follows:
+
+
+.. image:: images/octree_radial.png
+  :width: 400
+  :alt: radial
+
+
+.. _refine_surface:
 
 Refine from surface
--------------------
-
-.. automethod:: octree_creation_app.driver.OctreeDriver.refine_tree_from_surface
+^^^^^^^^^^^^^^^^^^^
 
 This method refines an octree mesh along a surface. It is a faster
 implementation then the `Refine from triangulation`_ method, but it assumes the surface
 to be mostly horizontal (z-normal). It is especially useful for refining meshes along topography.
 
+.. automethod:: octree_creation_app.driver.OctreeDriver.refine_tree_from_surface
+
+
+Example
+#######
+
+In the example below, the mesh is refined along horizons defined by the vertices of Points object.
+The parameters are as follows:
+
 .. image:: images/octree_surface.png
   :width: 400
   :alt: surface
 
+.. _refine_triangulation:
+
 
 Refine from triangulation
--------------------------
-
-.. automethod:: octree_creation_app.driver.OctreeDriver.refine_tree_from_triangulation
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The function is used to refine an octree mesh on a triangulated surface in 3D. It is
 especially useful for refining meshes along geological features, such as faults and geological contacts.
+
+
+.. automethod:: octree_creation_app.driver.OctreeDriver.refine_tree_from_triangulation
+
+Example
+#######
+
+In the example below, the mesh is refined from the vertices of Points object. The parameters are as follows:
+
+
+.. image:: images/octree_radial.png
+  :width: 400
+  :alt: radial
