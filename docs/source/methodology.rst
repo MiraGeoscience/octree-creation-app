@@ -174,8 +174,8 @@ For every refinement strategy, the user must specify the following parameters:
 
 .. _refine_points:
 
-Refine from points
-^^^^^^^^^^^^^^^^^^
+Refine by points
+^^^^^^^^^^^^^^^^
 
 This method refines an octree mesh radially from the vertices of an object. It relies on the ``refine_tree_from_points`` method
 
@@ -189,14 +189,17 @@ In the example below, the mesh is refined from the vertices of Points object. Th
 
 
 .. image:: images/octree_radial.png
-  :width: 400
+  :width: 800
   :alt: radial
 
 
+This results in a mesh that has 4 concentric shells of cells at 25 m, followed by 4 cells at 50 m around each vertex.
+Note that the refinement is continuous only at the 2th octree level (50 m) where the refinements overlap.
+
 .. _refine_curve:
 
-Refine from curve
-^^^^^^^^^^^^^^^^^
+Refine by curves
+^^^^^^^^^^^^^^^^
 
 This method refines an octree mesh along the segments of a ``Curve`` object, adding cells as concentric cylinders (tubes).
 
@@ -208,38 +211,17 @@ Example
 In the example below, the mesh is refined along a closed curve. The parameters are as follows:
 
 
-.. image:: images/octree_radial.png
-  :width: 400
+.. image:: images/octree_curve.png
+  :width: 800
   :alt: radial
 
-
-.. _refine_surface:
-
-Refine from surface
-^^^^^^^^^^^^^^^^^^^
-
-This method refines an octree mesh along a surface. It is a faster
-implementation then the `Refine from triangulation`_ method, but it assumes the surface
-to be mostly horizontal (z-normal). It is especially useful for refining meshes along topography.
-
-.. automethod:: octree_creation_app.driver.OctreeDriver.refine_tree_from_surface
-
-
-Example
-#######
-
-In the example below, the mesh is refined along horizons defined by the vertices of Points object.
-The parameters are as follows:
-
-.. image:: images/octree_surface.png
-  :width: 400
-  :alt: surface
+This results in a mesh with 4 concentric cylinders of cells at 25 m, followed by 4 cells at 50 m.
+Note that the refinement is continuous along the segments of the curve.
 
 .. _refine_triangulation:
 
-
-Refine from triangulation
-^^^^^^^^^^^^^^^^^^^^^^^^^
+Refine by surface
+^^^^^^^^^^^^^^^^^
 
 The function is used to refine an octree mesh on a triangulated surface in 3D. It is
 especially useful for refining meshes along geological features, such as faults and geological contacts.
@@ -250,9 +232,37 @@ especially useful for refining meshes along geological features, such as faults 
 Example
 #######
 
-In the example below, the mesh is refined from the vertices of Points object. The parameters are as follows:
+In the example below, the mesh is refined around a spherical shell. The parameters are as follows:
 
 
-.. image:: images/octree_radial.png
-  :width: 400
+.. image:: images/octree_surface.png
+  :width: 800
   :alt: radial
+
+This results in shell of 4 cells at 25 m, surrounded by a shell of 4 cells at 50 m. Note that the
+refinement is continuous along the faces of the triangulated surface.
+
+.. _refine_surface:
+
+Refine by layers
+^^^^^^^^^^^^^^^^
+
+This method refines an octree mesh along a surface layer, or horizon. It is a faster
+implementation then the `Refine by surface <_refine_triangulation>`_ method, but it assumes the surface
+to be mostly horizontal (z-normal only). It is especially useful for refining meshes along topography.
+
+.. automethod:: octree_creation_app.driver.OctreeDriver.refine_tree_from_surface
+
+
+Example
+#######
+
+In the example below, the mesh is refined along horizons defined by the vertices of Points object.
+The parameters are as follows:
+
+.. image:: images/octree_layer.png
+  :width: 800
+  :alt: surface
+
+This results in a mesh that has 4 layers of cells at 25 m, followed by 4 cells at 50 m below the input vertices.
+Note that the refinement follows the change in elevation of the input vertices.
