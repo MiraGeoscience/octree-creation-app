@@ -1,4 +1,4 @@
-#  Copyright (c) 2022-2023 Mira Geoscience Ltd.
+#  Copyright (c) 2024 Mira Geoscience Ltd.
 #
 #  This file is part of octree-creation-app package.
 #
@@ -309,8 +309,9 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
     with workspace.open(mode="r"):
         results = []
         mesh_obj = workspace.get_entity("mesh")[0]
-        if not isinstance(mesh_obj, Octree):
-            pytest.fail("Mesh is None")
+
+        assert isinstance(mesh_obj, Octree)
+
         treemesh = octree_2_treemesh(mesh_obj)
         assert treemesh is not None
 
