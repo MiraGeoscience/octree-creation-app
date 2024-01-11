@@ -153,8 +153,14 @@ Refinements
 -----------
 
 Once the extent of the mesh has been defined, the user can increase the resolution (add small cells) in specific regions of the mesh
-based on a set of rules. In regions where no refinement is provided, the cell size will double in size until reaching
-the `minimum refinement <minimum_refinement>`_ level. Up to three refinement strategies can be applied to the mesh.
+based on a set of rules.
+
+.. figure:: /images/ui_json_refinements.png
+    :width: 800
+
+Up to three refinement strategies can be applied to the mesh. In regions where no refinement is provided, the cell size will double in size until reaching
+the `minimum refinement <minimum_refinement>`_ level.
+
 For every refinement strategy, the user must specify the following parameters:
 
 - **Object**:
@@ -175,10 +181,10 @@ For every refinement strategy, the user must specify the following parameters:
     .. math::
         [1^{st}, 2^{nd}, 3^{rd}, ...]
 
-- [Optional] **Define as horizon**:
-    If checked, the object will be used to define a horizon. The vertices of the object are used to first
-    create a Delaunay surface, which is then used to refine the mesh as layers of cells below the surface.
-    Uses the `refine_tree_from_surface <refine_surface>`_ method.
+- [Optional] **Define as layers**:
+    If checked, the object is used as an horizon with the `refine_tree_from_surface <refine_surface>`_ method.
+    The vertices of the object are converted to a Delaunay surface, which is then used to refine the mesh as
+    layers of cells below the surface.
 
     - **Maximum distance**:
         Maximum distance from the object's node to allow refinement.
