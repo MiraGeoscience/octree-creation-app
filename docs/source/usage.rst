@@ -4,7 +4,6 @@ Basic usage
 ===========
 
 The main entry point is the ``octree_mesh.ui.json`` file (stored under the ``octree_creation_app-assets`` directory).
-
 The ``ui.json`` has the dual purpose of (1) rendering a user-interface from Geoscience ANALYST and (2) storing the input
 parameters chosen by the user for the program to run. To learn more about the ui.json interface visit the
 `UIJson documentation <https://geoh5py.readthedocs.io/en/v0.8.0-rc.1/content/uijson_format/usage.html#usage-with-geoscience-analyst-pro>`_ page.
@@ -30,7 +29,8 @@ The parameters are described further in the :ref:`Methodology <methodology>` sec
 User-interface
 --------------
 
-To execute the application in ANALYST Pro, users can either drag-and-drop the ui.json file to the viewport:
+The user-interface is rendered in ANALYST Pro by one of two methods.
+Users can either drag-and-drop the ui.json file to the viewport:
 
 .. figure:: ./images/drag_drop.gif
         :align: center
