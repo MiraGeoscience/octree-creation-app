@@ -8,23 +8,6 @@ The ``ui.json`` has the dual purpose of (1) rendering a user-interface from Geos
 parameters chosen by the user for the program to run. To learn more about the ui.json interface visit the
 `UIJson documentation <https://geoh5py.readthedocs.io/en/v0.8.0-rc.1/content/uijson_format/usage.html#usage-with-geoscience-analyst-pro>`_ page.
 
-There are two main sections that require inputs from the user:
-
-.. list-table:: **Main components**
-   :widths: 25 25
-   :header-rows: 1
-
-   * - :ref:`Mesh creation (general) <mesh_creation>`
-     - :ref:`Refinements (optional) <refinements>`
-   * - .. figure:: ./images/ui_json_general.png
-            :align: center
-            :width: 300
-     - .. figure:: ./images/ui_json_refinements.png
-            :align: center
-            :width: 300
-
-The parameters are described further in the :ref:`Methodology <methodology>` section.
-
 
 User-interface
 --------------
@@ -44,6 +27,25 @@ Alternatively, users can add the application to the choice list of ANALYST-Pytho
         :width: 800
 
 Note that ANALYST needs to be restarted for the changes to take effect.
+
+There are two main sections that require inputs from the user:
+
+.. list-table:: **Main components**
+   :widths: 25 25
+   :header-rows: 1
+
+   * - :ref:`Mesh creation (general) <mesh_creation>`
+     - :ref:`Refinements (optional) <refinements>`
+   * - .. figure:: ./images/ui_json_general.png
+            :align: center
+            :width: 300
+     - .. figure:: ./images/ui_json_refinements.png
+            :align: center
+            :width: 300
+
+The parameters are described further in the :ref:`Methodology <methodology>` section.
+
+
 
 From command line
 -----------------
