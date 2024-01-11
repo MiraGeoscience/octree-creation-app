@@ -36,9 +36,8 @@ outer limits of the mesh.
 
 - **Core hull extent**:
 
-    List of objects available in the target ``geoh5`` project. The base mesh will be centered on the
-    selected object and fully containing its hull. If the mesh is to be used towards a forward simulation or an inversion,
-    the object would be the survey entity.
+    List of objects available in the target ``geoh5`` project. The base mesh fully contains the hull of the selected object.
+    If the mesh is to be used towards a forward simulation or an inversion, the object would be the survey entity.
 
 - **Minimum depth**:
 
@@ -78,9 +77,15 @@ Example
 
 The example below demonstrates this process with simple line survey shown below and the following parameters:
 
-.. image:: images/octree_padding_distance.png
-    :width: 800
-    :alt: paddings
+.. figure:: images/octree_padding_distance.png
+   :class: with-border
+
+   Section through an octree mesh for parameters used in the example below. The input survey object is shown in red.
+   Distances have been annotated to clarify the dimensions of the input parameters (right) and the resulting mesh (left).
+
+   (Top) Horizontal and (bottom) vertical E-W section through the same mesh.
+
+
 
 
 Horizontal extent
