@@ -30,7 +30,7 @@ Note that ANALYST needs to be restarted for the changes to take effect.
 
 There are two main sections that require inputs from the user:
 
-.. list-table:: **Main components**
+.. list-table::
    :widths: 25 25
    :header-rows: 1
 
