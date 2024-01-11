@@ -9,10 +9,10 @@
         "main": true
     },
     "monitoring_directory": "",
-    "conda_environment": "geoapps",
+    "conda_environment": "octree_creation_app",
     "conda_environment_boolean": false,
     "workspace": "",
-    "version": "0.11.0-alpha.1",
+    "version": "0.1.0",
     "objects": {
         "enabled": true,
         "group": "1- Core",
@@ -86,7 +86,7 @@
     "workspace_geoh5": "",
     "Refinement A object": {
         "groupOptional": true,
-        "enabled": true,
+        "enabled": false,
         "group": "Refinement A",
         "label": "Object",
         "meshType": [
@@ -119,6 +119,82 @@
     "Refinement A distance": {
         "enabled": true,
         "group": "Refinement A",
+        "label": "Distance",
+        "value": ""
+    },
+    "Refinement B object": {
+        "groupOptional": true,
+        "enabled": false,
+        "group": "Refinement B",
+        "label": "Object",
+        "meshType": [
+            "{202c5db1-a56d-4004-9cad-baafd8899406}",
+            "{6a057fdc-b355-11e3-95be-fd84a7ffcb88}",
+            "{f26feba3-aded-494b-b9e9-b2bbcbe298e1}",
+            "{b99bd6e5-4fe1-45a5-bd2f-75fc31f91b38}",
+            "{0b639533-f35b-44d8-92a8-f70ecff3fd26}",
+            "{9b08bb5a-300c-48fe-9007-d206f971ea92}",
+            "{19730589-fd28-4649-9de0-ad47249d9aba}"
+        ],
+        "value": ""
+    },
+    "Refinement B levels": {
+        "enabled": true,
+        "group": "Refinement B",
+        "label": "Levels",
+        "value": ""
+    },
+    "Refinement B type": {
+        "choiceList": [
+            "surface",
+            "radial"
+        ],
+        "enabled": true,
+        "group": "Refinement B",
+        "label": "Type",
+        "value": ""
+    },
+    "Refinement B distance": {
+        "enabled": true,
+        "group": "Refinement B",
+        "label": "Distance",
+        "value": ""
+    },
+    "Refinement C object": {
+        "groupOptional": true,
+        "enabled": false,
+        "group": "Refinement C",
+        "label": "Object",
+        "meshType": [
+            "{202c5db1-a56d-4004-9cad-baafd8899406}",
+            "{6a057fdc-b355-11e3-95be-fd84a7ffcb88}",
+            "{f26feba3-aded-494b-b9e9-b2bbcbe298e1}",
+            "{b99bd6e5-4fe1-45a5-bd2f-75fc31f91b38}",
+            "{0b639533-f35b-44d8-92a8-f70ecff3fd26}",
+            "{9b08bb5a-300c-48fe-9007-d206f971ea92}",
+            "{19730589-fd28-4649-9de0-ad47249d9aba}"
+        ],
+        "value": ""
+    },
+    "Refinement C levels": {
+        "enabled": true,
+        "group": "Refinement C",
+        "label": "Levels",
+        "value": ""
+    },
+    "Refinement C type": {
+        "choiceList": [
+            "surface",
+            "radial"
+        ],
+        "enabled": true,
+        "group": "Refinement C",
+        "label": "Type",
+        "value": ""
+    },
+    "Refinement C distance": {
+        "enabled": true,
+        "group": "Refinement C",
         "label": "Distance",
         "value": ""
     }
