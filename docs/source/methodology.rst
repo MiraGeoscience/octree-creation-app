@@ -212,7 +212,7 @@ In the example below, the mesh is refined from the vertices of Points object. Th
 
 
 This results in a mesh that has 4 concentric shells of cells at 25 m, followed by 4 cells at 50 m around each vertex.
-Note that the refinement is continuous only at the 2th octree level (50 m) where the refinements overlap.
+Note that the refinement is continuous only at the 2nd octree level (50 m) where the refinements overlap.
 
 .. _refine_curve:
 
