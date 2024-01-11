@@ -3,10 +3,21 @@
 Methodology
 ===========
 
-This section provides technical details regarding the algorithm used for the
-creation octree meshes. The entire process can be broken down into two main parts:
+This section provides technical details regarding the algorithm used to create octree meshes.
 
-- `Creating the base mesh (General Parameters) <mesh_creation>`_ that defines the outer extents and the core cell parameters.
+An octree mesh is a discretization of a 3D volume into a set of rectangular cells. The cells are defined by a tree
+structure, where each node has 8 children.
+The tree is grown by splitting each node into 8 children, until a minimum cell size is reached.
+The figure below shows an example of an octree mesh along a cross-section.
+
+.. figure:: /images/octree_grid.png
+    :width: 800
+
+We define cells with the same size as a ``level`` of the tree, where the smallest cell size corresponds to Level 1.
+
+The entire octree creation process can be broken down into two main steps:
+
+- `Creating the base mesh (General Parameters) <mesh_creation>`_ that defines the outer extents, core cell and padding parameters.
 - `Refinining the grid (Optional Parameters) <refinement>`_ to increase the resolution of the mesh in specific regions based on a set of rules.
 
 .. _mesh_creation:
@@ -26,7 +37,8 @@ outer limits of the mesh.
 - **Core hull extent**:
 
     List of objects available in the target ``geoh5`` project. The base mesh will be centered on the
-    selected object and extend beyond its hull.
+    selected object and fully containing its hull. If the mesh is to be used towards a forward simulation or an inversion,
+    the object would be the survey entity.
 
 - **Minimum depth**:
 
