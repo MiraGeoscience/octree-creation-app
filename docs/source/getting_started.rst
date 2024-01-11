@@ -3,7 +3,7 @@
 Getting Started
 ===============
 
-Whether you are developer or an end-user, this page will help you get started with the **octree-creation**.
+Whether you are developer or an end-user, this page will help you get started with the **octree-creation-app**.
 
 .. contents::
 
@@ -78,3 +78,7 @@ If Conda gets installed in a different directory, users will need to add/edit a
 .. figure:: /images/getting_started/Install_start_bat.png
     :align: center
     :width: 75%
+
+
+At this point, you will have all required packages to run the applications.
+See the :ref:`Basic usage <usage>` section for more details.
