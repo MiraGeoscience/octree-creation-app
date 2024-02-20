@@ -71,6 +71,21 @@
         "main": true,
         "value": 500.0
     },
+    "diagonal_balance": {
+        "group": "Basic",
+        "label": "UBC Compatible",
+        "main": true,
+        "value": true
+    },
+    "minimum_level": {
+        "enabled": true,
+        "group": "Basic",
+        "label": "Minimum refinement level",
+        "main": true,
+        "min": 1,
+        "tooltip": "Minimum refinement in padding region: 2**(n-1) x base_cell.",
+        "value": 4
+    },
     "ga_group_name": {
         "enabled": true,
         "group": "",
