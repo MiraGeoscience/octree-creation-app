@@ -45,7 +45,7 @@ The **octree-creation-app** package lets users create Octree mesh objects with l
 ..
     Documentation
     ^^^^^^^^^^^^^
-    `Online documentation <https://octree-creation-app.readthedocs.io/en/latest/>`_
+    `Online documentation <https://mirageoscience-octree-creation-app.readthedocs-hosted.com/en/latest/>`_
 
 
 Installation
