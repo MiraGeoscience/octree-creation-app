@@ -1,9 +1,8 @@
 |coverage| |maintainability| |precommit_ci| |style| |version| |status| |pyversions|
 
-..
-    .. |docs| image:: https://readthedocs.org/projects/octree-creation-app/badge/
-        :alt: Documentation Status
-        :target: https://octree-creation-app.readthedocs.io/en/latest/?badge=latest
+.. |docs| image:: https://readthedocs.org/projects/octree-creation-app/badge/
+    :alt: Documentation Status
+    :target: https://octree-creation-app.readthedocs.io/en/latest/?badge=latest
 
 .. |coverage| image:: https://codecov.io/gh/MiraGeoscience/octree-creation-app/graph/badge.svg?token=8DzYB9EWdR
     :alt: Code coverage
@@ -42,10 +41,10 @@ The **octree-creation-app** package lets users create Octree mesh objects with l
    :local:
    :depth: 3
 
-..
-    Documentation
-    ^^^^^^^^^^^^^
-    `Online documentation <https://mirageoscience-octree-creation-app.readthedocs-hosted.com/en/latest/>`_
+
+Documentation
+^^^^^^^^^^^^^
+`Online documentation <https://mirageoscience-octree-creation-app.readthedocs-hosted.com/en/latest/>`_
 
 
 Installation
