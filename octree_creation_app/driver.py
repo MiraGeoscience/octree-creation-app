@@ -301,26 +301,41 @@ class OctreeDriver(BaseDriver):
         if not isinstance(surface, Surface):
             raise TypeError("Refinement object must be a Surface.")
 
+        if surface.vertices is None or surface.cells is None:
+            raise ValueError("Surface object must have vertices and cells.")
+
         if isinstance(levels, list):
             levels = np.array(levels)
 
-        ind = np.where(np.r_[levels] > 0)[0]
+        vertices = surface.vertices.copy()
+        normals = np.cross(
+            vertices[surface.cells[:, 1], :] - vertices[surface.cells[:, 0], :],
+            vertices[surface.cells[:, 2], :] - vertices[surface.cells[:, 0], :],
+        )
+        average_normals = np.zeros((surface.n_vertices, 3))
 
-        if any(ind):
-            paddings = []
-            for n_cells in levels[ind[0] :]:
-                if n_cells == 0:
-                    continue
+        for vert_ids in surface.cells.T:
+            average_normals[vert_ids, :] += normals
 
-                paddings.append([n_cells] * 3)
+        average_normals /= np.linalg.norm(average_normals, axis=1)[:, None]
 
-            mesh.refine_surface(
-                (surface.vertices, surface.cells),
-                -ind[0] - 1,
-                paddings,
-                diagonal_balance=diagonal_balance,
-                finalize=finalize,
-            )
+        base_cells = np.r_[mesh.h[0][0], mesh.h[1][0], mesh.h[2][0]]
+        for level, n_cells in enumerate(levels):
+            if n_cells == 0:
+                continue
+
+            for _ in range(int(n_cells)):
+                mesh.refine_surface(
+                    (vertices, surface.cells),
+                    level=-level - 1,
+                    diagonal_balance=diagonal_balance,
+                    finalize=False,
+                )
+                vertices -= average_normals * base_cells * 2.0**level
+
+        if finalize:
+            mesh.finalize()
+
         return mesh
 
     @staticmethod
