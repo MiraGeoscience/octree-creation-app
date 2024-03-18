@@ -72,7 +72,7 @@ def test_create_octree_radial(
             "minimum_level": minimum_level,
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree.json", path=tmp_path, validate=False)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
         driver = OctreeDriver(params)
         driver.run()
 
@@ -133,7 +133,7 @@ def test_create_octree_surface(
             "minimum_level": minimum_level,
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree.json", path=tmp_path, validate=False)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
         driver = OctreeDriver(params)
         driver.run()
 
@@ -190,7 +190,7 @@ def test_create_octree_curve(
             "minimum_level": minimum_level,
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree.json", path=tmp_path, validate=False)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
         driver = OctreeDriver(params)
         driver.run()
 
@@ -261,7 +261,7 @@ def test_create_octree_triangulation(
             "minimum_level": minimum_level,
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree.json", path=tmp_path, validate=False)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
         driver = OctreeDriver(params)
         driver.run()
 
@@ -300,7 +300,7 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
         params = OctreeParams(
             **params_dict, diagonal_balance=diagonal_balance, ga_group_name="mesh"
         )
-        filename = "diag_balance.ui.json"
+        filename = "diag_balance.ui"
 
         params.write_input_file(name=filename, path=tmp_path, validate=False)
 

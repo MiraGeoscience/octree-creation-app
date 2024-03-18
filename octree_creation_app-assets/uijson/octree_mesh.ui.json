@@ -1,7 +1,7 @@
 {
     "title": "octree Mesh Creator",
     "geoh5": "",
-    "run_command": "geoapps.octree_creation.driver",
+    "run_command": "octree_creation_app.driver",
     "run_command_boolean": {
         "value": false,
         "label": "Run python module ",
