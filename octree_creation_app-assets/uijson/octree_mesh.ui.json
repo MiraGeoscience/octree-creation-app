@@ -104,23 +104,23 @@
         "enabled": true,
         "group": "Refinement A",
         "label": "Levels",
-        "value": ""
+        "value": "4,4,4"
     },
     "Refinement A type": {
-        "choiceList": [
-            "surface",
-            "radial"
-        ],
-        "enabled": true,
+        "enabled": false,
         "group": "Refinement A",
-        "label": "Type",
-        "value": ""
+        "label": "Use as horizon",
+        "tooltip": "Object vertices are triangulated. Refinement levels are applied as depth layers.",
+        "value": false
     },
     "Refinement A distance": {
-        "enabled": true,
+        "enabled": false,
         "group": "Refinement A",
+        "dependency": "Refinement A type",
+        "dependencyType": "enabled",
         "label": "Distance",
-        "value": ""
+        "tooltip": "Radial horizontal distance to extend the refinement around each vertex.",
+        "value": 1000.0
     },
     "Refinement B object": {
         "groupOptional": true,
@@ -142,23 +142,23 @@
         "enabled": true,
         "group": "Refinement B",
         "label": "Levels",
-        "value": ""
+        "value": "0,0,2"
     },
     "Refinement B type": {
-        "choiceList": [
-            "surface",
-            "radial"
-        ],
-        "enabled": true,
+        "enabled": false,
         "group": "Refinement B",
-        "label": "Type",
-        "value": ""
+        "label": "Use as horizon",
+        "tooltip": "Object vertices are triangulated. Refinement levels are applied as depth layers.",
+        "value": false
     },
     "Refinement B distance": {
-        "enabled": true,
+        "enabled": false,
         "group": "Refinement B",
+        "dependency": "Refinement B type",
+        "dependencyType": "enabled",
         "label": "Distance",
-        "value": ""
+        "tooltip": "Radial horizontal distance to extend the refinement around each vertex.",
+        "value": 1000.0
     },
     "Refinement C object": {
         "groupOptional": true,
@@ -183,19 +183,19 @@
         "value": ""
     },
     "Refinement C type": {
-        "choiceList": [
-            "surface",
-            "radial"
-        ],
-        "enabled": true,
+        "enabled": false,
         "group": "Refinement C",
-        "label": "Type",
-        "value": ""
+        "label": "Use as horizon",
+        "tooltip": "Object vertices are triangulated. Refinement levels are applied as depth layers.",
+        "value": false
     },
     "Refinement C distance": {
-        "enabled": true,
+        "enabled": false,
         "group": "Refinement C",
+        "dependency": "Refinement C type",
+        "dependencyType": "enabled",
         "label": "Distance",
-        "value": ""
+        "tooltip": "Radial horizontal distance to extend the refinement around each vertex.",
+        "value": 1000.0
     }
 }

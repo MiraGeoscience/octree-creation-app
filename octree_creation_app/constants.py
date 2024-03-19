@@ -155,16 +155,21 @@ template_dict: dict[str, dict] = {
         "value": "4, 4, 4",
     },
     "type": {
-        "choiceList": ["surface", "radial"],
         "enabled": False,
         "group": "Refinement A",
-        "label": "Type",
-        "value": "radial",
+        "label": "Use as horizon",
+        "tooltip": "Object vertices are triangulated. Refinement levels are "
+        "applied as depth layers.",
+        "value": False,
     },
     "distance": {
         "enabled": False,
         "group": "Refinement A",
+        "dependency": "Refinement A type",
+        "dependencyType": "enabled",
         "label": "Distance",
+        "tooltip": "Radial horizontal distance to extend the refinement "
+        "around each vertex.",
         "value": 1000.0,
     },
 }

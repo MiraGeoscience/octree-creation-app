@@ -67,7 +67,7 @@ def test_create_octree_radial(
             "diagonal_balance": False,
             "Refinement A object": points.uid,
             "Refinement A levels": refinement,
-            "Refinement A type": "radial",
+            "Refinement A type": False,
             "Refinement B object": None,
             "minimum_level": minimum_level,
         }
@@ -127,7 +127,7 @@ def test_create_octree_surface(
             "diagonal_balance": False,
             "Refinement A object": points,
             "Refinement A levels": refinement,
-            "Refinement A type": "surface",
+            "Refinement A type": True,
             "Refinement A distance": 1000.0,
             "Refinement B object": None,
             "minimum_level": minimum_level,
@@ -185,7 +185,6 @@ def test_create_octree_curve(
             "diagonal_balance": False,
             "Refinement A object": curve,
             "Refinement A levels": refinement,
-            "Refinement A type": "radial",
             "Refinement B object": None,
             "minimum_level": minimum_level,
         }
@@ -256,7 +255,6 @@ def test_create_octree_triangulation(
             "diagonal_balance": False,
             "Refinement A object": sphere,
             "Refinement A levels": refinement,
-            "Refinement A type": "surface",
             "Refinement B object": None,
             "minimum_level": minimum_level,
         }
@@ -293,18 +291,17 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
             "depth_core": 400.0,
             "Refinement A object": points.uid,
             "Refinement A levels": "1",
-            "Refinement A type": "radial",
-            "Refinement A distance": 200,
+            "Refinement A type": False,
         }
 
         params = OctreeParams(
             **params_dict, diagonal_balance=diagonal_balance, ga_group_name="mesh"
         )
-        filename = "diag_balance.ui"
+        filename = "diag_balance.ui.json"
 
         params.write_input_file(name=filename, path=tmp_path, validate=False)
 
-        OctreeDriver.start(tmp_path / filename)
+    OctreeDriver.start(tmp_path / filename)
 
     with workspace.open(mode="r"):
         results = []

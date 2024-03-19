@@ -14,7 +14,7 @@ from discretize import TreeMesh
 from discretize.utils import mesh_builder_xyz
 from geoapps_utils.driver.driver import BaseDriver
 from geoapps_utils.locations import get_locations
-from geoh5py.objects import Curve, ObjectBase, Octree, Surface
+from geoh5py.objects import Curve, ObjectBase, Octree, Points, Surface
 from geoh5py.shared.utils import fetch_active_workspace
 from geoh5py.ui_json import utils
 from scipy import interpolate
@@ -79,7 +79,16 @@ class OctreeDriver(BaseDriver):
 
             print(f"Applying {label} on: {getattr(params, value['object']).name}")
 
-            if isinstance(refinement_object, Curve):
+            if getattr(params, value["type"]):
+                mesh = OctreeDriver.refine_tree_from_surface(
+                    mesh,
+                    refinement_object,
+                    levels,
+                    params.diagonal_balance,
+                    max_distance=getattr(params, value["distance"]),
+                )
+
+            elif isinstance(refinement_object, Curve):
                 mesh = OctreeDriver.refine_tree_from_curve(
                     mesh, refinement_object, levels, params.diagonal_balance
                 )
@@ -89,16 +98,7 @@ class OctreeDriver(BaseDriver):
                     mesh, refinement_object, levels, params.diagonal_balance
                 )
 
-            elif getattr(params, value["type"]) == "surface":
-                mesh = OctreeDriver.refine_tree_from_surface(
-                    mesh,
-                    refinement_object,
-                    levels,
-                    params.diagonal_balance,
-                    max_distance=getattr(params, value["distance"]),
-                )
-
-            elif getattr(params, value["type"]) == "radial":
+            elif isinstance(refinement_object, Points):
                 mesh = OctreeDriver.refine_tree_from_points(
                     mesh,
                     refinement_object,
@@ -108,7 +108,7 @@ class OctreeDriver(BaseDriver):
 
             else:
                 raise NotImplementedError(
-                    f"Refinement type {value['type']} is not implemented."
+                    f"Refinement for object {type(refinement_object)} is not implemented."
                 )
 
         print("Finalizing . . .")
