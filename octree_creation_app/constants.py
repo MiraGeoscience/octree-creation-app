@@ -147,12 +147,16 @@ template_dict: dict[str, dict] = {
             "{19730589-fd28-4649-9de0-ad47249d9aba}",
         ],
         "value": None,
+        "tooltip": "Object used to refine the mesh. Refinement strategy varies "
+        "depending on the object type. See documentation for details.",
     },
     "levels": {
         "enabled": False,
         "group": "Refinement A",
         "label": "Levels",
         "value": "4, 4, 4",
+        "tooltip": "Number of consecutive cells requested at each octree level. "
+        "See documentation for details.",
     },
     "type": {
         "enabled": False,

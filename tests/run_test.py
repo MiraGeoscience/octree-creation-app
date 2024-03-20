@@ -185,6 +185,7 @@ def test_create_octree_curve(
             "diagonal_balance": False,
             "Refinement A object": curve,
             "Refinement A levels": refinement,
+            "Refinement A type": False,
             "Refinement B object": None,
             "minimum_level": minimum_level,
         }
@@ -255,6 +256,7 @@ def test_create_octree_triangulation(
             "diagonal_balance": False,
             "Refinement A object": sphere,
             "Refinement A levels": refinement,
+            "Refinement A type": False,
             "Refinement B object": None,
             "minimum_level": minimum_level,
         }
