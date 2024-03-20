@@ -26,7 +26,6 @@ defaults: dict[str, Any] = {
     "vertical_padding": 1000.0,
     "depth_core": 500.0,
     "ga_group_name": "Octree_Mesh",
-    "generate_sweep": False,
     "run_command": "octree_creation_app.driver",
     "monitoring_directory": None,
     "workspace_geoh5": None,
@@ -125,12 +124,6 @@ default_ui_json.update(
             "label": "Name:",
             "value": "Octree_Mesh",
         },
-        "generate_sweep": {
-            "label": "Generate sweep file",
-            "group": "Python run preferences",
-            "main": True,
-            "value": False,
-        },
         "conda_environment": "geoapps",
         "workspace_geoh5": None,
         "run_command": "octree_creation_app.driver",
@@ -157,15 +150,15 @@ template_dict: dict[str, dict] = {
         "depending on the object type. See documentation for details.",
     },
     "levels": {
-        "enabled": False,
+        "enabled": True,
         "group": "Refinement A",
         "label": "Levels",
         "value": "4, 4, 4",
         "tooltip": "Number of consecutive cells requested at each octree level. "
         "See documentation for details.",
     },
-    "type": {
-        "enabled": False,
+    "horizon": {
+        "enabled": True,
         "group": "Refinement A",
         "label": "Use as horizon",
         "tooltip": "Object vertices are triangulated. Refinement levels are "
@@ -175,7 +168,7 @@ template_dict: dict[str, dict] = {
     "distance": {
         "enabled": False,
         "group": "Refinement A",
-        "dependency": "Refinement A type",
+        "dependency": "horizon",
         "dependencyType": "enabled",
         "label": "Distance",
         "tooltip": "Radial horizontal distance to extend the refinement "

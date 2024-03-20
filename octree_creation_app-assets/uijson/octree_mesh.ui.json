@@ -121,7 +121,7 @@
         "value": "4,4,4",
         "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details."
     },
-    "Refinement A type": {
+    "Refinement A horizon": {
         "enabled": false,
         "group": "Refinement A",
         "label": "Use as horizon",
@@ -131,7 +131,7 @@
     "Refinement A distance": {
         "enabled": false,
         "group": "Refinement A",
-        "dependency": "Refinement A type",
+        "dependency": "Refinement A horizon",
         "dependencyType": "enabled",
         "label": "Distance",
         "tooltip": "Radial horizontal distance to extend the refinement around each vertex.",
@@ -161,7 +161,7 @@
         "value": "0,0,2",
         "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details."
     },
-    "Refinement B type": {
+    "Refinement B horizon": {
         "enabled": false,
         "group": "Refinement B",
         "label": "Use as horizon",
@@ -171,7 +171,7 @@
     "Refinement B distance": {
         "enabled": false,
         "group": "Refinement B",
-        "dependency": "Refinement B type",
+        "dependency": "Refinement B horizon",
         "dependencyType": "enabled",
         "label": "Distance",
         "tooltip": "Radial horizontal distance to extend the refinement around each vertex.",
@@ -201,7 +201,7 @@
         "value": "",
         "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details."
     },
-    "Refinement C type": {
+    "Refinement C horizon": {
         "enabled": false,
         "group": "Refinement C",
         "label": "Use as horizon",
@@ -211,7 +211,7 @@
     "Refinement C distance": {
         "enabled": false,
         "group": "Refinement C",
-        "dependency": "Refinement C type",
+        "dependency": "Refinement C horizon",
         "dependencyType": "enabled",
         "label": "Distance",
         "tooltip": "Radial horizontal distance to extend the refinement around each vertex.",
