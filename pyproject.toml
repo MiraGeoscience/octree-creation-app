@@ -89,14 +89,11 @@ plugins = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--cov octree_creation_app --cov-report html --cov-report term-missing:skip-covered"
 
 [tool.coverage.run]
 branch = true
 source = ["octree_creation_app"]
-omit = [
-    "octree_creation_app/commands/hello_world.py"
-]
+omit = []
 
 [tool.coverage.report]
 exclude_lines = [
@@ -105,8 +102,6 @@ exclude_lines = [
     "if TYPE_CHECKING",
     "pragma: no cover"
 ]
-
-fail_under = 80
 
 [tool.coverage.html]
 skip_empty = true

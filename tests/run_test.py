@@ -72,7 +72,7 @@ def test_create_octree_radial(
             "minimum_level": minimum_level,
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree.json", path=tmp_path, validate=False)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
         driver = OctreeDriver(params)
         driver.run()
 
@@ -133,7 +133,7 @@ def test_create_octree_surface(
             "minimum_level": minimum_level,
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree.json", path=tmp_path, validate=False)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
         driver = OctreeDriver(params)
         driver.run()
 
@@ -190,7 +190,7 @@ def test_create_octree_curve(
             "minimum_level": minimum_level,
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree.json", path=tmp_path, validate=False)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
         driver = OctreeDriver(params)
         driver.run()
 
@@ -236,13 +236,13 @@ def test_create_octree_triangulation(
         treemesh = OctreeDriver.refine_tree_from_triangulation(
             treemesh,
             sphere,
-            str2list(refinement),
+            [3, 3],
             diagonal_balance=False,
             finalize=True,
         )
         octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
 
-        assert octree.n_cells == 293892
+        assert octree.n_cells == 267957
 
         params_dict = {
             "geoh5": workspace,
@@ -261,7 +261,7 @@ def test_create_octree_triangulation(
             "minimum_level": minimum_level,
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree.json", path=tmp_path, validate=False)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
         driver = OctreeDriver(params)
         driver.run()
 

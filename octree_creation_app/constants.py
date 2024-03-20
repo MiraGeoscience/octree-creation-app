@@ -27,7 +27,7 @@ defaults: dict[str, Any] = {
     "depth_core": 500.0,
     "ga_group_name": "Octree_Mesh",
     "generate_sweep": False,
-    "run_command": "geoapps.octree_creation_app.driver",
+    "run_command": "octree_creation_app.driver",
     "monitoring_directory": None,
     "workspace_geoh5": None,
     "conda_environment": "geoapps",
@@ -127,7 +127,7 @@ default_ui_json.update(
         },
         "conda_environment": "geoapps",
         "workspace_geoh5": None,
-        "run_command": "geoapps.octree_creation_app.driver",
+        "run_command": "octree_creation_app.driver",
     }
 )
 
