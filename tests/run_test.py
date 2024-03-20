@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import numpy as np
@@ -342,3 +343,43 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
 
         assert (values == np.array(exp_values)).all()
         assert (counts == np.array(exp_counts)).all()
+
+
+def test_backward_compatible_type(tmp_path):
+    workspace = Workspace.create(tmp_path / "testDiagonalBalance.geoh5")
+    with workspace.open(mode="r+"):
+        points = Points.create(workspace, vertices=np.random.randn(5, 3))
+
+        # Repeat the creation using the app
+        params_dict = {
+            "geoh5": workspace,
+            "objects": str(points.uid),
+            "u_cell_size": 10.0,
+            "v_cell_size": 10.0,
+            "w_cell_size": 10.0,
+            "horizontal_padding": 500.0,
+            "vertical_padding": 200.0,
+            "depth_core": 400.0,
+            "Refinement A object": points.uid,
+            "Refinement A levels": "1",
+            "Refinement A type": False,
+        }
+
+        params = OctreeParams(**params_dict)
+        filename = "old_version.ui.json"
+        params.write_input_file(name=filename, path=tmp_path, validate=False)
+
+    ifile = params.input_file
+    # Mock the old format
+    ifile.ui_json["Refinement A type"]["choiceList"] = ["surface", "radial"]
+    ifile.ui_json["Refinement A type"]["value"] = "surface"
+    ifile.ui_json["Refinement A distance"]["enabled"] = True
+    ifile.ui_json["Refinement A distance"]["value"] = 1.0
+    del ifile.ui_json["Refinement A distance"]["dependency"]
+    del ifile.ui_json["Refinement A distance"]["dependencyType"]
+
+    with open(tmp_path / filename, "w", encoding="utf-8") as file:
+        json.dump(ifile.stringify(ifile.demote(ifile.ui_json)), file, indent=4)
+
+    with pytest.warns(FutureWarning, match="Old refinement format"):
+        OctreeDriver.start(tmp_path / filename)

@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import sys
+import warnings
 
 import numpy as np
 from discretize import TreeMesh
@@ -79,7 +80,19 @@ class OctreeDriver(BaseDriver):
 
             print(f"Applying {label} on: {getattr(params, value['object']).name}")
 
-            if getattr(params, value["type"]):
+            is_horizon = getattr(params, value["type"])
+
+            if isinstance(is_horizon, str):
+                logic = is_horizon == "surface"
+                msg = (
+                    f"Old refinement format {is_horizon} will be deprecated. "
+                    f" Input type {'surface' if logic else 'radial'} will be interpreted as "
+                    f"'As horizon={logic}'."
+                )
+                is_horizon = logic
+                warnings.warn(msg, FutureWarning)
+
+            if is_horizon:
                 mesh = OctreeDriver.refine_tree_from_surface(
                     mesh,
                     refinement_object,
