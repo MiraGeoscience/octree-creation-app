@@ -300,7 +300,7 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
         params = OctreeParams(
             **params_dict, diagonal_balance=diagonal_balance, ga_group_name="mesh"
         )
-        filename = "diag_balance"
+        filename = "diag_balance.ui.json"
 
         params.write_input_file(name=filename, path=tmp_path, validate=False)
 
