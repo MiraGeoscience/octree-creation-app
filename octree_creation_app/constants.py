@@ -83,6 +83,7 @@ default_ui_json.update(
             "label": "Horizontal (m)",
             "main": True,
             "value": 1000.0,
+            "tooltip": "Horizontal distance added around the 'Core hull extent'.",
         },
         "vertical_padding": {
             "enabled": True,
@@ -90,6 +91,8 @@ default_ui_json.update(
             "label": "Vertical (m)",
             "main": True,
             "value": 1000.0,
+            "tooltip": "Vertical distance of the mesh added above and below "
+            "the 'Core hull extent'.",
         },
         "depth_core": {
             "enabled": True,
@@ -97,12 +100,15 @@ default_ui_json.update(
             "label": "Minimum Depth (m)",
             "main": True,
             "value": 500.0,
+            "tooltip": "Depth of the mesh below the core hull extent.",
         },
         "diagonal_balance": {
             "group": "Basic",
-            "label": "UBC Compatible",
+            "label": "Diagonal Balance",
             "main": True,
             "value": True,
+            "tooltip": "Assure single octree level change on corner neighbours. "
+            "Makes a UBC compatible mesh.",
         },
         "minimum_level": {
             "enabled": True,
@@ -110,7 +116,7 @@ default_ui_json.update(
             "label": "Minimum refinement level.",
             "main": True,
             "min": 1,
-            "tooltip": "Minimum refinement in padding region: 2**(n-1) x base_cell.",
+            "tooltip": "Minimum refinement in padding region: 2**(n-1) x 'core cell size'.",
             "value": 4,
         },
         "ga_group_name": {

@@ -1,5 +1,5 @@
 {
-    "title": "octree Mesh Creator",
+    "title": "Octree Mesh Creator",
     "geoh5": "",
     "run_command": "octree_creation_app.driver",
     "run_command_boolean": {
@@ -55,33 +55,46 @@
         "group": "3- Padding distance",
         "label": "Horizontal (m)",
         "main": true,
-        "value": 1000.0
+        "value": 1000.0,
+        "tooltip": "Horizontal distance added around the 'Core hull extent'."
     },
     "vertical_padding": {
         "enabled": true,
         "group": "3- Padding distance",
         "label": "Vertical (m)",
         "main": true,
-        "value": 1000.0
+        "value": 1000.0,
+        "tooltip": "Vertical distance of the mesh added above and below the 'Core hull extent'."
     },
     "depth_core": {
         "enabled": true,
         "group": "1- Core",
         "label": "Minimum Depth (m)",
         "main": true,
-        "value": 500.0
+        "value": 500.0,
+        "tooltip": "Depth of the mesh below the core hull extent."
+    },
+    "diagonal_balance": {
+        "group": "Basic",
+        "label": "Diagonal Balance",
+        "main": true,
+        "value": true,
+        "tooltip": "Assure single octree level change on corner neighbours. UBC compatible mesh."
+    },
+    "minimum_level": {
+        "enabled": true,
+        "group": "Basic",
+        "label": "Minimum refinement level.",
+        "main": true,
+        "min": 1,
+        "tooltip": "Minimum refinement in padding region: 2**(n-1) x base_cell.",
+        "value": 4
     },
     "ga_group_name": {
         "enabled": true,
         "group": "",
         "label": "Name:",
         "value": "Octree_Mesh"
-    },
-    "generate_sweep": {
-        "label": "Generate sweep file",
-        "group": "Python run preferences",
-        "main": true,
-        "value": false
     },
     "workspace_geoh5": "",
     "Refinement A object": {
@@ -98,13 +111,15 @@
             "{9b08bb5a-300c-48fe-9007-d206f971ea92}",
             "{19730589-fd28-4649-9de0-ad47249d9aba}"
         ],
-        "value": ""
+        "value": "",
+        "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details."
     },
     "Refinement A levels": {
         "enabled": true,
         "group": "Refinement A",
         "label": "Levels",
-        "value": "4,4,4"
+        "value": "4,4,4",
+        "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details."
     },
     "Refinement A type": {
         "enabled": false,
@@ -136,13 +151,15 @@
             "{9b08bb5a-300c-48fe-9007-d206f971ea92}",
             "{19730589-fd28-4649-9de0-ad47249d9aba}"
         ],
-        "value": ""
+        "value": "",
+        "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details."
     },
     "Refinement B levels": {
         "enabled": true,
         "group": "Refinement B",
         "label": "Levels",
-        "value": "0,0,2"
+        "value": "0,0,2",
+        "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details."
     },
     "Refinement B type": {
         "enabled": false,
@@ -174,13 +191,15 @@
             "{9b08bb5a-300c-48fe-9007-d206f971ea92}",
             "{19730589-fd28-4649-9de0-ad47249d9aba}"
         ],
-        "value": ""
+        "value": "",
+        "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details."
     },
     "Refinement C levels": {
         "enabled": true,
         "group": "Refinement C",
         "label": "Levels",
-        "value": ""
+        "value": "",
+        "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details."
     },
     "Refinement C type": {
         "enabled": false,
