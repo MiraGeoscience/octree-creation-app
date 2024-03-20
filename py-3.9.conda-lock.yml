@@ -15,8 +15,8 @@
 version: 1
 metadata:
   content_hash:
-    win-64: 85167e8ab057b768322e0f223666a53da231141c3e2b24ee5a992ccc2771a218
-    linux-64: bcafb2c15f06f2e26a0ddfc0feac030c1b6b1e93f70052015e7a4fb02621b94c
+    win-64: ab82ca087221b9b090ced85024b6cd8998e42e171b8cfe58f3181726a50b2e43
+    linux-64: d8d568ccb7ac42308390dd467cae73570fdc77d4c13dd8539d4f8c8cef104535
   channels:
   - url: conda-forge
     used_env_vars: []
@@ -1267,13 +1267,13 @@ package:
     pillow: '>=10.0.1,<11.0.0'
     h5py: '>=3.2.1,<4.0.0'
     numpy: '>=1.23.5,<1.24.0'
-  url: https://github.com/MiraGeoscience/geoh5py/archive/refs/heads/GEOPY-1286.zip
+  url: https://github.com/MiraGeoscience/geoh5py/archive/refs/heads/release/0.9.0.zip
   hash:
     sha256: ''
   category: main
   source:
     type: url
-    url: https://github.com/MiraGeoscience/geoh5py/archive/refs/heads/GEOPY-1286.zip#sha256=
+    url: https://github.com/MiraGeoscience/geoh5py/archive/refs/heads/release/0.9.0.zip#sha256=
   optional: false
 - name: pydantic-core
   version: 2.14.6
@@ -2586,13 +2586,13 @@ package:
     pillow: '>=10.0.1,<11.0.0'
     h5py: '>=3.2.1,<4.0.0'
     numpy: '>=1.23.5,<1.24.0'
-  url: https://github.com/MiraGeoscience/geoh5py/archive/refs/heads/GEOPY-1286.zip
+  url: https://github.com/MiraGeoscience/geoh5py/archive/refs/heads/release/0.9.0.zip
   hash:
     sha256: ''
   category: main
   source:
     type: url
-    url: https://github.com/MiraGeoscience/geoh5py/archive/refs/heads/GEOPY-1286.zip#sha256=
+    url: https://github.com/MiraGeoscience/geoh5py/archive/refs/heads/release/0.9.0.zip#sha256=
   optional: false
 - name: pydantic-core
   version: 2.14.6
