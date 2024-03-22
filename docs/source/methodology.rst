@@ -31,7 +31,7 @@ method to create the base mesh (single large box). The following general paramet
 outer limits of the mesh.
 
 
-.. figure:: /images/extent_parameters.png
+.. figure:: /images/ui_json_general.png
     :width: 800
 
 - **Core hull extent**:
@@ -59,6 +59,28 @@ outer limits of the mesh.
         Setting the *vertical padding = 0* will place the top of the mesh at the highest elevation of **Core hull extent** object.
         This is useful for creating a mesh that minimizes the amount of air cells.
 
+- **Diagonal Balance**:
+
+    If checked, the mesh is refined such that any pair of cells sharing a node can increase in size by at most one octree level.
+    The figure below demonstrates the effect of this option on the refinement of a mesh.
+
+    .. list-table::
+       :widths: 25 25
+       :header-rows: 1
+
+       * - Balanced
+         - Not balanced
+       * - .. figure:: ./images/diag_balanced.png
+                :align: center
+                :width: 300
+         - .. figure:: ./images/no_diag_balanced.png
+                :align: center
+                :width: 300
+
+    Note that the mesh without diagonal balance is allowed to go from octree ``Level 1`` to ``Level 3`` across cells sharing a corner.
+    This would result in overall fewer cells in the mesh but can decrease the accuracy of the forward simulation when
+    solving partial-differential equations. The diagonal balancing is required for compatibility with UBC-GIF software.
+
 .. _mimimum_refinement:
 
 - **Minimum Refinement**:
@@ -70,7 +92,9 @@ outer limits of the mesh.
 
         h \times 2^{level - 1}
 
-    where *h* is the *core cell size* in a given direction.
+    where *h* is the *core cell size* in a given direction. This option is useful to ensure that the mesh does not become too large
+    away from the core region.
+
 
 Example
 ^^^^^^^
@@ -186,8 +210,8 @@ For every refinement strategy, the user must specify the following parameters:
     .. math::
         [1^{st}, 2^{nd}, 3^{rd}, ...]
 
-- [Optional] **Define as layers**:
-    If checked, the object is used as an horizon with the `refine_tree_from_surface <refine_surface>`_ method.
+- [Optional] **Use as horizon**:
+    If checked, the object is used as an horizon with the `refine_tree_from_surface <refine_surface>`_ method instead of the default method.
     The vertices of the object are converted to a Delaunay surface, which is then used to refine the mesh as
     layers of cells below the surface.
 
@@ -267,12 +291,15 @@ refinement is continuous along the faces of the triangulated surface.
 
 .. _refine_surface:
 
-Refine by layers
-^^^^^^^^^^^^^^^^
+Refine as horizon
+^^^^^^^^^^^^^^^^^
 
 This method refines an octree mesh along a surface layer, or horizon. It is a faster
 implementation then the `Refine by surface <_refine_triangulation>`_ method, but it assumes the surface
-to be mostly horizontal (z-normal only). It is especially useful for refining meshes along topography.
+to be mostly horizontal (z-normal only). The surface creation relies on the ``scipy.spatial.Delaunay`` triangulation.
+This strategy is useful for refining the mesh on data collected along topography,
+such as gravity surveys. The additional parameter ``max_distance`` allows to limit the extent of refinement and avoid
+over-refinement in regions where the input points are sparse.
 
 .. automethod:: octree_creation_app.driver.OctreeDriver.refine_tree_from_surface
 
@@ -283,9 +310,10 @@ Example
 In the example below, the mesh is refined along horizons defined by the vertices of Points object.
 The parameters are as follows:
 
-.. image:: images/octree_layer.png
+.. image:: images/octree_layer_max_dist.png
   :width: 800
   :alt: surface
 
 This results in a mesh that has 4 layers of cells at 25 m, followed by 4 cells at 50 m below the input vertices.
-Note that the refinement follows the change in elevation of the input vertices.
+Note that the refinement follows the change in elevation of the input vertices as defined by an underlying Delaunay triangulation.
+Beyond the ``max_distance`` of 30 m, the refinement is allowed to expand in size.

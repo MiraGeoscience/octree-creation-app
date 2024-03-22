@@ -26,7 +26,6 @@ defaults: dict[str, Any] = {
     "vertical_padding": 1000.0,
     "depth_core": 500.0,
     "ga_group_name": "Octree_Mesh",
-    "generate_sweep": False,
     "run_command": "octree_creation_app.driver",
     "monitoring_directory": None,
     "workspace_geoh5": None,
@@ -83,6 +82,7 @@ default_ui_json.update(
             "label": "Horizontal (m)",
             "main": True,
             "value": 1000.0,
+            "tooltip": "Horizontal distance added around the 'Core hull extent'.",
         },
         "vertical_padding": {
             "enabled": True,
@@ -90,6 +90,8 @@ default_ui_json.update(
             "label": "Vertical (m)",
             "main": True,
             "value": 1000.0,
+            "tooltip": "Vertical distance of the mesh added above and below "
+            "the 'Core hull extent'.",
         },
         "depth_core": {
             "enabled": True,
@@ -97,12 +99,15 @@ default_ui_json.update(
             "label": "Minimum Depth (m)",
             "main": True,
             "value": 500.0,
+            "tooltip": "Depth of the mesh below the core hull extent.",
         },
         "diagonal_balance": {
             "group": "Basic",
-            "label": "UBC Compatible",
+            "label": "Diagonal Balance",
             "main": True,
             "value": True,
+            "tooltip": "Assure single octree level change on corner neighbours. "
+            "Makes a UBC compatible mesh.",
         },
         "minimum_level": {
             "enabled": True,
@@ -110,7 +115,7 @@ default_ui_json.update(
             "label": "Minimum refinement level.",
             "main": True,
             "min": 1,
-            "tooltip": "Minimum refinement in padding region: 2**(n-1) x base_cell.",
+            "tooltip": "Minimum refinement in padding region: 2**(n-1) x 'core cell size'.",
             "value": 4,
         },
         "ga_group_name": {
@@ -118,12 +123,6 @@ default_ui_json.update(
             "group": None,
             "label": "Name:",
             "value": "Octree_Mesh",
-        },
-        "generate_sweep": {
-            "label": "Generate sweep file",
-            "group": "Python run preferences",
-            "main": True,
-            "value": False,
         },
         "conda_environment": "geoapps",
         "workspace_geoh5": None,
@@ -147,24 +146,33 @@ template_dict: dict[str, dict] = {
             "{19730589-fd28-4649-9de0-ad47249d9aba}",
         ],
         "value": None,
+        "tooltip": "Object used to refine the mesh. Refinement strategy varies "
+        "depending on the object type. See documentation for details.",
     },
     "levels": {
-        "enabled": False,
+        "enabled": True,
         "group": "Refinement A",
         "label": "Levels",
         "value": "4, 4, 4",
+        "tooltip": "Number of consecutive cells requested at each octree level. "
+        "See documentation for details.",
     },
-    "type": {
-        "choiceList": ["surface", "radial"],
-        "enabled": False,
+    "horizon": {
+        "enabled": True,
         "group": "Refinement A",
-        "label": "Type",
-        "value": "radial",
+        "label": "Use as horizon",
+        "tooltip": "Object vertices are triangulated. Refinement levels are "
+        "applied as depth layers.",
+        "value": False,
     },
     "distance": {
         "enabled": False,
         "group": "Refinement A",
+        "dependency": "horizon",
+        "dependencyType": "enabled",
         "label": "Distance",
+        "tooltip": "Radial horizontal distance to extend the refinement "
+        "around each vertex.",
         "value": 1000.0,
     },
 }

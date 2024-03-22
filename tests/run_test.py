@@ -7,12 +7,14 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import numpy as np
 import pytest
 from geoh5py.objects import Curve, Octree, Points, Surface
 from geoh5py.shared.utils import compare_entities
+from geoh5py.ui_json import InputFile
 from geoh5py.ui_json.utils import str2list
 from geoh5py.workspace import Workspace
 from scipy.spatial import Delaunay
@@ -67,7 +69,7 @@ def test_create_octree_radial(
             "diagonal_balance": False,
             "Refinement A object": points.uid,
             "Refinement A levels": refinement,
-            "Refinement A type": "radial",
+            "Refinement A horizon": False,
             "Refinement B object": None,
             "minimum_level": minimum_level,
         }
@@ -127,7 +129,7 @@ def test_create_octree_surface(
             "diagonal_balance": False,
             "Refinement A object": points,
             "Refinement A levels": refinement,
-            "Refinement A type": "surface",
+            "Refinement A horizon": True,
             "Refinement A distance": 1000.0,
             "Refinement B object": None,
             "minimum_level": minimum_level,
@@ -185,7 +187,7 @@ def test_create_octree_curve(
             "diagonal_balance": False,
             "Refinement A object": curve,
             "Refinement A levels": refinement,
-            "Refinement A type": "radial",
+            "Refinement A horizon": False,
             "Refinement B object": None,
             "minimum_level": minimum_level,
         }
@@ -256,7 +258,7 @@ def test_create_octree_triangulation(
             "diagonal_balance": False,
             "Refinement A object": sphere,
             "Refinement A levels": refinement,
-            "Refinement A type": "surface",
+            "Refinement A horizon": False,
             "Refinement B object": None,
             "minimum_level": minimum_level,
         }
@@ -293,8 +295,7 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
             "depth_core": 400.0,
             "Refinement A object": points.uid,
             "Refinement A levels": "1",
-            "Refinement A type": "radial",
-            "Refinement A distance": 200,
+            "Refinement A horizon": False,
         }
 
         params = OctreeParams(
@@ -304,7 +305,7 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
 
         params.write_input_file(name=filename, path=tmp_path, validate=False)
 
-        OctreeDriver.start(tmp_path / filename)
+    OctreeDriver.start(tmp_path / filename)
 
     with workspace.open(mode="r"):
         results = []
@@ -343,3 +344,54 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
 
         assert (values == np.array(exp_values)).all()
         assert (counts == np.array(exp_counts)).all()
+
+
+def test_backward_compatible_type(tmp_path):
+    workspace = Workspace.create(tmp_path / "testDiagonalBalance.geoh5")
+    with workspace.open(mode="r+"):
+        points = Points.create(workspace, vertices=np.random.randn(5, 3))
+
+        # Repeat the creation using the app
+        params_dict = {
+            "geoh5": workspace,
+            "objects": str(points.uid),
+            "u_cell_size": 10.0,
+            "v_cell_size": 10.0,
+            "w_cell_size": 10.0,
+            "horizontal_padding": 500.0,
+            "vertical_padding": 200.0,
+            "depth_core": 400.0,
+            "Refinement A object": points.uid,
+            "Refinement A levels": "1",
+            "Refinement A horizon": False,
+        }
+
+        params = OctreeParams(**params_dict)
+        filename = "old_version.ui.json"
+        params.write_input_file(name=filename, path=tmp_path, validate=False)
+
+    ifile = params.input_file
+    assert isinstance(ifile, InputFile)
+    assert ifile.ui_json is not None
+
+    # Mock the old format
+    horizon = ifile.ui_json["Refinement A horizon"].copy()
+    horizon["choiceList"] = ["surface", "radial"]
+    horizon["value"] = "surface"
+
+    distance = ifile.ui_json["Refinement A distance"].copy()
+    distance["enabled"] = True
+    distance["value"] = 1.0
+    del distance["dependency"]
+    del distance["dependencyType"]
+    del ifile.ui_json["Refinement A horizon"]
+    del ifile.ui_json["Refinement A distance"]
+
+    ifile.ui_json["Refinement A type"] = horizon
+    ifile.ui_json["Refinement A distance"] = distance
+
+    with open(tmp_path / filename, "w", encoding="utf-8") as file:
+        json.dump(ifile.stringify(ifile.demote(ifile.ui_json)), file, indent=4)
+
+    with pytest.warns(FutureWarning, match="Old refinement format"):
+        OctreeDriver.start(tmp_path / filename)
