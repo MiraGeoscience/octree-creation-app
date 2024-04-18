@@ -98,9 +98,8 @@ def test_create_octree_surface(
 
     with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
         simplices = np.unique(
-            np.random.randint(
-                0, locations.shape[0] - 1,
-                (locations.shape[0], 3)), axis=1
+            np.random.randint(0, locations.shape[0] - 1, (locations.shape[0], 3)),
+            axis=1,
         )
 
         surface = Surface.create(
