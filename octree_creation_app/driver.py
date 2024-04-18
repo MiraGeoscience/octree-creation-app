@@ -250,14 +250,14 @@ class OctreeDriver(BaseDriver):
                 np.arange(surface.extent[0, 0], surface.extent[1, 0], dx),
                 np.arange(surface.extent[0, 1], surface.extent[1, 1], dy),
             )
-            xy = np.c_[cell_center_x.reshape(-1), cell_center_y.reshape(-1)].astype(np.float32)
+            xy = np.c_[cell_center_x.reshape(-1), cell_center_y.reshape(-1)]
 
             # Only keep points within triangulation
             inside = triang.find_simplex(xy) != -1
             r, _ = tree.query(xy)
             keeper = np.logical_and(r < max_distance, inside)
             nnz = keeper.sum()
-            elevation = interp(xy[keeper]) #.copy(order="C"))
+            elevation = interp(xy[keeper])
 
             # Apply vertical padding for current octree level
             for _ in range(int(n_cells)):
