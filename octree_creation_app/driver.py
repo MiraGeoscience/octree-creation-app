@@ -232,9 +232,6 @@ class OctreeDriver(BaseDriver):
         triang = Delaunay(xyz[:, :2])
         tree = cKDTree(xyz[:, :2])
 
-        if isinstance(surface, Surface):
-            triang.simplices = surface.cells
-
         interp = interpolate.LinearNDInterpolator(triang, xyz[:, -1])
         levels = np.array(levels)
 
