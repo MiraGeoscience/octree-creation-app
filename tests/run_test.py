@@ -97,7 +97,18 @@ def test_create_octree_surface(
     ) = setup_test_octree
 
     with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
-        points = Points.create(workspace, vertices=locations)
+        simplices = np.unique(
+            np.random.randint(
+                0, locations.shape[0] - 1,
+                (locations.shape[0], 3)), axis=1
+        )
+
+        surface = Surface.create(
+            workspace,
+            vertices=locations,
+            cells=simplices,
+        )
+
         treemesh.refine(
             treemesh.max_level - minimum_level + 1,
             diagonal_balance=False,
@@ -105,11 +116,12 @@ def test_create_octree_surface(
         )
         treemesh = OctreeDriver.refine_tree_from_surface(
             treemesh,
-            points,
+            surface,
             str2list(refinement),
             diagonal_balance=False,
             finalize=True,
         )
+
         octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
 
         assert octree.n_cells in [
@@ -119,7 +131,7 @@ def test_create_octree_surface(
 
         params_dict = {
             "geoh5": workspace,
-            "objects": points,
+            "objects": surface,
             "u_cell_size": cell_sizes[0],
             "v_cell_size": cell_sizes[1],
             "w_cell_size": cell_sizes[2],
@@ -127,7 +139,7 @@ def test_create_octree_surface(
             "vertical_padding": vertical_padding,
             "depth_core": depth_core,
             "diagonal_balance": False,
-            "Refinement A object": points,
+            "Refinement A object": surface,
             "Refinement A levels": refinement,
             "Refinement A horizon": True,
             "Refinement A distance": 1000.0,
