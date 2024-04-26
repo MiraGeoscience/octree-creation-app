@@ -47,7 +47,7 @@ geoapps-utils = { version = "~0.3.0a3", source = "pypi", allow-prereleases = tru
 ## indirect dependencies, forcing them here for installation through Conda not pip
 #---------------------------------------------------------------------------------
 h5py = "^3.2.1"  # from geoh5py
-Pillow = "^10.0.1"  # from geoh5py
+Pillow = "^10.1.0"  # from geoh5py
 
 ## about pip dependencies
 # to be specified to work with conda-lock
