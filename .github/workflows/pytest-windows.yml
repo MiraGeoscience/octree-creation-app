@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python_ver: ['3.9', '3.10']
+        python_ver: ['3.10']
     defaults:
       run:
         shell: powershell
@@ -53,8 +53,7 @@ jobs:
           init-shell: powershell
           cache-downloads: true
       - name: pytest
-        run: |
-          pytest --cov=${source_dir} --cov-report=xml --cov-branch
+        run: pytest --cov --cov-report=xml
       - name: Codecov
         if: ${{ success() && matrix.python_ver == '3.10' }}
         uses: codecov/codecov-action@v3
