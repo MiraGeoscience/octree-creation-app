@@ -6,6 +6,7 @@ description = "Octree creation app."
 authors = ["Mira Geoscience <support@mirageoscience.com>"]
 repository = "https://github.com/MiraGeoscience/octree-creation-app"
 homepage = "https://mirageoscience-octree-creation-app.readthedocs-hosted.com/en/latest/"
+
 readme = "README.rst"
 
 packages = [
@@ -102,6 +103,7 @@ plugins = [
 ]
 
 [tool.pytest.ini_options]
+#addopts =
 
 [tool.coverage.run]
 branch = true
