@@ -4,8 +4,10 @@ version = "0.1.0-alpha.5"
 license = "MIT"
 description = "Octree creation app."
 authors = ["Mira Geoscience <support@mirageoscience.com>"]
+maintainers = ["Dominique Fournier <dominiquef@mirageoscience.com>"]
 repository = "https://github.com/MiraGeoscience/octree-creation-app"
-homepage = "https://mirageoscience-octree-creation-app.readthedocs-hosted.com/en/latest/"
+documentation  = "https://mirageoscience-octree-creation-app.readthedocs-hosted.com/"
+homepage = "https://www.mirageoscience.com/mining-industry-software/python-integration/"
 
 readme = "README.rst"
 
