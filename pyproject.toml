@@ -61,6 +61,7 @@ geoapps-utils = { version = "~0.3.0rc1", source = "pypi", allow-prereleases = tr
 #---------------------------------------------------------------------------------
 h5py = "^3.2.1"  # from geoh5py
 Pillow = "~10.1.0"  # from geoh5py
+pydantic = "~2.5.2"  # from geoapps-utils
 
 ## about pip dependencies
 # to be specified to work with conda-lock
