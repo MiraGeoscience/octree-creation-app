@@ -453,12 +453,18 @@ def test_refine_complement(    tmp_path: Path, setup_test_octree
         treemesh = octree_2_treemesh(rec_octree)
 
         # center of curve should be refined because of point complement
-        ind = treemesh._get_containing_cell_indexes(np.array([[0.0, 0.0, 0.0]]))
+        ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
+            np.array([[0.0, 0.0, 0.0]])
+        )
         assert all(k == 5 for k in treemesh[ind].h)
         # between curve and point complement should be > base cell size
-        ind = treemesh._get_containing_cell_indexes(np.array([[100.0, 0.0, 0.0]]))
+        ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
+            np.array([[100.0, 0.0, 0.0]])
+        )
         assert all(k == 20 for k in treemesh[ind].h)
         # along curve path should be base cell size
         point = np.mean(locations[1:3, :], axis=0)
-        ind = treemesh._get_containing_cell_indexes(point)
+        ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
+            point
+        )
         assert all(k == 5 for k in treemesh[ind].h)
