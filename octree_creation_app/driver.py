@@ -84,12 +84,10 @@ class OctreeDriver(BaseDriver):
                 levels=levels,
                 horizon=getattr(params, value["horizon"]),
                 distance=getattr(params, value["distance"]),
-                diagonal_balance=params.diagonal_balance
+                diagonal_balance=params.diagonal_balance,
             )
 
             print(f"Applying {label} on: {getattr(params, value['object']).name}")
-
-
 
         print("Finalizing . . .")
         mesh.finalize()

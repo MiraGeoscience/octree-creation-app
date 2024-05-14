@@ -408,7 +408,8 @@ def test_backward_compatible_type(tmp_path):
         OctreeDriver.start(tmp_path / filename)
 
 
-def test_refine_complement(    tmp_path: Path, setup_test_octree
+def test_refine_complement(
+    tmp_path: Path, setup_test_octree
 ):  # pylint: disable=too-many-locals
     (
         cell_sizes,
