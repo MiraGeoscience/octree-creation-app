@@ -406,3 +406,59 @@ def test_backward_compatible_type(tmp_path):
 
     with pytest.warns(FutureWarning, match="Old refinement format"):
         OctreeDriver.start(tmp_path / filename)
+
+
+def test_refine_complement(    tmp_path: Path, setup_test_octree
+):  # pylint: disable=too-many-locals
+    (
+        cell_sizes,
+        depth_core,
+        horizontal_padding,
+        locations,
+        minimum_level,
+        refinement,
+        _,
+        vertical_padding,
+    ) = setup_test_octree
+
+    with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
+
+        points = Points.create(workspace, vertices=np.c_[locations[-1, :]].T)
+        curve = Curve.create(workspace, vertices=locations)
+        curve.remove_cells([-1])
+        curve.complement = points
+
+        params_dict = {
+            "geoh5": workspace,
+            "objects": curve,
+            "u_cell_size": cell_sizes[0],
+            "v_cell_size": cell_sizes[1],
+            "w_cell_size": cell_sizes[2],
+            "horizontal_padding": horizontal_padding,
+            "vertical_padding": vertical_padding,
+            "depth_core": depth_core,
+            "diagonal_balance": False,
+            "Refinement A object": curve.uid,
+            "Refinement A levels": refinement,
+            "Refinement A horizon": False,
+            "Refinement B object": None,
+            "minimum_level": minimum_level,
+        }
+        params = OctreeParams(**params_dict)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        driver = OctreeDriver(params)
+        driver.run()
+
+        rec_octree = workspace.get_entity("Octree_Mesh")[0]
+        treemesh = octree_2_treemesh(rec_octree)
+
+        # center of curve should be refined because of point complement
+        ind = treemesh._get_containing_cell_indexes(np.array([[0.0, 0.0, 0.0]]))
+        assert all(k == 5 for k in treemesh[ind].h)
+        # between curve and point complement should be > base cell size
+        ind = treemesh._get_containing_cell_indexes(np.array([[100.0, 0.0, 0.0]]))
+        assert all(k == 20 for k in treemesh[ind].h)
+        # along curve path should be base cell size
+        point = np.mean(locations[1:3, :], axis=0)
+        ind = treemesh._get_containing_cell_indexes(point)
+        assert all(k == 5 for k in treemesh[ind].h)
