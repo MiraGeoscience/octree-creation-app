@@ -1,4 +1,4 @@
-#  Copyright (c) 2022-2023 Mira Geoscience Ltd.
+#  Copyright (c) 2024 Mira Geoscience Ltd.
 #
 #  This file is part of octree-creation-app package.
 #
@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from warnings import warn
 
 from geoapps_utils.driver.params import BaseParams
 from geoh5py.ui_json import InputFile
@@ -23,7 +24,7 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
     def __init__(self, input_file=None, **kwargs):
         self._default_ui_json = deepcopy(default_ui_json)
         self._defaults = deepcopy(defaults)
-        self._free_parameter_keys = ["object", "levels", "type", "distance"]
+        self._free_parameter_keys = ["object", "levels", "horizon", "distance"]
         self._free_parameter_identifier = "refinement"
         self._objects = None
         self._u_cell_size = None
@@ -51,7 +52,12 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
             for group, forms in free_param_dict.items():
                 for key, form in forms.items():
                     form["group"] = group
+
+                    if "dependency" in form:
+                        form["dependency"] = group + f" {form['dependency']}"
+
                     ui_json[f"{group} {key}"] = form
+
                     self._defaults[f"{group} {key}"] = form["value"]
 
             input_file = InputFile(
@@ -164,3 +170,66 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
     @ga_group_name.setter
     def ga_group_name(self, val):
         self.setter_validator("ga_group_name", val)
+
+    @property
+    def input_file(self) -> InputFile | None:
+        """
+        An InputFile class holding the associated ui_json and validations.
+        """
+        return self._input_file
+
+    @input_file.setter
+    def input_file(self, ifile: InputFile | None):
+        if not isinstance(ifile, (type(None), InputFile)):
+            raise TypeError(
+                f"Value for 'input_file' must be {InputFile} or None. "
+                f"Provided {ifile} of type{type(ifile)}"
+            )
+
+        if ifile is not None:
+            ifile = self.deprecation_update(ifile)
+            self.validator = ifile.validators
+            self.validations = ifile.validations
+
+        self._input_file = ifile
+
+    @classmethod
+    def deprecation_update(cls, ifile: InputFile) -> InputFile:
+        """
+        Update the input file to the latest version of the ui_json.
+        """
+
+        json_dict = {}
+
+        if ifile.ui_json is None or not any("type" in key for key in ifile.ui_json):
+            return ifile
+
+        key_swap = "Refinement horizon"
+        for key, form in ifile.ui_json.items():
+            if "type" in key:
+                key_swap = form["group"] + " horizon"
+                is_horizon = form.get("value")
+                logic = is_horizon == "surface"
+                msg = (
+                    f"Old refinement format 'type'='{is_horizon}' is deprecated. "
+                    f" Input type {'surface' if logic else 'radial'} will be interpreted as "
+                    f"'is_horizon'={logic}."
+                )
+                warn(msg, FutureWarning)
+                json_dict[key_swap] = template_dict["horizon"].copy()
+                json_dict[key_swap]["value"] = logic
+                json_dict[key_swap]["group"] = form["group"]
+
+            elif "distance" in key:
+                json_dict[key] = template_dict["distance"].copy()
+                json_dict[key]["dependency"] = key_swap
+                json_dict[key]["enabled"] = json_dict[key_swap]["value"]
+            else:
+                json_dict[key] = form
+
+        input_file = InputFile(ui_json=json_dict, validate=False)
+
+        if ifile.path is not None and ifile.name is not None:
+            input_file.write_ui_json(name="[Updated]" + ifile.name, path=ifile.path)
+
+        return input_file

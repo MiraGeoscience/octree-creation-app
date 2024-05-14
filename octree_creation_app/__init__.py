@@ -1,4 +1,4 @@
-#  Copyright (c) 2022-2023 Mira Geoscience Ltd.
+#  Copyright (c) 2024 Mira Geoscience Ltd.
 #
 #  This file is part of octree-creation-app package.
 #
@@ -11,7 +11,7 @@ from pathlib import Path
 
 from geoapps_utils.importing import assets_path as assets_path_impl
 
-__version__ = "0.1.0-rc.1"
+__version__ = "0.1.0-rc.2"
 
 
 def assets_path() -> Path:
