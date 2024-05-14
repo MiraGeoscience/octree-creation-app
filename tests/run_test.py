@@ -12,6 +12,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from discretize import TreeMesh
 from geoh5py.objects import Curve, Octree, Points, Surface
 from geoh5py.shared.utils import compare_entities
 from geoh5py.ui_json import InputFile
@@ -408,7 +409,8 @@ def test_backward_compatible_type(tmp_path):
         OctreeDriver.start(tmp_path / filename)
 
 
-def test_refine_complement(    tmp_path: Path, setup_test_octree
+def test_refine_complement(
+    tmp_path: Path, setup_test_octree
 ):  # pylint: disable=too-many-locals
     (
         cell_sizes,
@@ -451,6 +453,7 @@ def test_refine_complement(    tmp_path: Path, setup_test_octree
 
         rec_octree = workspace.get_entity("Octree_Mesh")[0]
         treemesh = octree_2_treemesh(rec_octree)
+        assert isinstance(treemesh, TreeMesh)
 
         # center of curve should be refined because of point complement
         ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
