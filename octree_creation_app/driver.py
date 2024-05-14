@@ -111,7 +111,7 @@ class OctreeDriver(BaseDriver):
                 refinement_object,
                 levels,
                 diagonal_balance,
-                max_distance=distance,
+                max_distance=np.inf if distance is None else distance,
             )
 
         elif isinstance(refinement_object, Curve):
@@ -341,6 +341,9 @@ class OctreeDriver(BaseDriver):
             vertices[surface.cells[:, 1], :] - vertices[surface.cells[:, 0], :],
             vertices[surface.cells[:, 2], :] - vertices[surface.cells[:, 0], :],
         )
+        if surface.n_vertices is None:
+            raise ValueError("Surface object must have n_vertices.")
+
         average_normals = np.zeros((surface.n_vertices, 3))
 
         for vert_ids in surface.cells.T:
