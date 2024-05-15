@@ -92,7 +92,7 @@ class OctreeDriver(BaseDriver):
         print("Finalizing . . .")
         mesh.finalize()
         octree = treemesh_2_octree(params.geoh5, mesh, name=params.ga_group_name)
-
+        print("Done.")
         return octree
 
     @staticmethod
