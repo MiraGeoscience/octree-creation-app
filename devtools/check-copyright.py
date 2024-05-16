@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#  Copyright (c) 2022-2023 Mira Geoscience Ltd.
+#  Copyright (c) 2024 Mira Geoscience Ltd.
 #
 #  This file is part of octree-creation-app package.
 #
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     if len(report_files) > 0:
         for f in report_files:
             sys.stderr.write(f"{f}: No copyright or invalid year\n")
-        exit(1)
+        sys.exit(1)
 
 # readonly CURRENT_YEAR=$(date +"%Y")
 
