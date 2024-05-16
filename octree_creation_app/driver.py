@@ -78,14 +78,18 @@ class OctreeDriver(BaseDriver):
                 continue
             levels = utils.str2list(getattr(params, value["levels"]))
 
-            mesh = OctreeDriver.refine_by_object_type(
-                mesh=mesh,
-                refinement_object=refinement_object,
-                levels=levels,
-                horizon=getattr(params, value["horizon"]),
-                distance=getattr(params, value["distance"]),
-                diagonal_balance=params.diagonal_balance,
-            )
+            objects = [refinement_object]
+            if hasattr(refinement_object, "complement"):
+                objects.append(refinement_object.complement)
+            for obj in objects:
+                mesh = OctreeDriver.refine_by_object_type(
+                    mesh=mesh,
+                    refinement_object=obj,
+                    levels=levels,
+                    horizon=getattr(params, value["horizon"]),
+                    distance=getattr(params, value["distance"]),
+                    diagonal_balance=params.diagonal_balance,
+                )
 
             print(f"Applying {label} on: {getattr(params, value['object']).name}")
 
@@ -135,16 +139,6 @@ class OctreeDriver(BaseDriver):
         else:
             raise NotImplementedError(
                 f"Refinement for object {type(refinement_object)} is not implemented."
-            )
-
-        if hasattr(refinement_object, "complement"):
-            mesh = OctreeDriver.refine_by_object_type(
-                mesh,
-                refinement_object.complement,
-                levels,
-                horizon,
-                distance,
-                diagonal_balance,
             )
 
         return mesh

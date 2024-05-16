@@ -429,6 +429,7 @@ def test_refine_complement(
         curve = Curve.create(workspace, vertices=locations)
         curve.remove_cells([-1])
         curve.complement = points
+        points.complement = curve
 
         params_dict = {
             "geoh5": workspace,
