@@ -7,56 +7,63 @@ Setup for development
    :depth: 2
 
 After you have cloned the Git repository, you will need to:
-    #. create the Conda environment lock files for the dependencies
-    #. create a virtual Conda environment for development, where to install the dependencies
-       of  the project
-    #. execute the tests
-    #. setup Git LFS if needed
-    #. configure the pre-commit hooks for static code analysis and auto-formatting
-    #. configure the Python IDE (PyCharm)
+
+#. create the Conda environment lock files for the dependencies
+#. create a virtual Conda environment for development, where to install the
+   dependencies of the project
+#. execute the tests
+#. setup Git LFS if needed
+#. configure the pre-commit hooks for static code analysis and auto-formatting
+#. configure the Python IDE (PyCharm)
+
+
+.. _conda-lock: https://conda.github.io/conda-lock/
+.. _Poetry: https://python-poetry.org/
+.. _pipx: https://pipxproject.github.io/pipx/
+.. _pre-commit: https://pre-commit.com/
+.. _py-deps-lock: https://github.com/MiraGeoscience/py-deps-lock
+
+
+Create the Conda lock files and environment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Install internal tool ``py-deps-lock`` to create the Conda environment lock files,
+and the local development environment. ``py-deps-lock`` is a wrapper around `conda-lock`_.
+
+See details in the `py-deps-lock`_ documentation.
+
+To install ``py-deps-lock`` with `pipx`_, run the command::
+
+    $ pipx install git+https://github.com/MiraGeoscience/py-deps-lock
+
+
+This expose commands to the execution ``PATH``:
+
+- create-dev-env
+- deps-lock
 
 
 Create the Conda environment lock files
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------------
+First, create the Conda environment lock files (``*.conda.lock.yml``) for the dependencies defined
+in `pyproject.toml`_. From the root of the project, run the command::
 
-First, you need to create the Conda environment lock files (``*.conda.lock.yml``) for the dependencies defined
-in `pyproject.toml`_.
+    $ deps-lock
 
-.. note::
-    As a prerequisite, you need to install some packages in your base Conda environment. To do so,
-    simply execute ``devtools\setup-conda-base.bat``.
-
-Then, to create the Conda environment lock files, execute ``devtools\run_conda_lock.bat``,
-or run from command line::
-
-    $ (base) python devtools/run_conda_lock.py
-
-It will create or update ``.conda.lock.yml`` files in the ``environments`` folder:
+It will create or replace the ``*.conda.lock.yml`` files in the ``environments`` folder:
 one for runtime dependencies, and one for development dependencies (with the ``-dev`` suffix),
-for each combinations of Python versions and platforms.
+for each combinations of Python versions and platforms
+(platforms are specified in ``conda-lock`` section of the ``pyproject.toml``).
 
-The platforms are specified in ``conda-lock`` section of the ``pyproject.toml`` file:
-
-.. code-block:: toml
-
-    [tool.conda-lock]
-    platforms = ['win-64', 'linux-64']
-
-The python versions are specified at the beginning of the ``devtools/run_conda_lock.py`` file:
-
-.. code-block:: python
-
-    _python_versions = ["3.10", "3.9"]
-
-The ``Install_or_Update.bat`` and the ``setup-dev.bat`` will use them to install the environment.
+These files will be used by installation script and to create the development environment.
 
 
 Install the Conda environment
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------
 
-For development, you need a **Conda** environments. you can install it running the ``setup-dev.bat`` or::
+For development, you need a **Conda** environment. From the root of the project, run the command::
 
-    $ [path\to\octree-creation-app]\devtools\setup-dev.bat
+    $ create-dev-env
 
 This command install a local environment at the base of your repository: ``.conda-env``.
 This environment should automatically be recognized by the Conda installation.
@@ -70,13 +77,10 @@ Updating dependencies
 ^^^^^^^^^^^^^^^^^^^^^
 
 Dependencies are listed in `pyproject.toml`_ with version constraints.
-Versions are then locked using ``conda-lock`` as previously described.
+Versions are then locked using ``deps-lock`` as previously described.
 
 Anytime dependencies are added to or removed from the ``pyproject.toml`` file,
-regenerate the Conda environment lock files, using ``devtools\run_conda_lock.bat``,
-or directly from command line::
-
-    (base) $ python devtools/run_conda_lock.py
+regenerate the Conda environment lock files, re-running ``deps-lock`` from command line.
 
 Regenerate the Conda environment lock files as well when you want to fetch newly
 available versions of the dependencies (typically patches, still in accordance with
@@ -85,10 +89,9 @@ the specifications expressed in ``pyproject.toml``).
 
 Adding a dependency
 -------------------
-
 First install the dependency using ``conda``:
 
-    (path/to/.conda-env) $ conda install my_new_dep
+    $ conda install -p ./.conda-env my_new_dep
 
 Then update the list of dependencies in `pyproject.toml`_ with a suited version constraint
 (if for development only, place it under section ``[tool.poetry.group.dev.dependencies]``).
@@ -101,8 +104,7 @@ Do not forget to regenerate the Conda environment lock files.
 
 How to use **Poetry** to update the dependency list (optional)
 --------------------------------------------------------------
-
-`Poetry <https://python-poetry.org/>`_ provides a command line interface to easily add or remove dependencies:
+`Poetry`_ provides a command line interface to easily add or remove dependencies:
 
     (path/to/.conda-env) $ poetry add another_package --lock
 
@@ -111,11 +113,9 @@ Note the ``--lock`` option, that simple creates or updates the lock file, withou
 so that they match the version pinned by ``conda-lock``.
 
 One limitation though: Poetry will look for packages in PiPY only and not in the Conda channels.
-The version selected by Poetry might thus not be aviaible for Conda.
+The version selected by Poetry might thus not be available for Conda.
 
-To install ``Poetry`` on your computer, refer to the `Poetry documentation`_.
-
-.. _Poetry documentation: https://pre-commit.com/
+To install ``Poetry`` on your computer, refer to the `Poetry`_ documentation.
 
 
 Configure the pre-commit hooks
@@ -124,69 +124,57 @@ Configure the pre-commit hooks
 `pre-commit`_ is used to automatically run static code analysis upon commit.
 The list of tools to execute upon commit is configured in the file `.pre-commit-config.yaml`_.
 
-pre-commit can be installed using a Python installation on the system, or one from a Conda environment.
+pre-commit can be installed using a Python installation on the system, or one from a Conda environment,
+or through `pipx`_.
 
-- To install pre-commit using Python (and pip) in your system path:
+- To install ``pre-commit`` using ``pipx`` (recommended)::
 
-..  code-block:: bash
+    $ pipx install pre-commit
 
-    pip install --user pre-commit
+- To install ``pre-commit`` using Python (and pip) in your system path::
 
-- Or to install from an activated Conda environment:
+    $ pip install --user pre-commit
 
-..  code-block:: bash
+- Or to install from an activated Conda environment::
 
-    conda install -c conda-forge pre-commit
+    $ conda install -c conda-forge pre-commit
 
-Then, in either way, install the pre-commit hooks as follow (**current directory is the project folder**):
+Then, in either way, install the pre-commit hooks as follow (**current directory is the project folder**)::
 
-..  code-block:: bash
+    $ pre-commit install
 
-    pre-commit install
+To prepare and check the commit messages, you can also use the following commands::
 
-To prepare and check the commit messages, you can also use the following commands:
-
-.. code-block:: bash
-
-    pre-commit install -t prepare-commit-msg -t commit-msg
+    $ pre-commit install -t prepare-commit-msg -t commit-msg
 
 It configures ``pre-commit`` to prepares and checks the commit ensuring it has a JIRA issue ID:
 if no ID was provided, it extracts it from the branch name;
 if one was provided, it checks it is the same one as in the branch name.
 
-To run pre-commit manually, use the following command:
+To run pre-commit manually, use the following command::
 
-..  code-block:: bash
+    $ pre-commit run --all-files
 
-    pre-commit run --all-files
+To run only on changes staged for commit::
 
-To run only on changes staged for commit:
-
-.. code-block:: bash
-
-    pre-commit run
+    $ pre-commit run
 
 If a tool fails running, it might be caused by an obsolete versions of the tools that pre-commit is
-trying to execute. Try the following command to update them:
+trying to execute. Try the following command to update them::
 
-..  code-block:: bash
-
-    pre-commit autoupdate
+    $ pre-commit autoupdate
 
 Upon every commit, all the pre-commit checks run automatically for you, and reformat files when required. Enjoy...
 
-If you prefer to run pre-commit upon push, and not upon every commit, use the following commands:
+If you prefer to run pre-commit upon push, and not upon every commit, use the following commands::
 
-..  code-block:: bash
-
-    pre-commit uninstall -t pre-commit
-    pre-commit install -t pre-push
-
-.. _pre-commit: https://pre-commit.com/
+    $ pre-commit uninstall -t pre-commit
+    $ pre-commit install -t pre-push
 
 
 Running the tests
 ^^^^^^^^^^^^^^^^^
+
 Test files are placed under the ``tests`` folder. Inside this folder and sub-folders,
 Python test files are to be named with ``_test.py`` as a suffix.
 The test function within this files must have a ``test_`` prefix.
@@ -194,15 +182,12 @@ The test function within this files must have a ``test_`` prefix.
 
 Install pytest
 --------------
-
 .. _pytest: https://docs.pytest.org/
 
 If you installed  your environment through ``setup-dev.bat``, pytest is already installed.
-You can run it from the Conda command (**in your project folder**):
+You can run it from the Conda command (**in your project folder**)::
 
-.. code-block:: bash
-
-    pytest tests
+    $ pytest tests
 
 
 Code coverage with Pytest
@@ -211,11 +196,9 @@ Code coverage with Pytest
 
 If you installed  your environment through ``setup-dev.bat``, `pytest-cov`_ is already installed.
 It allows you to visualize the code coverage of your tests.
-You can run the tests from the console with coverage:
+You can run the tests from the console with coverage::
 
-.. code-block:: bash
-
-    pytest --cov=octree_creation_app --cov-report html tests
+    $ pytest --cov-report html tests
 
 The html report is generated in the folder ``htmlcov`` at the root of the project.
 You can then explore the report by opening ``index.html`` in a browser.
@@ -226,11 +209,9 @@ Git LFS
 In the case your package requires large files, `git-lfs`_ can be used to store those files.
 Copy it from the `git-lfs`_ website, and install it.
 
-Then, in the project folder, run the following command to install git-lfs:
+Then, in the project folder, run the following command to install git-lfs::
 
-.. code-block:: bash
-
-    git lfs install
+    $ git lfs install
 
 
 It will update the file ``.gitattributes`` with the list of files to track.
@@ -239,11 +220,9 @@ Then, add the files and the ``.gitattributes`` to the git repository, and commit
 
 .. _git-lfs: https://git-lfs.com/
 
-Then, add the files to track with git-lfs:
+Then, add the files to track with git-lfs::
 
-.. code-block:: bash
-
-    git lfs track "*.desire_extension"
+    $ git lfs track "*.desire_extension"
 
 
 IDE : PyCharm
@@ -282,7 +261,7 @@ and select the desired environment from the list (the one in the ``.conda-env`` 
         :width: 80%
 
 Then you can check the list of installed packages in the ``Packages`` table. You should see
-**octree-creation-app** and its dependencies. Make sure to turn off the ``Use Conda Package Manager``
+this source package and its dependencies. Make sure to turn off the ``Use Conda Package Manager``
 option to see also the packages installed through pip:
 
     ..  image:: devtools/images/pycharm-list_all_conda_packages.png
@@ -331,7 +310,7 @@ then add the following option in the ``Additional Arguments`` field:
 
 select ``pytest in tests``, and add the following option in the ``Additional Arguments`` field::
 
-    --cov=octree_creation_app --cov-report html
+    --cov-report html
 
 Then, run the tests as usual, and you will get a nice report of the code coverage.
 
@@ -352,11 +331,6 @@ Here is a suggestion for some plugins you can install in PyCharm.
 
 .. _pyproject.toml: pyproject.toml
 .. _.pre-commit-config.yaml: .pre-commit-config.yaml
-
-
-License
-^^^^^^^
-# TODO: ADD LICENSE TERMS
 
 
 Copyright
