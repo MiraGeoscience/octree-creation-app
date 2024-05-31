@@ -72,50 +72,76 @@ class OctreeDriver(BaseDriver):
         )
 
         for label, value in params.free_parameter_dict.items():
+
             refinement_object = getattr(params, value["object"])
-            levels = utils.str2list(getattr(params, value["levels"]))
             if not isinstance(refinement_object, ObjectBase):
                 continue
+            levels = utils.str2list(getattr(params, value["levels"]))
 
-            print(f"Applying {label} on: {getattr(params, value['object']).name}")
-
-            if getattr(params, value["horizon"]):
-                mesh = OctreeDriver.refine_tree_from_surface(
-                    mesh,
-                    refinement_object,
-                    levels,
-                    params.diagonal_balance,
-                    max_distance=getattr(params, value["distance"]),
-                )
-
-            elif isinstance(refinement_object, Curve):
-                mesh = OctreeDriver.refine_tree_from_curve(
-                    mesh, refinement_object, levels, params.diagonal_balance
-                )
-
-            elif isinstance(refinement_object, Surface):
-                mesh = OctreeDriver.refine_tree_from_triangulation(
-                    mesh, refinement_object, levels, params.diagonal_balance
-                )
-
-            elif isinstance(refinement_object, Points):
-                mesh = OctreeDriver.refine_tree_from_points(
-                    mesh,
-                    refinement_object,
-                    levels,
+            objects = [refinement_object]
+            if hasattr(refinement_object, "complement"):
+                objects.append(refinement_object.complement)
+            for obj in objects:
+                mesh = OctreeDriver.refine_by_object_type(
+                    mesh=mesh,
+                    refinement_object=obj,
+                    levels=levels,
+                    horizon=getattr(params, value["horizon"]),
+                    distance=getattr(params, value["distance"]),
                     diagonal_balance=params.diagonal_balance,
                 )
 
-            else:
-                raise NotImplementedError(
-                    f"Refinement for object {type(refinement_object)} is not implemented."
-                )
+            print(f"Applying {label} on: {getattr(params, value['object']).name}")
 
         print("Finalizing . . .")
         mesh.finalize()
         octree = treemesh_2_octree(params.geoh5, mesh, name=params.ga_group_name)
-
+        print("Done.")
         return octree
+
+    @staticmethod
+    def refine_by_object_type(
+        mesh: TreeMesh,
+        refinement_object: ObjectBase,
+        levels: list[int],
+        horizon: bool,
+        distance: float | None,
+        diagonal_balance: bool,
+    ) -> TreeMesh:
+        """Refine Treemesh as a based on object type."""
+        if horizon:
+            mesh = OctreeDriver.refine_tree_from_surface(
+                mesh,
+                refinement_object,
+                levels,
+                diagonal_balance,
+                max_distance=np.inf if distance is None else distance,
+            )
+
+        elif isinstance(refinement_object, Curve):
+            mesh = OctreeDriver.refine_tree_from_curve(
+                mesh, refinement_object, levels, diagonal_balance
+            )
+
+        elif isinstance(refinement_object, Surface):
+            mesh = OctreeDriver.refine_tree_from_triangulation(
+                mesh, refinement_object, levels, diagonal_balance
+            )
+
+        elif isinstance(refinement_object, Points):
+            mesh = OctreeDriver.refine_tree_from_points(
+                mesh,
+                refinement_object,
+                levels,
+                diagonal_balance=diagonal_balance,
+            )
+
+        else:
+            raise NotImplementedError(
+                f"Refinement for object {type(refinement_object)} is not implemented."
+            )
+
+        return mesh
 
     @staticmethod
     def refine_tree_from_curve(
@@ -309,6 +335,9 @@ class OctreeDriver(BaseDriver):
             vertices[surface.cells[:, 1], :] - vertices[surface.cells[:, 0], :],
             vertices[surface.cells[:, 2], :] - vertices[surface.cells[:, 0], :],
         )
+        if surface.n_vertices is None:
+            raise ValueError("Surface object must have n_vertices.")
+
         average_normals = np.zeros((surface.n_vertices, 3))
 
         for vert_ids in surface.cells.T:

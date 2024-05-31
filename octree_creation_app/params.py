@@ -13,7 +13,15 @@ from warnings import warn
 from geoapps_utils.driver.params import BaseParams
 from geoh5py.ui_json import InputFile
 
-from .constants import default_ui_json, defaults, template_dict
+from octree_creation_app import assets_path
+
+from .constants import template_dict
+
+defaults_ifile = InputFile.read_ui_json(
+    assets_path() / "uijson/octree_mesh.ui.json", validate=False
+)
+default_ui_json = defaults_ifile.ui_json
+defaults = defaults_ifile.data
 
 
 class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
@@ -22,6 +30,7 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
     """
 
     def __init__(self, input_file=None, **kwargs):
+
         self._default_ui_json = deepcopy(default_ui_json)
         self._defaults = deepcopy(defaults)
         self._free_parameter_keys = ["object", "levels", "horizon", "distance"]

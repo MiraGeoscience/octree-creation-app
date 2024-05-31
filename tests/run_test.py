@@ -12,6 +12,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+from discretize import TreeMesh
 from geoh5py.objects import Curve, Octree, Points, Surface
 from geoh5py.shared.utils import compare_entities
 from geoh5py.ui_json import InputFile
@@ -398,11 +399,83 @@ def test_backward_compatible_type(tmp_path):
     del ifile.ui_json["Refinement A horizon"]
     del ifile.ui_json["Refinement A distance"]
 
-    ifile.ui_json["Refinement A type"] = horizon
-    ifile.ui_json["Refinement A distance"] = distance
+    ui_json = {}
+    for key, value in ifile.ui_json.items():
+        if key == "Refinement A levels":
+            ui_json[key] = value
+            ui_json["Refinement A type"] = horizon
+            ui_json["Refinement A distance"] = distance
+        else:
+            ui_json[key] = value
+    ifile.ui_json = ui_json
 
     with open(tmp_path / filename, "w", encoding="utf-8") as file:
         json.dump(ifile.stringify(ifile.demote(ifile.ui_json)), file, indent=4)
 
     with pytest.warns(FutureWarning, match="Old refinement format"):
         OctreeDriver.start(tmp_path / filename)
+
+
+def test_refine_complement(
+    tmp_path: Path, setup_test_octree
+):  # pylint: disable=too-many-locals
+    (
+        cell_sizes,
+        depth_core,
+        horizontal_padding,
+        locations,
+        minimum_level,
+        refinement,
+        _,
+        vertical_padding,
+    ) = setup_test_octree
+
+    with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
+
+        points = Points.create(workspace, vertices=np.c_[locations[-1, :]].T)
+        curve = Curve.create(workspace, vertices=locations)
+        curve.remove_cells([-1])
+        curve.complement = points
+        points.complement = curve
+
+        params_dict = {
+            "geoh5": workspace,
+            "objects": curve,
+            "u_cell_size": cell_sizes[0],
+            "v_cell_size": cell_sizes[1],
+            "w_cell_size": cell_sizes[2],
+            "horizontal_padding": horizontal_padding,
+            "vertical_padding": vertical_padding,
+            "depth_core": depth_core,
+            "diagonal_balance": False,
+            "Refinement A object": curve.uid,
+            "Refinement A levels": refinement,
+            "Refinement A horizon": False,
+            "Refinement B object": None,
+            "minimum_level": minimum_level,
+        }
+        params = OctreeParams(**params_dict)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        driver = OctreeDriver(params)
+        driver.run()
+
+        rec_octree = workspace.get_entity("Octree_Mesh")[0]
+        treemesh = octree_2_treemesh(rec_octree)
+        assert isinstance(treemesh, TreeMesh)
+
+        # center of curve should be refined because of point complement
+        ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
+            np.array([[0.0, 0.0, 0.0]])
+        )
+        assert all(k == 5 for k in treemesh[ind].h)
+        # between curve and point complement should be > base cell size
+        ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
+            np.array([[100.0, 0.0, 0.0]])
+        )
+        assert all(k == 20 for k in treemesh[ind].h)
+        # along curve path should be base cell size
+        point = np.mean(locations[1:3, :], axis=0)
+        ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
+            point
+        )
+        assert all(k == 5 for k in treemesh[ind].h)
