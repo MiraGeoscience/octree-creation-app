@@ -399,8 +399,15 @@ def test_backward_compatible_type(tmp_path):
     del ifile.ui_json["Refinement A horizon"]
     del ifile.ui_json["Refinement A distance"]
 
-    ifile.ui_json["Refinement A type"] = horizon
-    ifile.ui_json["Refinement A distance"] = distance
+    ui_json = {}
+    for key, value in ifile.ui_json.items():
+        if key == "Refinement A levels":
+            ui_json[key] = value
+            ui_json["Refinement A type"] = horizon
+            ui_json["Refinement A distance"] = distance
+        else:
+            ui_json[key] = value
+    ifile.ui_json = ui_json
 
     with open(tmp_path / filename, "w", encoding="utf-8") as file:
         json.dump(ifile.stringify(ifile.demote(ifile.ui_json)), file, indent=4)
