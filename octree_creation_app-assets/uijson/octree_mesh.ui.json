@@ -13,7 +13,6 @@
         "main": true
     },
     "conda_environment_boolean": false,
-    "workspace": "",
     "objects": {
         "enabled": true,
         "group": "1- Core",
