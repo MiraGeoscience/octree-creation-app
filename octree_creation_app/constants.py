@@ -25,7 +25,7 @@ template_dict: dict[str, dict] = {
             "{a81c6b0a-f290-4bc8-b72d-60e59964bfe8}",
             "{41018a45-01a0-4c61-a7cb-9f32d8159df4}",
             "{deebe11a-b57b-4a03-99d6-8f27b25eb2a8}",
-            "{275ecee9-9c24-4378-bf94-65f3c5fbe163}"
+            "{275ecee9-9c24-4378-bf94-65f3c5fbe163}",
         ],
         "value": None,
         "tooltip": "Object used to refine the mesh. Refinement strategy varies "
