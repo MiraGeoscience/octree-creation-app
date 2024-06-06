@@ -56,7 +56,8 @@ jobs:
         run: pytest --cov --cov-report=xml
       - name: Codecov
         if: ${{ success() && matrix.python_ver == '3.10' }}
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           name: GitHub
-          token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
