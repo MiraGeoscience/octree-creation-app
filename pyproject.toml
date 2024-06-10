@@ -60,7 +60,7 @@ geoapps-utils = { url = "https://github.com/MiraGeoscience/geoapps-utils/archive
 ## indirect dependencies, forcing them here for installation through Conda not pip
 #---------------------------------------------------------------------------------
 h5py = "^3.2.1"  # from geoh5py
-Pillow = "~10.1.0"  # from geoh5py
+Pillow = "~10.3.0"  # from geoh5py
 pydantic = "~2.5.2"  # from geoapps-utils
 
 ## about pip dependencies
