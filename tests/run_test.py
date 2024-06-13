@@ -13,7 +13,14 @@ from pathlib import Path
 import numpy as np
 import pytest
 from discretize import TreeMesh
-from geoh5py.objects import Curve, Octree, Points, Surface
+from geoh5py.objects import (
+    CurrentElectrode,
+    Curve,
+    Octree,
+    Points,
+    PotentialElectrode,
+    Surface,
+)
 from geoh5py.shared.utils import compare_entities
 from geoh5py.ui_json import InputFile
 from geoh5py.ui_json.utils import str2list
@@ -210,6 +217,118 @@ def test_create_octree_curve(
 
         results = driver.params.geoh5.get_entity("Octree_Mesh")
         compare_entities(results[0], results[1], ignore=["_uid"])
+
+
+def test_create_octree_empty_curve(
+    tmp_path: Path, setup_test_octree
+):  # pylint: disable=too-many-locals
+    (
+        cell_sizes,
+        depth_core,
+        horizontal_padding,
+        locations,
+        _,
+        refinement,
+        _,
+        vertical_padding,
+    ) = setup_test_octree
+
+    with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
+        # Create sources along line
+        extent = Points.create(workspace, vertices=locations)
+        curve = Curve.create(workspace)
+        params_dict = {
+            "geoh5": workspace,
+            "objects": extent,
+            "u_cell_size": cell_sizes[0],
+            "v_cell_size": cell_sizes[1],
+            "w_cell_size": cell_sizes[2],
+            "horizontal_padding": horizontal_padding,
+            "vertical_padding": vertical_padding,
+            "depth_core": depth_core,
+            "diagonal_balance": False,
+            "Refinement A object": curve,
+            "Refinement A levels": refinement,
+            "Refinement A horizon": False,
+            "Refinement B object": None,
+            "minimum_level": 10,
+        }
+        params = OctreeParams(**params_dict)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        driver = OctreeDriver(params)
+        driver.run()
+
+        results = driver.params.geoh5.get_entity("Octree_Mesh")[0]
+        assert isinstance(results, Octree)
+        assert results.n_cells == 4
+
+
+def test_create_octree_dipoles(
+    tmp_path: Path, setup_test_octree
+):  # pylint: disable=too-many-locals
+    (
+        cell_sizes,
+        depth_core,
+        horizontal_padding,
+        _,
+        minimum_level,
+        refinement,
+        _,
+        vertical_padding,
+    ) = setup_test_octree
+
+    n_data = 12
+    with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
+        # Create sources along line
+        x_loc, y_loc = np.meshgrid(np.arange(n_data), np.arange(-1, 3))
+        vertices = np.c_[x_loc.ravel(), y_loc.ravel(), np.zeros_like(x_loc).ravel()]
+        parts = np.kron(np.arange(4), np.ones(n_data)).astype("int")
+        currents = CurrentElectrode.create(workspace, vertices=vertices, parts=parts)
+        currents.add_default_ab_cell_id()
+        potentials = PotentialElectrode.create(workspace, vertices=vertices)
+        n_dipoles = 9
+        dipoles = []
+        current_id = []
+        for val in currents.ab_cell_id.values:
+            cell_id = int(currents.ab_map[val]) - 1
+
+            for dipole in range(n_dipoles):
+                dipole_ids = currents.cells[cell_id, :] + 2 + dipole
+
+                if (
+                    any(dipole_ids > (potentials.n_vertices - 1))
+                    or len(np.unique(parts[dipole_ids])) > 1
+                ):
+                    continue
+
+                dipoles += [dipole_ids]
+                current_id += [val]
+
+        potentials.cells = np.vstack(dipoles).astype("uint32")
+        potentials.ab_cell_id = np.hstack(current_id).astype("int32")
+
+        params_dict = {
+            "geoh5": workspace,
+            "objects": potentials,
+            "u_cell_size": cell_sizes[0],
+            "v_cell_size": cell_sizes[1],
+            "w_cell_size": cell_sizes[2],
+            "horizontal_padding": horizontal_padding,
+            "vertical_padding": vertical_padding,
+            "depth_core": depth_core,
+            "diagonal_balance": False,
+            "Refinement A object": potentials,
+            "Refinement A levels": refinement,
+            "Refinement A horizon": False,
+            "Refinement B object": None,
+            "minimum_level": minimum_level,
+        }
+        params = OctreeParams(**params_dict)
+        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        driver = OctreeDriver(params)
+        driver.run()
+
+        assert driver.params.geoh5.get_entity("Octree_Mesh")[0]
 
 
 def test_create_octree_triangulation(
