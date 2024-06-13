@@ -61,13 +61,15 @@ def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
         if isinstance(mesh, Octree) and mesh.octree_cells is not None:
             centers = mesh.centroids
             levels = treemesh.max_level - np.log2(mesh.octree_cells["NCells"])
-        elif isinstance(mesh, TreeMesh):
+        elif isinstance(mesh, TreeMesh) and mesh.cell_centers is not None:
             centers = mesh.cell_centers
             levels = (
                 treemesh.max_level
                 - mesh.max_level
                 + mesh.cell_levels_by_index(np.arange(mesh.nC))
             )
+        else:
+            raise TypeError(f"All meshes must be Octree or TreeMesh, not {type(mesh)}")
 
         treemesh.insert_cells(centers, levels, finalize=False)
 
@@ -86,10 +88,17 @@ def collocate_octrees(global_mesh: Octree, local_meshes: list[Octree]):
     attributes = get_octree_attributes(global_mesh)
     cell_size = attributes["cell_size"]
 
-    if global_mesh.octree_cells is not None:
-        u_grid = global_mesh.octree_cells["I"] * global_mesh.u_cell_size
-        v_grid = global_mesh.octree_cells["J"] * global_mesh.v_cell_size
-        w_grid = global_mesh.octree_cells["K"] * global_mesh.w_cell_size
+    if (
+        global_mesh.octree_cells is None
+        or global_mesh.u_cell_size is None
+        or global_mesh.v_cell_size is None
+        or global_mesh.w_cell_size is None
+    ):
+        raise ValueError("Global mesh must have octree cells defined.")
+
+    u_grid = global_mesh.octree_cells["I"] * global_mesh.u_cell_size
+    v_grid = global_mesh.octree_cells["J"] * global_mesh.v_cell_size
+    w_grid = global_mesh.octree_cells["K"] * global_mesh.w_cell_size
 
     xyz = np.c_[u_grid, v_grid, w_grid] + attributes["origin"]
     tree = cKDTree(xyz)
