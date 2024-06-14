@@ -69,7 +69,10 @@ def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
                 + mesh.cell_levels_by_index(np.arange(mesh.nC))
             )
         else:
-            raise TypeError(f"All meshes must be Octree or TreeMesh, not {type(mesh)}")
+            raise TypeError(
+                f"All meshes must be Octree or TreeMesh, not {type(mesh)} "
+                "and must have octree cells defined."
+            )
 
         treemesh.insert_cells(centers, levels, finalize=False)
 
