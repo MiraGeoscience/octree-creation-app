@@ -15,6 +15,7 @@ from discretize.utils import mesh_builder_xyz
 from geoapps_utils.driver.driver import BaseDriver
 from geoapps_utils.locations import get_locations
 from geoh5py.objects import Curve, ObjectBase, Octree, Points, Surface
+from geoh5py.objects.surveys.direct_current import BaseElectrode
 from geoh5py.shared.utils import fetch_active_workspace
 from geoh5py.ui_json import utils
 from scipy import interpolate
@@ -167,10 +168,17 @@ class OctreeDriver(BaseDriver):
         if not isinstance(curve, Curve):
             raise TypeError("Refinement object must be a Curve.")
 
+        if curve.vertices is None:
+            return mesh
+
         if isinstance(levels, list):
             levels = np.array(levels)
 
-        locations = densify_curve(curve, mesh.h[0][0])
+        if isinstance(curve, BaseElectrode):
+            locations = curve.vertices
+        else:
+            locations = densify_curve(curve, mesh.h[0][0])
+
         mesh = OctreeDriver.refine_tree_from_points(
             mesh, locations, levels, diagonal_balance=diagonal_balance, finalize=False
         )
