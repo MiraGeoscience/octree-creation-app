@@ -11,7 +11,7 @@ from pathlib import Path
 
 from geoapps_utils.importing import assets_path as assets_path_impl
 
-__version__ = "0.1.0-rc.3"
+__version__ = "0.1.0"
 
 
 def assets_path() -> Path:
