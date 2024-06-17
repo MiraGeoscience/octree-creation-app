@@ -140,6 +140,10 @@ def densify_curve(curve: Curve, increment: float) -> np.ndarray:
         if curve.cells is not None and curve.vertices is not None:
             logic = curve.parts == part
             cells = curve.cells[np.all(logic[curve.cells], axis=1)]
+
+            if len(cells) == 0:
+                continue
+
             vert_ind = np.r_[cells[:, 0], cells[-1, 1]]
             locs = curve.vertices[vert_ind, :]
             locations.append(resample_locations(locs, increment))
@@ -232,12 +236,26 @@ def octree_2_treemesh(  # pylint: disable=too-many-locals
 
     :return: Resulting TreeMesh.
     """
-    if mesh.octree_cells is None:
+    if (
+        mesh.octree_cells is None
+        or mesh.u_count is None
+        or mesh.v_count is None
+        or mesh.w_count is None
+    ):
         return None
 
-    small_cell = [mesh.u_cell_size, mesh.v_cell_size, mesh.w_cell_size]
-    n_cell_dim = [mesh.u_count, mesh.v_count, mesh.w_count]
-    cell_sizes = [np.ones(nr) * sz for nr, sz in zip(n_cell_dim, small_cell)]
+    n_cell_dim, cell_sizes = [], []
+    for ax in "uvw":
+        if (
+            getattr(mesh, f"{ax}_cell_size") is None
+            or getattr(mesh, f"{ax}_count") is None
+        ):
+            raise ValueError(f"Cell size in {ax} direction is not defined.")
+
+        n_cell_dim.append(getattr(mesh, f"{ax}_count"))
+        cell_sizes.append(
+            np.ones(getattr(mesh, f"{ax}_count")) * getattr(mesh, f"{ax}_cell_size")
+        )
 
     if any(np.any(cell_size < 0) for cell_size in cell_sizes):
         raise NotImplementedError("Negative cell sizes not supported.")
