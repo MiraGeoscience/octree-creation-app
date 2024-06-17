@@ -439,7 +439,9 @@ int-import-graph=
 known-standard-library=
 
 # Force import order to recognize a module as part of a third party library.
-known-third-party=enchant
+known-third-party=enchant,
+                  geoh5py,
+                  geoapps_utils
 
 # Couples of modules and preferred modules, separated by a comma.
 preferred-modules=
@@ -542,7 +544,7 @@ contextmanager-decorators=contextlib.contextmanager
 # List of members which are set dynamically and missed by pylint inference
 # system, and so shouldn't trigger E1101 when accessed. Python regular
 # expressions are accepted.
-generated-members=
+generated-members=scipy.spatial._qhull.Delaunay.*
 
 # Tells whether to warn about missing members when the owner of the attribute
 # is inferred to be None.
