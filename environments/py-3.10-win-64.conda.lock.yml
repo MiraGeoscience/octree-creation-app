@@ -33,7 +33,7 @@ dependencies:
   - libjpeg-turbo=3.0.0=hcfcfb64_1
   - liblapack=3.9.0=22_win64_mkl
   - libpng=1.6.43=h19919ed_0
-  - libsqlite=3.45.3=hcfcfb64_0
+  - libsqlite=3.46.0=h2466b09_0
   - libssh2=1.11.0=h7dfc565_0
   - libtiff=4.6.0=hddb2be6_3
   - libwebp-base=1.4.0=hcfcfb64_0
@@ -50,7 +50,7 @@ dependencies:
   - numpy=1.23.5=py310h4a8f9c9_0
   - openjpeg=2.5.2=h3d672ee_0
   - openssl=3.3.1=h2466b09_0
-  - packaging=24.0=pyhd8ed1ab_0
+  - packaging=24.1=pyhd8ed1ab_0
   - pillow=10.3.0=py310hf5d6e66_0
   - pip=24.0=pyhd8ed1ab_0
   - platformdirs=4.2.2=pyhd8ed1ab_0
@@ -71,7 +71,7 @@ dependencies:
   - typing_extensions=4.12.2=pyha770c72_0
   - tzdata=2024a=h0c530f3_0
   - ucrt=10.0.22621.0=h57928b3_0
-  - urllib3=2.2.1=pyhd8ed1ab_0
+  - urllib3=2.2.2=pyhd8ed1ab_0
   - vc=14.3=h8a93ad2_20
   - vc14_runtime=14.40.33810=ha82c5b3_20
   - vs2015_runtime=14.40.33810=h3bf8584_20
