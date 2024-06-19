@@ -45,7 +45,7 @@ python = "^3.9, <3.11"
 
 discretize = "~0.10.0"
 numpy = "~1.23.5"  # also in geoh5py
-scipy = "~1.10.1"
+scipy = "~1.13"
 
 ## Pip dependencies from Git repositories
 #------------------------------------
