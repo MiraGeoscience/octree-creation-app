@@ -97,7 +97,7 @@ def collocate_octrees(global_mesh: Octree, local_meshes: list[Octree]):
         or global_mesh.v_cell_size is None
         or global_mesh.w_cell_size is None
     ):
-        raise ValueError("Global mesh must have octree cells defined.")
+        raise ValueError("Global mesh must have octree_cells and cell sizes.")
 
     u_grid = global_mesh.octree_cells["I"] * global_mesh.u_cell_size
     v_grid = global_mesh.octree_cells["J"] * global_mesh.v_cell_size
