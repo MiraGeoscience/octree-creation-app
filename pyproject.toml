@@ -65,7 +65,7 @@ geoapps-utils = {git = "https://github.com/MiraGeoscience/geoapps-utils.git", re
 #---------------------------------------------------------------------------------
 h5py = "^3.2.1"  # from geoh5py
 Pillow = "~10.3.0"  # from geoh5py
-pydantic = "~2.5.2"  # from geoapps-utils
+pydantic = "^2.5.2"  # from geoh5py, geoapps-utils
 
 ## about pip dependencies
 # to be specified to work with conda-lock
