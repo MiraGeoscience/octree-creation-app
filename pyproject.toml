@@ -46,7 +46,7 @@ python = "^3.10"
 
 discretize = "~0.10.0"
 numpy = "~1.26.0"  # also in geoh5py
-scipy = "~1.14"
+scipy = "~1.14.0"
 
 ## Pip dependencies from Git repositories
 #------------------------------------
@@ -65,16 +65,16 @@ geoapps-utils = {git = "https://github.com/MiraGeoscience/geoapps-utils.git", re
 #---------------------------------------------------------------------------------
 h5py = "^3.2.1"  # from geoh5py
 Pillow = "~10.3.0"  # from geoh5py
-pydantic = "~2.5.2"  # from geoapps-utils
+pydantic = "^2.5.2"  # from geoh5py, geoapps-utils
 
 ## about pip dependencies
 # to be specified to work with conda-lock
 # - from PyPI: my_package = { version = "1.2.3", source = "pypi" }
-# - from URL:
-#   - for a tags:   my_package = { url = "https://github.com/ORGANISATION/REPO/archive/refs/tags/VERSION_TAG.tar.gz" }
+# - from URL: !!! no actual lock, as tag or branch can move and installation will fetch current !!!
+#   - for a tag:    my_package = { url = "https://github.com/ORGANISATION/REPO/archive/refs/tags/TAG.tar.gz" }
 #   - for a branch: my_package = { url = "https://github.com/ORGANISATION/REPO/archive/refs/heads/BRANCH.tar.gz" }
-# Note - conda-lock does not support the syntax: my_package = { git = ... }
-#        while poetry2conda supports only { git = "...", tag = "..." }, and not { url = ... }
+# - to actually lock on a revision: my_package = { git = "https://github.com/ORGANISATION/REPO.git", rev = "GIT_REV" }
+#   (where rev value is a tag, a branch name or a commit hash). Can also use ``branch`` or ``tag`` instead of ``rev``
 
 [tool.poetry.group.dev.dependencies]
 Pygments = "*"
