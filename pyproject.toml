@@ -87,6 +87,13 @@ tomli = "*"
 platforms = ['win-64', 'linux-64']
 channels = ['conda-forge']
 
+[tool.conda-lock.dependencies]
+## indirect dependencies, forcing them here for installation through Conda not pip
+#---------------------------------------------------------------------------------
+h5py = ">=3.2.1, <4.0.0"  # from geoh5py
+Pillow = ">=10.3.0, <10.4.0"  # from geoh5py
+pydantic = ">=2.5.2, <3.0.0"  # from geoh5py, curve-apps, geoapps-utils
+
 [tool.isort]
 profile = "black"
 
