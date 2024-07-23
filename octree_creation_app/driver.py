@@ -13,7 +13,7 @@ import numpy as np
 from discretize import TreeMesh
 from discretize.utils import mesh_builder_xyz
 from geoapps_utils.driver.driver import BaseDriver
-from geoapps_utils.locations import get_locations
+from geoapps_utils.utils.locations import get_locations
 from geoh5py.objects import Curve, ObjectBase, Octree, Points, Surface
 from geoh5py.objects.surveys.direct_current import BaseElectrode
 from geoh5py.shared.utils import fetch_active_workspace

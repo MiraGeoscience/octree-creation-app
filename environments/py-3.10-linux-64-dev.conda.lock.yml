@@ -8,9 +8,9 @@ dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
   - annotated-types=0.7.0=pyhd8ed1ab_0
-  - astroid=3.2.3=py310hff52083_0
-  - bzip2=1.0.8=hd590300_5
-  - c-ares=1.32.0=h4ab18f5_0
+  - astroid=3.2.4=py310hff52083_0
+  - bzip2=1.0.8=h4bc722e_7
+  - c-ares=1.32.2=h4bc722e_0
   - ca-certificates=2024.7.4=hbcca054_0
   - cached-property=1.5.2=hd8ed1ab_1
   - cached_property=1.5.2=pyha770c72_1
@@ -18,7 +18,7 @@ dependencies:
   - coverage=7.6.0=py310h5b4e0ec_0
   - dill=0.3.8=pyhd8ed1ab_0
   - discretize=0.10.0=py310hcb52e73_1
-  - exceptiongroup=1.2.0=pyhd8ed1ab_2
+  - exceptiongroup=1.2.2=pyhd8ed1ab_0
   - freetype=2.12.1=h267a509_2
   - h5py=3.11.0=nompi_py310hf054cd7_102
   - hdf5=1.14.3=nompi_hdf9ad27_105
@@ -30,8 +30,8 @@ dependencies:
   - ld_impl_linux-64=2.40=hf3520f5_7
   - lerc=4.0.0=h27087fc_0
   - libaec=1.1.3=h59595ed_0
-  - libblas=3.9.0=22_linux64_openblas
-  - libcblas=3.9.0=22_linux64_openblas
+  - libblas=3.9.0=23_linux64_openblas
+  - libcblas=3.9.0=23_linux64_openblas
   - libcurl=8.8.0=hca28451_1
   - libdeflate=1.20=hd590300_0
   - libedit=3.1.20191231=he28a2e2_2
@@ -42,7 +42,7 @@ dependencies:
   - libgfortran5=14.1.0=hc5f4f2c_0
   - libgomp=14.1.0=h77fa898_0
   - libjpeg-turbo=3.0.0=hd590300_1
-  - liblapack=3.9.0=22_linux64_openblas
+  - liblapack=3.9.0=23_linux64_openblas
   - libnghttp2=1.58.0=h47da74e_1
   - libnsl=2.0.1=hd590300_0
   - libopenblas=0.3.27=pthreads_hac2b453_1
@@ -60,7 +60,7 @@ dependencies:
   - ncurses=6.5=h59595ed_0
   - numpy=1.26.4=py310hb13e2d6_0
   - openjpeg=2.5.2=h488ebb8_0
-  - openssl=3.3.1=h4ab18f5_1
+  - openssl=3.3.1=h4bc722e_2
   - packaging=24.1=pyhd8ed1ab_0
   - pillow=10.3.0=py310hebfe307_1
   - pip=24.0=pyhd8ed1ab_0
@@ -70,14 +70,14 @@ dependencies:
   - pydantic=2.8.2=pyhd8ed1ab_0
   - pydantic-core=2.20.1=py310h42e942d_0
   - pygments=2.18.0=pyhd8ed1ab_0
-  - pylint=3.2.5=pyhd8ed1ab_0
-  - pytest=8.2.2=pyhd8ed1ab_0
+  - pylint=3.2.6=pyhd8ed1ab_0
+  - pytest=8.3.1=pyhd8ed1ab_0
   - pytest-cov=5.0.0=pyhd8ed1ab_0
   - python=3.10.14=hd12c33a_0_cpython
   - python_abi=3.10=4_cp310
   - readline=8.2=h8228510_1
   - scipy=1.14.0=py310h93e2701_1
-  - setuptools=70.2.0=pyhd8ed1ab_0
+  - setuptools=71.0.4=pyhd8ed1ab_0
   - tk=8.6.13=noxft_h4845f30_101
   - toml=0.10.2=pyhd8ed1ab_0
   - tomli=2.0.1=pyhd8ed1ab_0
@@ -91,7 +91,7 @@ dependencies:
   - xz=5.2.6=h166bdaf_0
   - zstd=1.5.6=ha6fb4c9_0
   - pip:
-      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils@6dd821c01243dc4d52df5e62817c5d6f94c57916
+      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils@e0cc6f5178fec820647f088f348a2f8db81c58a2
       - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@21ce81d279c206ce0a279377168ce50e0a35d3d2
 
 variables:
