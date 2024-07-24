@@ -34,9 +34,7 @@ from octree_creation_app.utils import octree_2_treemesh, treemesh_2_octree
 # pylint: disable=redefined-outer-name, duplicate-code
 
 
-def test_create_octree_radial(
-    tmp_path: Path, setup_test_octree
-):  # pylint: disable=too-many-locals
+def test_create_octree_radial(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -90,9 +88,7 @@ def test_create_octree_radial(
         compare_entities(octree, rec_octree, ignore=["_uid"])
 
 
-def test_create_octree_surface(
-    tmp_path: Path, setup_test_octree
-):  # pylint: disable=too-many-locals
+def test_create_octree_surface(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -162,9 +158,7 @@ def test_create_octree_surface(
         compare_entities(octree, rec_octree, ignore=["_uid"])
 
 
-def test_create_octree_curve(
-    tmp_path: Path, setup_test_octree
-):  # pylint: disable=too-many-locals
+def test_create_octree_curve(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -219,9 +213,7 @@ def test_create_octree_curve(
         compare_entities(results[0], results[1], ignore=["_uid"])
 
 
-def test_create_octree_empty_curve(
-    tmp_path: Path, setup_test_octree
-):  # pylint: disable=too-many-locals
+def test_create_octree_empty_curve(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -263,9 +255,7 @@ def test_create_octree_empty_curve(
         assert results.n_cells == 4
 
 
-def test_create_octree_dipoles(
-    tmp_path: Path, setup_test_octree
-):  # pylint: disable=too-many-locals
+def test_create_octree_dipoles(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -331,9 +321,7 @@ def test_create_octree_dipoles(
         assert driver.params.geoh5.get_entity("Octree_Mesh")[0]
 
 
-def test_create_octree_triangulation(
-    tmp_path: Path, setup_test_octree
-):  # pylint: disable=too-many-locals
+def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -466,8 +454,7 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
                 if set(starting_cell.nodes) & set(compare_cell.nodes):
                     results.append(
                         np.abs(
-                            level
-                            - compare_cell._level  # pylint: disable=protected-access
+                            level - compare_cell._level  # pylint: disable=protected-access
                         )
                     )
 
@@ -535,9 +522,7 @@ def test_backward_compatible_type(tmp_path):
         OctreeDriver.start(tmp_path / filename)
 
 
-def test_refine_complement(
-    tmp_path: Path, setup_test_octree
-):  # pylint: disable=too-many-locals
+def test_refine_complement(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
     (
         cell_sizes,
         depth_core,
@@ -550,7 +535,6 @@ def test_refine_complement(
     ) = setup_test_octree
 
     with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
-
         points = Points.create(workspace, vertices=np.c_[locations[-1, :]].T)
         curve = Curve.create(workspace, vertices=locations)
         curve.remove_cells([-1])

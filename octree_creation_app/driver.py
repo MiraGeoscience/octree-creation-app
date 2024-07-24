@@ -73,7 +73,6 @@ class OctreeDriver(BaseDriver):
         )
 
         for label, value in params.free_parameter_dict.items():
-
             refinement_object = getattr(params, value["object"])
             if not isinstance(refinement_object, ObjectBase):
                 continue
