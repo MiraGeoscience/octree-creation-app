@@ -17,6 +17,7 @@ from octree_creation_app import assets_path
 
 from .constants import template_dict
 
+
 defaults_ifile = InputFile.read_ui_json(
     assets_path() / "uijson/octree_mesh.ui.json", validate=False
 )

@@ -31,6 +31,7 @@ from octree_creation_app.driver import OctreeDriver
 from octree_creation_app.params import OctreeParams
 from octree_creation_app.utils import octree_2_treemesh, treemesh_2_octree
 
+
 # pylint: disable=redefined-outer-name, duplicate-code
 
 
