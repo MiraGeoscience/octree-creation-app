@@ -17,6 +17,7 @@ from octree_creation_app import assets_path
 
 from .constants import template_dict
 
+
 defaults_ifile = InputFile.read_ui_json(
     assets_path() / "uijson/octree_mesh.ui.json", validate=False
 )
@@ -30,7 +31,6 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
     """
 
     def __init__(self, input_file=None, **kwargs):
-
         self._default_ui_json = deepcopy(default_ui_json)
         self._defaults = deepcopy(defaults)
         self._free_parameter_keys = ["object", "levels", "horizon", "distance"]
