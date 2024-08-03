@@ -4,6 +4,7 @@
 
 channels:
   - conda-forge
+  - nodefaults
 dependencies:
   - annotated-types=0.7.0=pyhd8ed1ab_0
   - bzip2=1.0.8=h2466b09_7
@@ -21,7 +22,7 @@ dependencies:
   - libaec=1.1.3=h63175ca_0
   - libblas=3.9.0=23_win64_mkl
   - libcblas=3.9.0=23_win64_mkl
-  - libcurl=8.8.0=hd5e4a3a_1
+  - libcurl=8.9.1=h18fefc2_0
   - libdeflate=1.20=hcfcfb64_0
   - libffi=3.4.2=h8ffe710_5
   - libhwloc=2.11.1=default_h8125262_1000
@@ -47,7 +48,7 @@ dependencies:
   - openjpeg=2.5.2=h3d672ee_0
   - openssl=3.3.1=h2466b09_2
   - pillow=10.3.0=py310h3e38d90_1
-  - pip=24.0=pyhd8ed1ab_0
+  - pip=24.2=pyhd8ed1ab_0
   - pthread-stubs=0.4=hcd874cb_1001
   - pthreads-win32=2.9.1=hfa6e2cd_3
   - pydantic=2.8.2=pyhd8ed1ab_0
@@ -55,7 +56,7 @@ dependencies:
   - python=3.10.14=h4de0772_0_cpython
   - python_abi=3.10=4_cp310
   - scipy=1.14.0=py310h46043a1_1
-  - setuptools=71.0.4=pyhd8ed1ab_0
+  - setuptools=72.1.0=pyhd8ed1ab_0
   - tbb=2021.12.0=hc790b64_3
   - tk=8.6.13=h5226925_1
   - typing-extensions=4.12.2=hd8ed1ab_0
@@ -71,8 +72,8 @@ dependencies:
   - xz=5.2.6=h8d14728_0
   - zstd=1.5.6=h0ea2cb4_0
   - pip:
-      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils@e0cc6f5178fec820647f088f348a2f8db81c58a2
-      - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@21ce81d279c206ce0a279377168ce50e0a35d3d2
+      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils@2bc1ea4dbea2a026ec37eb00180e8ed4423a9f6a
+      - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@d351c4f3effbb3918f7b8f9e96f27a70202f2e8c
 
 variables:
   KMP_WARNINGS: 0
