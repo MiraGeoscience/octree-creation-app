@@ -17,7 +17,7 @@ repos:
     -   id: pycln
         args: [--config=pyproject.toml]
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.1
+    rev: v0.6.3
     hooks:
     -   id: ruff
         args:
@@ -26,7 +26,7 @@ repos:
 #        -   --unsafe-fixes
     -   id: ruff-format
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.11.0
+    rev: v1.11.2
     hooks:
     -   id: mypy
         additional_dependencies: [
@@ -37,12 +37,12 @@ repos:
         ]
         exclude: ^(docs|octree_creation_app-assets)/
 -   repo: https://github.com/codingjoe/relint
-    rev: 3.1.1
+    rev: 3.2.0
     hooks:
     -   id: relint
         args: [-W]  # to fail on warnings
 -   repo: https://github.com/MiraGeoscience/pre-commit-hooks
-    rev: v1.0.0
+    rev: v1.0.1
     hooks:
     -   id: check-copyright
         files: (^LICENSE|^README(|-dev).rst|\.py|\.pyi)$
