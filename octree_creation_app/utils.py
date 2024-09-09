@@ -135,12 +135,11 @@ def densify_curve(curve: Curve, increment: float) -> np.ndarray:
 
     :return: Array of shape (n, 3) of x, y, z locations.
     """
-    locations: list = []
-
-    if curve.cells is None or curve.vertices is not None:
-        return np.asarray(locations).reshape((0, 3))
-
+    locations = []
     for part in curve.unique_parts:
+        if curve.cells is None or curve.vertices is None:
+            continue
+
         logic = curve.parts == part
         cells = curve.cells[np.all(logic[curve.cells], axis=1)]
 
@@ -150,6 +149,9 @@ def densify_curve(curve: Curve, increment: float) -> np.ndarray:
         vert_ind = np.r_[cells[:, 0], cells[-1, 1]]
         locs = curve.vertices[vert_ind, :]
         locations.append(resample_locations(locs, increment))
+
+    if len(locations) == 0:
+        return np.empty((0, 3))
 
     return np.vstack(locations)
 
