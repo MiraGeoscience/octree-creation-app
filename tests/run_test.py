@@ -237,6 +237,8 @@ def test_create_octree_empty_curve(
         # Create sources along line
         extent = Points.create(workspace, vertices=locations)
         curve = Curve.create(workspace)
+        setattr(curve, "_cells", None)
+
         params_dict = {
             "geoh5": workspace,
             "objects": extent,
