@@ -1699,53 +1699,53 @@ package:
   category: main
   optional: false
 - name: pydantic
-  version: 2.8.2
+  version: 2.9.1
   manager: conda
   platform: linux-64
   dependencies:
-    annotated-types: '>=0.4.0'
-    pydantic-core: 2.20.1
+    annotated-types: '>=0.6.0'
+    pydantic-core: 2.23.3
     python: '>=3.7'
     typing-extensions: '>=4.6.1'
-  url: https://conda.anaconda.org/conda-forge/noarch/pydantic-2.8.2-pyhd8ed1ab_0.conda
+  url: https://conda.anaconda.org/conda-forge/noarch/pydantic-2.9.1-pyhd8ed1ab_0.conda
   hash:
-    md5: 539a038a24a959662df1fcaa2cfc5c3e
-    sha256: 5a877153f7eaaab9724db5b64366a35e346007c9c104c1d6a6042f83b2f4f0df
+    md5: 5309e66d385d7367364e838764ad2ac4
+    sha256: 9064ec63d676d83452a6a07cb92d95ebfa02b5016841956ce55e324c45e012ee
   category: main
   optional: false
 - name: pydantic
-  version: 2.8.2
+  version: 2.9.1
   manager: conda
   platform: win-64
   dependencies:
     python: '>=3.7'
     typing-extensions: '>=4.6.1'
-    annotated-types: '>=0.4.0'
-    pydantic-core: 2.20.1
-  url: https://conda.anaconda.org/conda-forge/noarch/pydantic-2.8.2-pyhd8ed1ab_0.conda
+    annotated-types: '>=0.6.0'
+    pydantic-core: 2.23.3
+  url: https://conda.anaconda.org/conda-forge/noarch/pydantic-2.9.1-pyhd8ed1ab_0.conda
   hash:
-    md5: 539a038a24a959662df1fcaa2cfc5c3e
-    sha256: 5a877153f7eaaab9724db5b64366a35e346007c9c104c1d6a6042f83b2f4f0df
+    md5: 5309e66d385d7367364e838764ad2ac4
+    sha256: 9064ec63d676d83452a6a07cb92d95ebfa02b5016841956ce55e324c45e012ee
   category: main
   optional: false
 - name: pydantic-core
-  version: 2.20.1
+  version: 2.23.3
   manager: conda
   platform: linux-64
   dependencies:
     __glibc: '>=2.17,<3.0.a0'
-    libgcc-ng: '>=12'
+    libgcc: '>=13'
     python: '>=3.10,<3.11.0a0'
     python_abi: 3.10.*
     typing-extensions: '>=4.6.0,!=4.7.0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/pydantic-core-2.20.1-py310h42e942d_0.conda
+  url: https://conda.anaconda.org/conda-forge/linux-64/pydantic-core-2.23.3-py310h505e2c1_0.conda
   hash:
-    md5: 51dcc27558e8cbe3aa6d3641cd78aa6d
-    sha256: 0645b2283b9fcc50d6f51891bc8c06f0db0ecb16beb177a4e42c98ae888e38d5
+    md5: 1106064e9dc34ba4cb9c2d2285d669ed
+    sha256: b7036f644e92e7204a6e4b4e4908b937b8d153ea23a93fa826219b0745c2dcde
   category: main
   optional: false
 - name: pydantic-core
-  version: 2.20.1
+  version: 2.23.3
   manager: conda
   platform: win-64
   dependencies:
@@ -1755,10 +1755,10 @@ package:
     ucrt: '>=10.0.20348.0'
     vc: '>=14.2,<15'
     vc14_runtime: '>=14.29.30139'
-  url: https://conda.anaconda.org/conda-forge/win-64/pydantic-core-2.20.1-py310hc226416_0.conda
+  url: https://conda.anaconda.org/conda-forge/win-64/pydantic-core-2.23.3-py310hc226416_0.conda
   hash:
-    md5: 99d16046cf146f48bf0b1d764f85397f
-    sha256: 5c54ea231ae75370dee9af043b86ac8dada7c5eb7bea842bb2773d7eda4dbec6
+    md5: cd093a19e089171df725355453b15232
+    sha256: dec70983ea00df6c5d31ca569e89fd3d850d45ed4b75571933c322171383c7c6
   category: main
   optional: false
 - name: pygments
@@ -1828,7 +1828,7 @@ package:
   category: dev
   optional: true
 - name: pytest
-  version: 8.3.2
+  version: 8.3.3
   manager: conda
   platform: linux-64
   dependencies:
@@ -1839,14 +1839,14 @@ package:
     pluggy: <2,>=1.5
     python: '>=3.8'
     tomli: '>=1'
-  url: https://conda.anaconda.org/conda-forge/noarch/pytest-8.3.2-pyhd8ed1ab_0.conda
+  url: https://conda.anaconda.org/conda-forge/noarch/pytest-8.3.3-pyhd8ed1ab_0.conda
   hash:
-    md5: e010a224b90f1f623a917c35addbb924
-    sha256: 72c84a3cd9fe82835a88e975fd2a0dbf2071d1c423ea4f79e7930578c1014873
+    md5: c03d61f31f38fdb9facf70c29958bf7a
+    sha256: e99376d0068455712109d233f5790458ff861aeceb458bfda74e353338e4d815
   category: dev
   optional: true
 - name: pytest
-  version: 8.3.2
+  version: 8.3.3
   manager: conda
   platform: win-64
   dependencies:
@@ -1857,10 +1857,10 @@ package:
     exceptiongroup: '>=1.0.0rc8'
     tomli: '>=1'
     pluggy: <2,>=1.5
-  url: https://conda.anaconda.org/conda-forge/noarch/pytest-8.3.2-pyhd8ed1ab_0.conda
+  url: https://conda.anaconda.org/conda-forge/noarch/pytest-8.3.3-pyhd8ed1ab_0.conda
   hash:
-    md5: e010a224b90f1f623a917c35addbb924
-    sha256: 72c84a3cd9fe82835a88e975fd2a0dbf2071d1c423ea4f79e7930578c1014873
+    md5: c03d61f31f38fdb9facf70c29958bf7a
+    sha256: e99376d0068455712109d233f5790458ff861aeceb458bfda74e353338e4d815
   category: dev
   optional: true
 - name: pytest-cov
@@ -2444,13 +2444,13 @@ package:
     h5py: '>=3.2.1,<4.0.0'
     numpy: '>=1.26.0,<1.27.0'
     pydantic: '>=2.5.2,<3.0.0'
-  url: git+https://github.com/MiraGeoscience/geoh5py.git@593421693155f50bfa63bf6a06dd2af6666f108b
+  url: git+https://github.com/MiraGeoscience/geoh5py.git@859009d468a2ae2faac9514219777c6a954bb5d3
   hash:
-    sha256: 593421693155f50bfa63bf6a06dd2af6666f108b
+    sha256: 859009d468a2ae2faac9514219777c6a954bb5d3
   category: main
   source:
     type: url
-    url: git+https://github.com/MiraGeoscience/geoh5py.git@593421693155f50bfa63bf6a06dd2af6666f108b
+    url: git+https://github.com/MiraGeoscience/geoh5py.git@859009d468a2ae2faac9514219777c6a954bb5d3
   optional: false
 - name: geoh5py
   version: 0.10.0a1
@@ -2461,11 +2461,11 @@ package:
     h5py: '>=3.2.1,<4.0.0'
     numpy: '>=1.26.0,<1.27.0'
     pydantic: '>=2.5.2,<3.0.0'
-  url: git+https://github.com/MiraGeoscience/geoh5py.git@593421693155f50bfa63bf6a06dd2af6666f108b
+  url: git+https://github.com/MiraGeoscience/geoh5py.git@859009d468a2ae2faac9514219777c6a954bb5d3
   hash:
-    sha256: 593421693155f50bfa63bf6a06dd2af6666f108b
+    sha256: 859009d468a2ae2faac9514219777c6a954bb5d3
   category: main
   source:
     type: url
-    url: git+https://github.com/MiraGeoscience/geoh5py.git@593421693155f50bfa63bf6a06dd2af6666f108b
+    url: git+https://github.com/MiraGeoscience/geoh5py.git@859009d468a2ae2faac9514219777c6a954bb5d3
   optional: false

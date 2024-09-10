@@ -50,8 +50,8 @@ dependencies:
   - pip=24.2=pyh8b19718_1
   - pthread-stubs=0.4=hcd874cb_1001
   - pthreads-win32=2.9.1=hfa6e2cd_3
-  - pydantic=2.8.2=pyhd8ed1ab_0
-  - pydantic-core=2.20.1=py310hc226416_0
+  - pydantic=2.9.1=pyhd8ed1ab_0
+  - pydantic-core=2.23.3=py310hc226416_0
   - python=3.10.14=h4de0772_0_cpython
   - python_abi=3.10=5_cp310
   - scipy=1.14.1=py310h46043a1_0
@@ -72,7 +72,7 @@ dependencies:
   - zstd=1.5.6=h0ea2cb4_0
   - pip:
       - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils@921261e963930d275859c2f71f9e88eef17643fb
-      - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@593421693155f50bfa63bf6a06dd2af6666f108b
+      - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@859009d468a2ae2faac9514219777c6a954bb5d3
 
 variables:
   KMP_WARNINGS: 0
