@@ -422,6 +422,7 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
             "Refinement A object": points.uid,
             "Refinement A levels": "1",
             "Refinement A horizon": False,
+            "Refinement A distance": 1000.0,
         }
 
         params = OctreeParams(
@@ -489,6 +490,7 @@ def test_backward_compatible_type(tmp_path):
             "Refinement A object": points.uid,
             "Refinement A levels": "1",
             "Refinement A horizon": False,
+            "Refinement A distance": 1000.0,
         }
 
         params = OctreeParams(**params_dict)
