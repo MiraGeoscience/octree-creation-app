@@ -230,6 +230,8 @@ def test_create_octree_empty_curve(tmp_path: Path, setup_test_octree):  # pylint
         # Create sources along line
         extent = Points.create(workspace, vertices=locations)
         curve = Curve.create(workspace)
+        curve.remove_cells([0])
+
         params_dict = {
             "geoh5": workspace,
             "objects": extent,
@@ -276,7 +278,7 @@ def test_create_octree_dipoles(tmp_path: Path, setup_test_octree):  # pylint: di
         parts = np.kron(np.arange(4), np.ones(n_data)).astype("int")
         currents = CurrentElectrode.create(workspace, vertices=vertices, parts=parts)
         currents.add_default_ab_cell_id()
-        potentials = PotentialElectrode.create(workspace, vertices=vertices)
+
         n_dipoles = 9
         dipoles = []
         current_id = []
@@ -287,7 +289,7 @@ def test_create_octree_dipoles(tmp_path: Path, setup_test_octree):  # pylint: di
                 dipole_ids = currents.cells[cell_id, :] + 2 + dipole
 
                 if (
-                    any(dipole_ids > (potentials.n_vertices - 1))
+                    any(dipole_ids > (len(vertices) - 1))
                     or len(np.unique(parts[dipole_ids])) > 1
                 ):
                     continue
@@ -295,8 +297,12 @@ def test_create_octree_dipoles(tmp_path: Path, setup_test_octree):  # pylint: di
                 dipoles += [dipole_ids]
                 current_id += [val]
 
-        potentials.cells = np.vstack(dipoles).astype("uint32")
-        potentials.ab_cell_id = np.hstack(current_id).astype("int32")
+        potentials = PotentialElectrode.create(
+            workspace,
+            vertices=vertices,
+            cells=np.vstack(dipoles).astype("uint32"),
+            ab_cell_id=np.hstack(current_id).astype("int32"),
+        )
 
         params_dict = {
             "geoh5": workspace,
