@@ -57,7 +57,7 @@ repos:
         language: system
         require_serial: true  # pylint does its own parallelism
         types: [python]
-        exclude: ^(devtools|docs)/
+        exclude: ^(devtools|docs|octree_creation_app-assets)/
 -   repo: https://github.com/codespell-project/codespell
     rev: v2.3.0
     hooks:
