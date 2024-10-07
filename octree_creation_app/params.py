@@ -17,7 +17,7 @@ from geoh5py.ui_json.utils import fetch_active_workspace
 
 from octree_creation_app import assets_path
 
-from .constants import template_dict
+from .constants import REFINEMENT_KEY, template_dict
 
 
 defaults_ifile = InputFile.read_ui_json(
@@ -88,7 +88,7 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
         super().update(params_dict)
         with fetch_active_workspace(self.geoh5):
             for key, value in params_dict.items():
-                if "Refinement" in key:
+                if REFINEMENT_KEY in key.lower():
                     setattr(self, key, value)
 
     def get_padding(self) -> list:

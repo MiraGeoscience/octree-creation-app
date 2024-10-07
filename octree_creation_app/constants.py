@@ -8,6 +8,8 @@
 from __future__ import annotations
 
 
+REFINEMENT_KEY = "refinement"
+
 template_dict: dict[str, dict] = {
     "object": {
         "groupOptional": True,
