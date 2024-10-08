@@ -42,7 +42,7 @@ classifiers = [
 [tool.poetry.scripts]
 
 [tool.poetry.dependencies]
-python = "^3.10, <3.11"  # limited to 3.10 because of geoapps-utils (due to PySide2)
+python = "^3.10"
 
 discretize = "~0.10.0"
 numpy = "~1.26.0"  # also in geoh5py
