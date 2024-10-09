@@ -104,6 +104,7 @@ class OctreeDriver(BaseDriver):
         mesh: TreeMesh,
         refinement_object: ObjectBase,
         levels: list[int],
+        *,
         horizon: bool,
         distance: float | None,
         diagonal_balance: bool,
@@ -114,18 +115,18 @@ class OctreeDriver(BaseDriver):
                 mesh,
                 refinement_object,
                 levels,
-                diagonal_balance,
+                diagonal_balance=diagonal_balance,
                 max_distance=np.inf if distance is None else distance,
             )
 
         elif isinstance(refinement_object, Curve):
             mesh = OctreeDriver.refine_tree_from_curve(
-                mesh, refinement_object, levels, diagonal_balance
+                mesh, refinement_object, levels, diagonal_balance=diagonal_balance
             )
 
         elif isinstance(refinement_object, Surface):
             mesh = OctreeDriver.refine_tree_from_triangulation(
-                mesh, refinement_object, levels, diagonal_balance
+                mesh, refinement_object, levels, diagonal_balance=diagonal_balance
             )
 
         elif isinstance(refinement_object, Points):
@@ -148,6 +149,7 @@ class OctreeDriver(BaseDriver):
         mesh: TreeMesh,
         curve: Curve,
         levels: list[int] | np.ndarray,
+        *,
         diagonal_balance: bool = True,
         finalize: bool = False,
     ) -> TreeMesh:
@@ -192,6 +194,7 @@ class OctreeDriver(BaseDriver):
         mesh: TreeMesh,
         points: ObjectBase | np.ndarray,
         levels: list[int] | np.ndarray,
+        *,
         diagonal_balance: bool = True,
         finalize: bool = False,
     ) -> TreeMesh:
@@ -236,10 +239,11 @@ class OctreeDriver(BaseDriver):
         return mesh
 
     @staticmethod
-    def refine_tree_from_surface(  # pylint: disable=too-many-arguments, too-many-locals
+    def refine_tree_from_surface(  # pylint: disable=too-many-locals
         mesh: TreeMesh,
         surface: ObjectBase,
         levels: list[int] | np.ndarray,
+        *,
         diagonal_balance: bool = True,
         max_distance: float = np.inf,
         finalize: bool = False,

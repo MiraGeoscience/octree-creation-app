@@ -8,14 +8,16 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from typing import Any
 from warnings import warn
 
 from geoapps_utils.driver.params import BaseParams
 from geoh5py.ui_json import InputFile
+from geoh5py.ui_json.utils import fetch_active_workspace
 
 from octree_creation_app import assets_path
 
-from .constants import template_dict
+from .constants import REFINEMENT_KEY, template_dict
 
 
 defaults_ifile = InputFile.read_ui_json(
@@ -34,7 +36,7 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
         self._default_ui_json = deepcopy(default_ui_json)
         self._defaults = deepcopy(defaults)
         self._free_parameter_keys = ["object", "levels", "horizon", "distance"]
-        self._free_parameter_identifier = "refinement"
+        self._free_parameter_identifier = REFINEMENT_KEY
         self._objects = None
         self._u_cell_size = None
         self._v_cell_size = None
@@ -75,6 +77,19 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
             )
 
         super().__init__(input_file=input_file, **kwargs)
+
+    def update(self, params_dict: dict[str, Any]):
+        """
+        Update parameters with dictionary contents.
+
+        :param params_dict: Dictionary of parameters.
+        """
+
+        super().update(params_dict)
+        with fetch_active_workspace(self.geoh5):
+            for key, value in params_dict.items():
+                if REFINEMENT_KEY in key.lower():
+                    setattr(self, key, value)
 
     def get_padding(self) -> list:
         """
