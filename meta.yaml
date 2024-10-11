@@ -36,11 +36,11 @@ about:
   home: https://www.mirageoscience.com/mining-industry-software/python-integration/
   summary: 'Octree creation app.'
   description: |
-    The octree-creation-app package lets users create Octree mesh objects with local 
-    refinements using the SimPEG.discretize package. The refinements can be performed 
+    The octree-creation-app package lets users create Octree mesh objects with local
+    refinements using the SimPEG.discretize package. The refinements can be performed
     on any number of Objects stored in a geoh5 file.
   license: MIT
-  license_file: 
+  license_file:
     - LICENSE
   doc_url: https://mirageoscience-octree-creation-app.readthedocs-hosted.com/
   dev_url: https://github.com/MiraGeoscience/octree-creation-app
