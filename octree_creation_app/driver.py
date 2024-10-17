@@ -20,9 +20,10 @@ from geoh5py.shared.utils import fetch_active_workspace
 from geoh5py.ui_json import utils
 from scipy import interpolate
 from scipy.spatial import Delaunay, cKDTree
+from scipy.spatial.qhull import QhullError
 
 from octree_creation_app.params import OctreeParams
-from octree_creation_app.utils import densify_curve, treemesh_2_octree
+from octree_creation_app.utils import densify_curve, surface_strip, treemesh_2_octree
 
 
 class OctreeDriver(BaseDriver):
@@ -111,13 +112,23 @@ class OctreeDriver(BaseDriver):
     ) -> TreeMesh:
         """Refine Treemesh as a based on object type."""
         if horizon:
-            mesh = OctreeDriver.refine_tree_from_surface(
-                mesh,
-                refinement_object,
-                levels,
-                diagonal_balance=diagonal_balance,
-                max_distance=np.inf if distance is None else distance,
-            )
+            try:
+                mesh = OctreeDriver.refine_tree_from_surface(
+                    mesh,
+                    refinement_object,
+                    levels,
+                    diagonal_balance=diagonal_balance,
+                    max_distance=np.inf if distance is None else distance,
+                )
+            except QhullError:
+                base_cell_size = np.min([h.min() for h in mesh.h])
+                mesh = OctreeDriver.refine_tree_from_surface(
+                    mesh,
+                    surface_strip(refinement_object, 2 * base_cell_size),
+                    levels,
+                    diagonal_balance=diagonal_balance,
+                    max_distance=np.inf if distance is None else distance,
+                )
 
         elif isinstance(refinement_object, Curve):
             mesh = OctreeDriver.refine_tree_from_curve(
@@ -267,8 +278,8 @@ class OctreeDriver(BaseDriver):
 
         xyz = get_locations(surface.workspace, surface)
         triang = Delaunay(xyz[:, :2])
-        tree = cKDTree(xyz[:, :2])
 
+        tree = cKDTree(xyz[:, :2])
         interp = interpolate.LinearNDInterpolator(triang, xyz[:, -1])
         levels = np.array(levels)
 
@@ -283,6 +294,7 @@ class OctreeDriver(BaseDriver):
             dz = OctreeDriver.cell_size_from_level(mesh, ind, 2)
 
             # Create a grid at the octree level in xy
+            assert surface.extent is not None
             cell_center_x, cell_center_y = np.meshgrid(
                 np.arange(surface.extent[0, 0], surface.extent[1, 0], dx),
                 np.arange(surface.extent[0, 1], surface.extent[1, 1], dy),
