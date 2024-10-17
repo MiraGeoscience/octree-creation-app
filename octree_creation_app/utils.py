@@ -13,10 +13,75 @@ import discretize
 import numpy as np
 from discretize import TreeMesh
 from geoh5py import Workspace
-from geoh5py.objects import Curve, Octree
+from geoh5py.objects import Curve, ObjectBase, Octree, Points
 from geoh5py.shared.utils import fetch_active_workspace
 from scipy.interpolate import interp1d
 from scipy.spatial import cKDTree
+
+
+def find_endpoints(points: np.ndarray) -> np.ndarray:
+    """
+    Find the endpoints of a co-linear array of points.
+
+    :param points: locations array of shape (n, 3).
+    """
+
+    xmin = points[:, 0].min()
+    xmax = points[:, 0].max()
+    ymin = points[:, 1].min()
+    ymax = points[:, 1].max()
+
+    endpoints = []
+    for x in np.unique([xmin, xmax]):
+        for y in np.unique([ymin, ymax]):
+            is_endy = np.isclose(points[:, :2], [x, y]).all(axis=1)
+            if np.any(is_endy):
+                endpoints.append(points[is_endy][0])
+
+    return np.array(endpoints)
+
+
+def surface_strip(
+    points: ObjectBase, width: float, name: str = "Surface strip"
+) -> Points:
+    """
+    Duplicate and offset co-linear input points to create a co-planar strip.
+
+    :param points: Points object whose locations are all co-linear.
+    :param width: Width used to displace existing points to create the
+        strip.  The surrounding strip will be 2*width wider and longer than
+        the input points.
+    """
+
+    assert points.locations is not None
+
+    locs = points.locations
+    ends = find_endpoints(locs)
+    colinear = np.diff(ends[:, :2], axis=0)[0]
+    colinear = colinear / np.linalg.norm(colinear)
+
+    # Gram-Schmidt
+    orthogonal = np.random.randn(2)
+    orthogonal -= orthogonal.dot(colinear) * colinear
+    orthogonal /= np.linalg.norm(orthogonal)
+
+    vertices = np.vstack(
+        [
+            locs,
+            np.r_[ends[1, :2] + width * colinear, ends[1, 2]],
+            np.r_[ends[0, :2] - width * colinear, ends[0, 2]],
+        ]
+    )
+
+    vertices = np.vstack(
+        [
+            vertices,
+            np.c_[vertices[:, :2] + width * orthogonal, vertices[:, 2]],
+            np.c_[vertices[:, :2] - width * orthogonal, vertices[:, 2]],
+        ]
+    )
+
+    return Points.create(points.workspace, vertices=vertices, name=name)
 
 
 def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
