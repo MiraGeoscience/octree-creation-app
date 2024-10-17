@@ -51,6 +51,7 @@ def surface_strip(
     :param width: Width used to displace existing points to create the
         strip.  The surrounding strip will be 2*width wider and longer than
         the input points.
+    :param name: Name of the new Points objects.
     """
 
     assert points.locations is not None
