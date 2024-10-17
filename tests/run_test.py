@@ -159,6 +159,27 @@ def test_create_octree_surface(tmp_path: Path, setup_test_octree):  # pylint: di
         compare_entities(octree, rec_octree, ignore=["_uid"])
 
 
+def test_create_octree_surface_straight_line(tmp_path: Path, setup_test_octree):
+    _, _, _, _, _, refinement, treemesh, _ = setup_test_octree
+
+    with Workspace.create(tmp_path / "test.geoh5") as workspace:
+        locs = np.c_[np.linspace(-50, 50, 21), np.zeros(21), np.zeros(21)]
+
+        pts = Points.create(workspace, vertices=locs)
+        treemesh = OctreeDriver.refine_by_object_type(
+            treemesh,
+            pts,
+            str2list(refinement),
+            horizon=True,
+            distance=None,
+            diagonal_balance=False,
+        )
+        treemesh.finalize()
+        treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
+        strip = workspace.get_entity("Surface strip")[0]
+        assert np.allclose(strip.extent, [[-60, -10, 0], [60, 10, 0]])
+
+
 def test_create_octree_curve(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
     (
         cell_sizes,
