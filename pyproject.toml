@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "octree-creation-app"
-version = "0.2.0-beta.1"
+version = "0.2.0-beta.2"
 license = "MIT"
 description = "Octree creation app."
 authors = ["Mira Geoscience <support@mirageoscience.com>"]
