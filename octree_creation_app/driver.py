@@ -54,7 +54,7 @@ class OctreeDriver(BaseDriver):
         return max([1, mesh.max_level - level + 1])
 
     @staticmethod
-    def octree_from_params(params: OctreeParams):
+    def treemesh_from_params(params: OctreeParams):
         print("Setting the mesh extent")
         entity = params.objects
         mesh: TreeMesh = mesh_builder_xyz(
@@ -96,7 +96,13 @@ class OctreeDriver(BaseDriver):
 
         print("Finalizing . . .")
         mesh.finalize()
-        octree = treemesh_2_octree(params.geoh5, mesh, name=params.ga_group_name)
+
+        return mesh
+
+    @staticmethod
+    def octree_from_params(params: OctreeParams):
+        treemesh = OctreeDriver.treemesh_from_params(params)
+        octree = treemesh_2_octree(params.geoh5, treemesh, name=params.ga_group_name)
         print("Done.")
         return octree
 
