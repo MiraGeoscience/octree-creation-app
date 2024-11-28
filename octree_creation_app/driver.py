@@ -74,7 +74,9 @@ class OctreeDriver(BaseDriver):
         if params.refinements is not None:
             for refinement in params.refinements:
                 mesh = OctreeDriver.refine_by_object_type(
-                    mesh=mesh, diagonal_balance=params.diagonal_balance, **refinement
+                    mesh=mesh,
+                    diagonal_balance=params.diagonal_balance,
+                    **refinement.model_dump(),
                 )
 
         logger.info("Finalizing . . .")
