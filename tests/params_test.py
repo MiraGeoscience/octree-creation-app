@@ -80,7 +80,7 @@ def test_params_from_dict(tmp_path):
     assert params.geoh5 == ws
     assert params.objects == points
     assert params.refinements is not None
-    refinement = params.refinement[0]  # pylint: disable=unsubscriptable-object
+    refinement = params.refinements[0]  # pylint: disable=unsubscriptable-object
     assert refinement.refinement_object == points
     assert refinement.levels == [4, 2]
     assert refinement.horizon is False

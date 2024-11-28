@@ -22,7 +22,7 @@ from scipy import interpolate
 from scipy.spatial import Delaunay, cKDTree
 from scipy.spatial.qhull import QhullError
 
-from octree_creation_app.params import OctreeParams
+from octree_creation_app.params import OctreeParams, RefinementParams
 from octree_creation_app.utils import densify_curve, surface_strip, treemesh_2_octree
 
 
@@ -31,9 +31,7 @@ logger.setLevel(logging.INFO)
 
 
 class OctreeDriver(BaseDriver):
-    """
-    Driver for octree mesh creation.
-    """
+    """Driver for octree mesh creation."""
 
     _params_class = OctreeParams
     _validations: dict = {}
@@ -43,9 +41,7 @@ class OctreeDriver(BaseDriver):
         self.params: OctreeParams = params
 
     def run(self) -> Octree:
-        """
-        Create an octree mesh from input values
-        """
+        """Create an octree mesh from input values."""
         with fetch_active_workspace(self.params.geoh5, mode="r+"):
             logger.info("Creating octree mesh from params . . .")
             octree = self.octree_from_params(self.params)
@@ -55,29 +51,28 @@ class OctreeDriver(BaseDriver):
         return octree
 
     @staticmethod
-    def octree_from_params(params: OctreeParams):
+    def octree_from_params(params: OctreeParams) -> Octree:
+        """Create an Octree object from input parameters."""
         treemesh = OctreeDriver.treemesh_from_params(params)
         octree = treemesh_2_octree(params.geoh5, treemesh, name=params.name)
         return octree
 
     @staticmethod
-    def treemesh_from_params(params: OctreeParams):
+    def treemesh_from_params(params: OctreeParams) -> TreeMesh:
+        """Create a TreeMesh object from input parameters."""
         logger.info("Setting the mesh extent . . .")
         mesh = OctreeDriver.base_treemesh(params)
+
         logger.info("Applying minimum level refinement . . .")
         mesh = OctreeDriver.refine_minimum_level(
             mesh, params.minimum_level, params.diagonal_balance
         )
 
         logger.info("Applying extra refinements . . .")
-
         if params.refinements is not None:
-            for refinement in params.refinements:
-                mesh = OctreeDriver.refine_by_object_type(
-                    mesh=mesh,
-                    diagonal_balance=params.diagonal_balance,
-                    **refinement.model_dump(),
-                )
+            OctreeDriver.refine_objects(
+                mesh, params.refinements, params.diagonal_balance
+            )
 
         logger.info("Finalizing . . .")
         mesh.finalize()
@@ -85,7 +80,8 @@ class OctreeDriver(BaseDriver):
         return mesh
 
     @staticmethod
-    def base_treemesh(params: OctreeParams):
+    def base_treemesh(params: OctreeParams) -> TreeMesh:
+        """Create a base TreeMesh object from extents."""
         entity = params.objects
         mesh: TreeMesh = mesh_builder_xyz(
             entity.vertices,
@@ -103,13 +99,42 @@ class OctreeDriver(BaseDriver):
     @staticmethod
     def refine_minimum_level(
         mesh: TreeMesh, minimum_level: int, diagonal_balance: bool
-    ):
+    ) -> TreeMesh:
+        """Refine a TreeMesh with the minimum level of refinement."""
         minimum_level = OctreeDriver.minimum_level(mesh, minimum_level)
         mesh.refine(minimum_level, finalize=False, diagonal_balance=diagonal_balance)
         return mesh
 
     @staticmethod
-    def minimum_level(mesh: TreeMesh, level: int):
+    def refine_objects(
+        mesh: TreeMesh, refinements: list[RefinementParams], diagonal_balance: bool
+    ) -> TreeMesh:
+        """
+        Refine by object or object + complement.
+
+        :param mesh: Tree mesh to refine.
+        :param refinements: List of refinements to apply.
+        :param diagonal_balance: Whether to balance cells along the diagonal
+            of the tree during construction.
+        """
+        for refinement in refinements:
+            kwargs = refinement.model_dump()
+            refinement_object = [kwargs.pop("refinement_object")]
+            if hasattr(refinement_object[0], "complement"):
+                refinement_object.append(refinement_object[0].complement)
+
+            for obj in refinement_object:
+                mesh = OctreeDriver.refine_by_object_type(
+                    mesh=mesh,
+                    refinement_object=obj,
+                    diagonal_balance=diagonal_balance,
+                    **kwargs,
+                )
+
+        return mesh
+
+    @staticmethod
+    def minimum_level(mesh: TreeMesh, level: int) -> int:
         """Computes the minimum level of refinement for a given tree mesh."""
         return max([1, mesh.max_level - level + 1])
 
