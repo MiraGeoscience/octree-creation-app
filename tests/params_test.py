@@ -7,13 +7,18 @@
 #
 
 import numpy as np
+import pytest
 from geoh5py import Workspace
 from geoh5py.objects import Points
 from geoh5py.ui_json import InputFile
 
 from octree_creation_app import assets_path
 from octree_creation_app.driver import OctreeDriver
-from octree_creation_app.params import OctreeParams
+from octree_creation_app.params import (
+    OctreeParams,
+    active_refinements,
+    collect_refinements_from_dict,
+)
 
 
 # pylint: disable=protected-access
@@ -29,7 +34,7 @@ def test_collect_refinements_from_dict():
         "Refinement B horizon": False,
         "Refinement B distance": 1000,
     }
-    refinements = OctreeParams._collect_refinements_from_dict(data)
+    refinements = collect_refinements_from_dict(data)
     assert len(refinements) == 1
     assert all(
         k in refinements[0]
@@ -42,7 +47,7 @@ def test_collect_refinements_from_dict():
     data = {
         "Refinement A object": "I am not None. Collect me.",
     }
-    refinements = OctreeParams._collect_refinements_from_dict(data)
+    refinements = collect_refinements_from_dict(data)
     assert len(refinements) == 1
     assert all(
         k in refinements[0]
@@ -63,7 +68,7 @@ def test_active_refinements():
         "Refinement B horizon": False,
         "Refinement B distance": 1000,
     }
-    active = OctreeParams._active_refinements(data)
+    active = active_refinements(data)
     assert active == ["A"]
 
 
@@ -85,6 +90,17 @@ def test_params_from_dict(tmp_path):
     assert refinement.levels == [4, 2]
     assert refinement.horizon is False
     assert refinement.distance == np.inf
+
+    kwargs = {
+        "geoh5": ws,
+        "objects": points,
+        "Refinement A object": points,
+        "Refinement A levels": [4, 4, 4],
+        "Refinement A horizon": False,
+        "Refinement A distance": 200,
+    }
+    with pytest.warns(UserWarning):
+        params = OctreeParams(**kwargs)
 
 
 def test_refinement_serializer(tmp_path):
