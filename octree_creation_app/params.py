@@ -7,17 +7,25 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
-from typing import Any
-from warnings import warn
+import string
+import warnings
+from pathlib import Path
+from typing import Any, ClassVar
 
-from geoapps_utils.driver.params import BaseParams
+import numpy as np
+from geoapps_utils.driver.data import BaseData
+from geoh5py.objects import Points
 from geoh5py.ui_json import InputFile
-from geoh5py.ui_json.utils import fetch_active_workspace
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    field_validator,
+    model_serializer,
+    model_validator,
+)
+from typing_extensions import Self
 
 from octree_creation_app import assets_path
-
-from .constants import REFINEMENT_KEY, template_dict
 
 
 defaults_ifile = InputFile.read_ui_json(
@@ -27,69 +35,118 @@ default_ui_json = defaults_ifile.ui_json
 defaults = defaults_ifile.data
 
 
-class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
+class OctreeParams(BaseData):
     """
-    Parameter class for octree mesh creation application.
+    Octree creation parameters.
+
+    :param objects: Object used to define the core of the mesh.
+    :param depth_core: Limit the depth of the core of the mesh.
+    :param diagonal_balance: Whether to limit the cell size change
+        to one level in the transition between diagonally adjacent
+        cells.
+    :param minimum_level: Provides a minimum level of refinement for
+        the whole mesh to prevent excessive coarsenin in padding
+        regions.
+    :param u_cell_size: Cell size in the x-direction.
+    :param v_cell_size: Cell size in the y-direction.
+    :param w_cell_size: Cell size in the z-direction.
+    :param horizontal_padding: Padding in the x and y directions.
+    :param vertical_padding: Padding in the z direction.
+    :param refinements: List of refinements to be applied.
     """
 
-    def __init__(self, input_file=None, **kwargs):
-        self._default_ui_json = deepcopy(default_ui_json)
-        self._defaults = deepcopy(defaults)
-        self._free_parameter_keys = ["object", "levels", "horizon", "distance"]
-        self._free_parameter_identifier = REFINEMENT_KEY
-        self._objects = None
-        self._u_cell_size = None
-        self._v_cell_size = None
-        self._w_cell_size = None
-        self._diagonal_balance = None
-        self._minimum_level = None
-        self._horizontal_padding = None
-        self._vertical_padding = None
-        self._depth_core = None
-        self._ga_group_name = None
-        self._title = None
+    model_config = ConfigDict(
+        frozen=True,
+        arbitrary_types_allowed=True,
+    )
 
-        if input_file is None:
-            free_param_dict = {}
-            for key in kwargs:
-                if (
-                    self._free_parameter_identifier in key.lower()
-                    and "object" in key.lower()
-                ):
-                    group = key.replace("object", "").rstrip()
-                    free_param_dict[group] = deepcopy(template_dict)
+    name: ClassVar[str] = "Octree_Mesh"
+    default_ui_json: ClassVar[Path] = assets_path() / "uijson/octree_mesh.ui.json"
+    title: ClassVar[str] = "Octree Mesh Creator"
+    run_command: ClassVar[str] = "octree_creation_app.driver"
 
-            ui_json = deepcopy(self._default_ui_json)
-            for group, forms in free_param_dict.items():
-                for key, form in forms.items():
-                    form["group"] = group
+    conda_environment: str = "octree_creation_app"
+    objects: Points
+    depth_core: float = 500.0
+    diagonal_balance: bool = True
+    minimum_level: int = 8
+    u_cell_size: float = 25.0
+    v_cell_size: float = 25.0
+    w_cell_size: float = 25.0
+    horizontal_padding: float = 500.0
+    vertical_padding: float = 200.0
+    refinements: list[RefinementParams] | None = None
 
-                    if "dependency" in form:
-                        form["dependency"] = group + f" {form['dependency']}"
+    @model_validator(mode="before")
+    @classmethod
+    def collect_refinements(cls, values):
+        """Collect refinements from the input dictionary."""
+        if "refinements" not in values:
+            refinements = collect_refinements_from_dict(values)
+            if refinements:
+                msg = (
+                    "Detected deprecated 'Refinement A property' style refinements,"
+                    " converting to a list of dictionaries."
+                )
+                warnings.warn(msg)
+            values["refinements"] = refinements
 
-                    ui_json[f"{group} {key}"] = form
+        return values
 
-                    self._defaults[f"{group} {key}"] = form["value"]
+    @model_serializer(mode="wrap")
+    def distribute_refinements(self, handler, info):
+        """Convert refinements to a individual parameters."""
+        dump = handler(self, info)
+        refinements = dump.pop("refinements")
+        refinement_params = {}
+        for i, group in enumerate(refinements):
+            group_id = string.ascii_uppercase[i]
+            for param, value in group.items():
+                param_type = "object" if param == "refinement_object" else param
+                param_name = f"Refinement {group_id} {param_type}"
+                refinement_params[param_name] = value
 
-            input_file = InputFile(
-                ui_json=ui_json,
-                validate=False,
-            )
+        return dict(dump, **refinement_params)
 
-        super().__init__(input_file=input_file, **kwargs)
-
-    def update(self, params_dict: dict[str, Any]):
+    @classmethod
+    def build(cls, input_data: InputFile | dict) -> Self:
         """
-        Update parameters with dictionary contents.
+        Build a dataclass from a dictionary or InputFile.
 
-        :param params_dict: Dictionary of parameters.
+        :param input_data: Dictionary of parameters and values.
+
+        :return: Dataclass of application parameters.
         """
 
-        super().update(params_dict)
-        with fetch_active_workspace(self.geoh5):
-            for key, value in params_dict.items():
-                if REFINEMENT_KEY in key.lower():
-                    setattr(self, key, value)
+        data = input_data
+
+        if isinstance(input_data, InputFile) and input_data.data is not None:
+            data = input_data.data.copy()
+
+        if not isinstance(data, dict):
+            raise TypeError("Input data must be a dictionary or InputFile.")
+
+        kwargs = OctreeParams.collect_input_from_dict(cls, data)  # type: ignore
+        out = cls(**kwargs)
+        if isinstance(input_data, InputFile):
+            out._input_file = input_data
+
+        return out
+
+    @staticmethod
+    def collect_input_from_dict(base_model: type[BaseModel], data: dict[str, Any]):
+        """
+        Recursively replace BaseModel objects with dictionary of 'data' values.
+
+        :param base_model: BaseModel object holding data and possibly other nested
+            BaseModel objects.
+        :param data: Dictionary of parameters and values without nesting structure.
+        """
+
+        update = super().collect_input_from_dict(base_model, data)
+        update["refinements"] = collect_refinements_from_dict(data)
+
+        return update
 
     def get_padding(self) -> list:
         """
@@ -107,153 +164,58 @@ class OctreeParams(BaseParams):  # pylint: disable=too-many-instance-attributes
             [self.vertical_padding, self.vertical_padding],
         ]
 
-    @property
-    def title(self):
-        return self._title
 
-    @title.setter
-    def title(self, val):
-        self.setter_validator("title", val)
+class RefinementParams(BaseModel):
+    """
+    Refinement parameters.
 
-    @property
-    def objects(self):
-        return self._objects
+    :param object: Object used to define the core of the mesh.
+    :param levels: Levels of refinement.
+    :param horizon: Whether the refinement is a surface or radial.
+    :param distance: Distance from the object to refine.
+    """
 
-    @objects.setter
-    def objects(self, val):
-        self.setter_validator("objects", val, fun=self._uuid_promoter)
+    model_config = ConfigDict(
+        frozen=True,
+        arbitrary_types_allowed=True,
+    )
+    refinement_object: Points
+    levels: list[int] = [4, 2]
+    horizon: bool = False
+    distance: float | None = np.inf
 
-    @property
-    def u_cell_size(self):
-        return self._u_cell_size
-
-    @u_cell_size.setter
-    def u_cell_size(self, val):
-        self.setter_validator("u_cell_size", val)
-
-    @property
-    def v_cell_size(self):
-        return self._v_cell_size
-
-    @v_cell_size.setter
-    def v_cell_size(self, val):
-        self.setter_validator("v_cell_size", val)
-
-    @property
-    def w_cell_size(self):
-        return self._w_cell_size
-
-    @w_cell_size.setter
-    def w_cell_size(self, val):
-        self.setter_validator("w_cell_size", val)
-
-    @property
-    def horizontal_padding(self):
-        return self._horizontal_padding
-
-    @horizontal_padding.setter
-    def horizontal_padding(self, val):
-        self.setter_validator("horizontal_padding", val)
-
-    @property
-    def vertical_padding(self):
-        return self._vertical_padding
-
-    @vertical_padding.setter
-    def vertical_padding(self, val):
-        self.setter_validator("vertical_padding", val)
-
-    @property
-    def depth_core(self):
-        return self._depth_core
-
-    @depth_core.setter
-    def depth_core(self, val):
-        self.setter_validator("depth_core", val)
-
-    @property
-    def diagonal_balance(self):
-        return self._diagonal_balance
-
-    @diagonal_balance.setter
-    def diagonal_balance(self, val):
-        self.setter_validator("diagonal_balance", val)
-
-    @property
-    def minimum_level(self):
-        return self._minimum_level
-
-    @minimum_level.setter
-    def minimum_level(self, val):
-        self.setter_validator("minimum_level", val)
-
-    @property
-    def ga_group_name(self):
-        return self._ga_group_name
-
-    @ga_group_name.setter
-    def ga_group_name(self, val):
-        self.setter_validator("ga_group_name", val)
-
-    @property
-    def input_file(self) -> InputFile | None:
-        """
-        An InputFile class holding the associated ui_json and validations.
-        """
-        return self._input_file
-
-    @input_file.setter
-    def input_file(self, ifile: InputFile | None):
-        if not isinstance(ifile, (type(None), InputFile)):
-            raise TypeError(
-                f"Value for 'input_file' must be {InputFile} or None. "
-                f"Provided {ifile} of type{type(ifile)}"
-            )
-
-        if ifile is not None:
-            ifile = self.deprecation_update(ifile)
-            self.validator = ifile.validators
-            self.validations = ifile.validations
-
-        self._input_file = ifile
-
+    @field_validator("levels", mode="before")
     @classmethod
-    def deprecation_update(cls, ifile: InputFile) -> InputFile:
-        """
-        Update the input file to the latest version of the ui_json.
-        """
+    def int_2_list(cls, levels: int | list[int]):
+        if isinstance(levels, int):
+            levels = [levels]
+        return levels
 
-        json_dict = {}
+    @field_validator("levels", mode="before")
+    @classmethod
+    def string_2_list(cls, levels: str | list[int]):
+        if isinstance(levels, str):
+            levels = [int(level) for level in levels.split(",")]
+        return levels
 
-        if ifile.ui_json is None or not any("type" in key for key in ifile.ui_json):
-            return ifile
 
-        key_swap = "Refinement horizon"
-        for key, form in ifile.ui_json.items():
-            if "type" in key:
-                key_swap = form["group"] + " horizon"
-                is_horizon = form.get("value")
-                logic = is_horizon == "surface"
-                msg = (
-                    f"Old refinement format 'type'='{is_horizon}' is deprecated. "
-                    f" Input type {'surface' if logic else 'radial'} will be interpreted as "
-                    f"'is_horizon'={logic}."
-                )
-                warn(msg, FutureWarning)
-                json_dict[key_swap] = template_dict["horizon"].copy()
-                json_dict[key_swap]["value"] = logic
-                json_dict[key_swap]["group"] = form["group"]
+def collect_refinements_from_dict(data: dict) -> list[dict]:
+    """Collect active refinement dictionaries from input dictionary."""
+    refinements = []
+    for identifier in active_refinements(data):
+        refinement_params = {}
+        for param in ["object", "levels", "horizon", "distance"]:
+            name = f"refinement_{param}" if param == "object" else param
+            refinement_name = f"Refinement {identifier} {param}"
+            refinement_params[name] = data.get(refinement_name, None)
 
-            elif "distance" in key:
-                json_dict[key] = template_dict["distance"].copy()
-                json_dict[key]["dependency"] = key_swap
-                json_dict[key]["enabled"] = json_dict[key_swap]["value"]
-            else:
-                json_dict[key] = form
+        refinements.append(refinement_params)
 
-        input_file = InputFile(ui_json=json_dict, validate=False)
+    return refinements
 
-        if ifile.path is not None and ifile.name is not None:
-            input_file.write_ui_json(name="[Updated]" + ifile.name, path=ifile.path)
 
-        return input_file
+def active_refinements(data: dict) -> list[str]:
+    """Return identifiers for active refinements (object not none)."""
+    refinements = [k for k in data if "Refinement" in k]
+    active = [k for k in refinements if "object" in k and data[k] is not None]
+    return np.unique([k.split(" ")[1] for k in active])
