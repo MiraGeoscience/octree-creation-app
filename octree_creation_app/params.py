@@ -10,7 +10,6 @@ from __future__ import annotations
 import string
 import warnings
 from pathlib import Path
-from types import GenericAlias
 from typing import Any, ClassVar
 
 import numpy as np
@@ -143,21 +142,8 @@ class OctreeParams(BaseData):
             BaseModel objects.
         :param data: Dictionary of parameters and values without nesting structure.
         """
-        update = {}
-        for field, info in base_model.model_fields.items():
-            if (
-                isinstance(info.annotation, type)
-                and not isinstance(info.annotation, GenericAlias)
-                and issubclass(info.annotation, BaseModel)
-            ):
-                update[field] = OctreeParams.collect_input_from_dict(
-                    info.annotation,
-                    data,  # type: ignore
-                )
-            else:
-                if field in data:
-                    update[field] = data.get(field, info.default)
 
+        update = super().collect_input_from_dict(base_model, data)
         update["refinements"] = collect_refinements_from_dict(data)
 
         return update
