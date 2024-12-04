@@ -19,8 +19,7 @@ from geoh5py.objects.surveys.direct_current import BaseElectrode
 from geoh5py.shared.utils import fetch_active_workspace
 from geoh5py.ui_json import utils
 from scipy import interpolate
-from scipy.spatial import Delaunay, cKDTree
-from scipy.spatial.qhull import QhullError
+from scipy.spatial import Delaunay, QhullError, cKDTree
 
 from octree_creation_app.params import OctreeParams
 from octree_creation_app.utils import densify_curve, surface_strip, treemesh_2_octree
