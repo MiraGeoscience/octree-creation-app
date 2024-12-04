@@ -53,7 +53,12 @@ class OctreeDriver(BaseDriver):
     def octree_from_params(params: OctreeParams) -> Octree:
         """Create an Octree object from input parameters."""
         treemesh = OctreeDriver.treemesh_from_params(params)
-        octree = treemesh_2_octree(params.geoh5, treemesh, name=params.name)
+        octree = treemesh_2_octree(
+            params.geoh5,
+            treemesh,
+            name=params.name,
+            parent=params.out_group
+        )
         return octree
 
     @staticmethod

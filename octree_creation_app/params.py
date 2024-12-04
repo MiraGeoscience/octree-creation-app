@@ -14,6 +14,7 @@ from typing import Any, ClassVar
 
 import numpy as np
 from geoapps_utils.driver.data import BaseData
+from geoh5py.groups import UIJsonGroup
 from geoh5py.objects import Points
 from geoh5py.ui_json import InputFile
 from pydantic import (
@@ -76,6 +77,7 @@ class OctreeParams(BaseData):
     horizontal_padding: float = 500.0
     vertical_padding: float = 200.0
     refinements: list[RefinementParams] | None = None
+    out_group: UIJsonGroup | None = None
 
     @model_validator(mode="before")
     @classmethod
