@@ -125,16 +125,16 @@ def test_refinement_serializer(tmp_path):
     }
     params = OctreeParams(**kwargs)
     dump = params.model_dump()
-    assert dump["geoh5"] == ws
-    assert dump["objects"] == points
-    assert dump["Refinement A object"] == points
+    assert dump["geoh5"] == str(ws.h5file)
+    assert dump["objects"] == str(points.uid)
+    assert dump["Refinement A object"] == str(points.uid)
     assert dump["Refinement A levels"] == "4, 4, 4"
     assert not dump["Refinement A horizon"]
     assert dump["Refinement A distance"] == 200
-    assert dump["Refinement B object"] == points
+    assert dump["Refinement B object"] == str(points.uid)
     assert dump["Refinement B levels"] == "4, 2"
     assert dump["Refinement B horizon"]
-    assert dump["Refinement B distance"] == np.inf
+    assert dump["Refinement B distance"] == "inf"
 
 
 def test_treemesh_from_params(tmp_path):

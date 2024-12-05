@@ -14,6 +14,8 @@ from typing import Any, ClassVar
 
 import numpy as np
 from geoapps_utils.driver.data import BaseData
+from geoh5py import Workspace
+from geoh5py.shared import Entity
 from geoh5py.groups import UIJsonGroup
 from geoh5py.objects import Points
 from geoh5py.ui_json import InputFile
@@ -204,6 +206,15 @@ class RefinementParams(BaseModel):
     @field_serializer("levels", when_used="json")
     def list_2_string(self, value):
         return ", ".join(str(level) for level in value)
+
+    @field_serializer("*", when_used="json")
+    def object_2_string(self, value):
+        if isinstance(value, Workspace):
+            return str(value.h5file)
+        elif isinstance(value, Entity):
+            return str(value.uid)
+        else:
+            return value
 
 
 
