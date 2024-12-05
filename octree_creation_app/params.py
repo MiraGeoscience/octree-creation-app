@@ -21,6 +21,7 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     field_validator,
+    field_serializer,
     model_serializer,
     model_validator,
 )
@@ -199,6 +200,13 @@ class RefinementParams(BaseModel):
         if isinstance(levels, str):
             levels = [int(level) for level in levels.split(",")]
         return levels
+
+    @field_serializer("levels", when_used="json")
+    def list_2_string(self, value):
+        return ", ".join(str(level) for level in value)
+
+
+
 
 
 def collect_refinements_from_dict(data: dict) -> list[dict]:

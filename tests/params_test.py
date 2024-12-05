@@ -128,11 +128,11 @@ def test_refinement_serializer(tmp_path):
     assert dump["geoh5"] == ws
     assert dump["objects"] == points
     assert dump["Refinement A object"] == points
-    assert dump["Refinement A levels"] == [4, 4, 4]
+    assert dump["Refinement A levels"] == "4, 4, 4"
     assert not dump["Refinement A horizon"]
     assert dump["Refinement A distance"] == 200
     assert dump["Refinement B object"] == points
-    assert dump["Refinement B levels"] == [4, 2]
+    assert dump["Refinement B levels"] == "4, 2"
     assert dump["Refinement B horizon"]
     assert dump["Refinement B distance"] == np.inf
 
