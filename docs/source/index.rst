@@ -12,7 +12,7 @@ The result is exported directly to ``geoh5`` format for visualization in
   :alt: Alternative text
 
 The mesh generation is generally a required step in preparation for
-`geophysical inversion <https://geoapps.readthedocs.io/en/latest/content/applications/grav_mag_inversion.html>`_.
+`geophysical inversion <https://mirageoscience-geoapps.readthedocs-hosted.com/en/latest/content/applications/grav_mag_inversion.html>`_.
 
 
 .. toctree::
