@@ -9,6 +9,7 @@
 import numpy as np
 import pytest
 from geoh5py import Workspace
+from geoh5py.groups import UIJsonGroup
 from geoh5py.objects import Points
 from geoh5py.ui_json import InputFile
 
@@ -106,6 +107,7 @@ def test_params_from_dict(tmp_path):
 def test_refinement_serializer(tmp_path):
     ws = Workspace(tmp_path / "test.geoh5")
     points = Points.create(ws, name="test", vertices=np.random.rand(100, 3))
+    out_group = UIJsonGroup.create(ws, name="AutoMesh")
 
     kwargs = {
         "geoh5": ws,
@@ -122,19 +124,20 @@ def test_refinement_serializer(tmp_path):
                 "horizon": True,
             },
         ],
+        "out_group": out_group,
     }
     params = OctreeParams(**kwargs)
     dump = params.model_dump()
-    assert dump["geoh5"] == str(ws.h5file)
-    assert dump["objects"] == str(points.uid)
-    assert dump["Refinement A object"] == str(points.uid)
+    assert dump["geoh5"] == ws
+    assert dump["objects"] == points
+    assert dump["Refinement A object"] == points
     assert dump["Refinement A levels"] == "4, 4, 4"
     assert not dump["Refinement A horizon"]
     assert dump["Refinement A distance"] == 200
-    assert dump["Refinement B object"] == str(points.uid)
+    assert dump["Refinement B object"] == points
     assert dump["Refinement B levels"] == "4, 2"
     assert dump["Refinement B horizon"]
-    assert dump["Refinement B distance"] == "inf"
+    assert dump["Refinement B distance"] == np.inf
 
 
 def test_treemesh_from_params(tmp_path):

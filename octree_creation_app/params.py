@@ -14,16 +14,14 @@ from typing import Any, ClassVar
 
 import numpy as np
 from geoapps_utils.driver.data import BaseData
-from geoh5py import Workspace
-from geoh5py.shared import Entity
 from geoh5py.groups import UIJsonGroup
 from geoh5py.objects import Points
 from geoh5py.ui_json import InputFile
 from pydantic import (
     BaseModel,
     ConfigDict,
-    field_validator,
     field_serializer,
+    field_validator,
     model_serializer,
     model_validator,
 )
@@ -203,21 +201,9 @@ class RefinementParams(BaseModel):
             levels = [int(level) for level in levels.split(",")]
         return levels
 
-    @field_serializer("levels", when_used="json")
-    def list_2_string(self, value):
-        return ", ".join(str(level) for level in value)
-
-    @field_serializer("*", when_used="json")
-    def object_2_string(self, value):
-        if isinstance(value, Workspace):
-            return str(value.h5file)
-        elif isinstance(value, Entity):
-            return str(value.uid)
-        else:
-            return value
-
-
-
+    @field_serializer("levels")
+    def list_to_string(self, value):
+        return ", ".join(str(v) for v in value)
 
 
 def collect_refinements_from_dict(data: dict) -> list[dict]:
