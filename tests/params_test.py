@@ -160,3 +160,51 @@ def test_treemesh_from_params(tmp_path):
     assert mesh.u_cell_size == 25.0
     assert mesh.v_cell_size == 25.0
     assert mesh.w_cell_size == 25.0
+
+
+def test_add_options(tmp_path):
+    workpath = tmp_path / "test.geoh5"
+    ws = Workspace(workpath)
+    points = Points.create(ws, name="test", vertices=np.random.rand(100, 3))
+    out_group = UIJsonGroup.create(ws, name="AutoMesh")
+
+    kwargs = {
+        "geoh5": ws,
+        "objects": points,
+        "refinements": [
+            {
+                "refinement_object": points,
+                "levels": [4, 4, 4],
+                "horizon": False,
+                "distance": 200,
+            },
+            {
+                "refinement_object": points,
+                "horizon": True,
+            },
+        ],
+        "out_group": out_group,
+    }
+    params = OctreeParams(**kwargs)
+    params.add_options()
+    assert out_group.options["title"] == "Octree Mesh Creator"
+    assert out_group.options["run_command"] == "octree_creation_app.driver"
+    assert out_group.options["conda_environment"] == "octree_creation_app"
+    assert out_group.options["geoh5"] == str(workpath)
+    assert out_group.options["objects"]["value"] == f"{{{points.uid!s}}}"
+    assert out_group.options["depth_core"]["value"] == 500.0
+    assert out_group.options["u_cell_size"]["value"] == 25.0
+    assert out_group.options["v_cell_size"]["value"] == 25.0
+    assert out_group.options["w_cell_size"]["value"] == 25.0
+    assert out_group.options["horizontal_padding"]["value"] == 500.0
+    assert out_group.options["vertical_padding"]["value"] == 200.0
+    assert out_group.options["minimum_level"]["value"] == 8
+    assert out_group.options["diagonal_balance"]["value"]
+    assert out_group.options["Refinement A object"]["value"] == f"{{{points.uid!s}}}"
+    assert out_group.options["Refinement A levels"]["value"] == "4, 4, 4"
+    assert not out_group.options["Refinement A horizon"]["value"]
+    assert out_group.options["Refinement A distance"]["value"] == 200
+    assert out_group.options["Refinement B object"]["value"] == f"{{{points.uid!s}}}"
+    assert out_group.options["Refinement B levels"]["value"] == "4, 2"
+    assert out_group.options["Refinement B horizon"]["value"]
+    assert out_group.options["Refinement B distance"]["value"] == "inf"
