@@ -57,12 +57,6 @@ geoh5py = {version = ">=0.10.0b1, <0.11.0a.dev", source = "pypi", allow-prerelea
 geoapps-utils = { version = ">=0.4.0b1, <0.5.0a.dev", source = "pypi", allow-prereleases = true}
 #geoapps-utils = {git = "https://github.com/MiraGeoscience/geoapps-utils.git", rev = "release/0.4.0"}
 
-## indirect dependencies, forcing them here for installation through Conda not pip
-#---------------------------------------------------------------------------------
-h5py = "^3.2.1"  # from geoh5py
-Pillow = "~10.3.0"  # from geoh5py
-pydantic = "^2.5.2"  # from geoh5py, geoapps-utils
-
 ## about pip dependencies
 # to be specified to work with conda-lock
 # - from PyPI: my_package = { version = "1.2.3", source = "pypi" }
