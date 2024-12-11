@@ -8,19 +8,19 @@ channels:
 dependencies:
   - _openmp_mutex=4.5=2_gnu
   - annotated-types=0.7.0=pyhd8ed1ab_1
-  - astroid=3.3.5=py310h5588dad_0
+  - astroid=3.3.6=py310h5588dad_0
   - bzip2=1.0.8=h2466b09_7
   - ca-certificates=2024.8.30=h56e8100_0
   - cached-property=1.5.2=hd8ed1ab_1
   - cached_property=1.5.2=pyha770c72_1
   - colorama=0.4.6=pyhd8ed1ab_1
-  - coverage=7.6.8=py310h38315fa_0
+  - coverage=7.6.9=py310h38315fa_0
   - dill=0.3.9=pyhd8ed1ab_1
   - discretize=0.10.0=py310h4856b71_1
   - exceptiongroup=1.2.2=pyhd8ed1ab_1
   - freetype=2.12.1=hdaf720e_2
   - h5py=3.12.1=nompi_py310h2b0be38_102
-  - hdf5=1.14.3=nompi_hd5d9e70_107
+  - hdf5=1.14.3=nompi_hd5d9e70_108
   - iniconfig=2.0.0=pyhd8ed1ab_1
   - intel-openmp=2024.2.1=h57928b3_1083
   - isort=5.13.2=pyhd8ed1ab_1
@@ -42,7 +42,7 @@ dependencies:
   - liblapack=3.9.0=25_win64_mkl
   - liblzma=5.6.3=h2466b09_1
   - libpng=1.6.44=h3ca93ac_0
-  - libsqlite=3.47.0=h2466b09_1
+  - libsqlite=3.47.2=h67fdade_0
   - libssh2=1.11.1=he619c9f_0
   - libtiff=4.7.0=hdefb170_2
   - libwebp-base=1.4.0=hcfcfb64_0
@@ -54,7 +54,7 @@ dependencies:
   - mccabe=0.7.0=pyhd8ed1ab_1
   - mkl=2024.2.2=h66d3029_14
   - numpy=1.26.4=py310hf667824_0
-  - openjpeg=2.5.2=h3d672ee_0
+  - openjpeg=2.5.3=h4d64b90_0
   - openssl=3.4.0=h2466b09_0
   - packaging=24.2=pyhd8ed1ab_2
   - pillow=10.3.0=py310h3e38d90_1
@@ -71,7 +71,7 @@ dependencies:
   - python=3.10.16=h37870fc_1_cpython
   - python_abi=3.10=5_cp310
   - pyyaml=6.0.2=py310ha8f682b_1
-  - scipy=1.14.1=py310hbd0dde3_1
+  - scipy=1.14.1=py310hbd0dde3_2
   - setuptools=75.6.0=pyhff2d567_1
   - tbb=2021.13.0=h62715c5_1
   - tk=8.6.13=h5226925_1
@@ -91,7 +91,7 @@ dependencies:
   - yaml=0.2.5=h8ffe710_2
   - zstd=1.5.6=h0ea2cb4_0
   - pip:
-      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils.git@a2a851feabdeacf58dcd9acc083086ffbe9f27fa
+      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils.git@ee7fbd119f62a71ad1eb7380421f2cccb9e52477
       - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@fe9db0338ad1f77427f1e5e64bf49356d0c14c18
 
 variables:

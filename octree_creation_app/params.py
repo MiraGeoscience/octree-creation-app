@@ -14,11 +14,13 @@ from typing import Any, ClassVar
 
 import numpy as np
 from geoapps_utils.driver.data import BaseData
+from geoh5py.groups import UIJsonGroup
 from geoh5py.objects import Points
 from geoh5py.ui_json import InputFile
 from pydantic import (
     BaseModel,
     ConfigDict,
+    field_serializer,
     field_validator,
     model_serializer,
     model_validator,
@@ -76,6 +78,7 @@ class OctreeParams(BaseData):
     horizontal_padding: float = 500.0
     vertical_padding: float = 200.0
     refinements: list[RefinementParams] | None = None
+    out_group: UIJsonGroup | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -197,6 +200,10 @@ class RefinementParams(BaseModel):
         if isinstance(levels, str):
             levels = [int(level) for level in levels.split(",")]
         return levels
+
+    @field_serializer("levels")
+    def list_to_string(self, value):
+        return ", ".join(str(v) for v in value)
 
 
 def collect_refinements_from_dict(data: dict) -> list[dict]:

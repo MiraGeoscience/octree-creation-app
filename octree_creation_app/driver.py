@@ -53,7 +53,9 @@ class OctreeDriver(BaseDriver):
     def octree_from_params(params: OctreeParams) -> Octree:
         """Create an Octree object from input parameters."""
         treemesh = OctreeDriver.treemesh_from_params(params)
-        octree = treemesh_2_octree(params.geoh5, treemesh, name=params.name)
+        octree = treemesh_2_octree(
+            params.geoh5, treemesh, name=params.name, parent=params.out_group
+        )
         return octree
 
     @staticmethod
@@ -118,6 +120,7 @@ class OctreeDriver(BaseDriver):
         """
         for refinement in refinements:
             kwargs = refinement.model_dump()
+            kwargs["levels"] = [int(k) for k in kwargs["levels"].split(",")]
             refinement_object = [kwargs.pop("refinement_object")]
             if hasattr(refinement_object[0], "complement"):
                 refinement_object.append(refinement_object[0].complement)
