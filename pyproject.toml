@@ -54,7 +54,7 @@ scipy = "~1.14.0"
 geoh5py = {git = "https://github.com/MiraGeoscience/geoh5py.git", rev = "develop"}
 
 #geoapps-utils = { version = "0.5.0a1, <0.6.0a.dev", source = "pypi", allow-prereleases = true}
-geoapps-utils = {git = "https://github.com/MiraGeoscience/geoapps-utils.git", rev = "GEOPY-1864"}
+geoapps-utils = {git = "https://github.com/MiraGeoscience/geoapps-utils.git", rev = "develop"}
 
 
 ## indirect dependencies, forcing them here for installation through Conda not pip
