@@ -89,10 +89,9 @@ class OctreeDriver(BaseDriver):
         """Create a base TreeMesh object from extents."""
 
         entity = params.objects
+        vertices = entity.vertices
         if hasattr(entity, "complement"):
-            vertices = np.vstack([entity.vertices, entity.complement.vertices])
-        else:
-            vertices = entity.vertices
+            vertices = np.vstack([vertices, entity.complement.vertices])            
 
         mesh: TreeMesh = mesh_builder_xyz(
             vertices,
