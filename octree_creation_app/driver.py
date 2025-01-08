@@ -91,7 +91,7 @@ class OctreeDriver(BaseDriver):
         entity = params.objects
         vertices = entity.vertices
         if hasattr(entity, "complement"):
-            vertices = np.vstack([vertices, entity.complement.vertices])            
+            vertices = np.vstack([vertices, entity.complement.vertices])
 
         mesh: TreeMesh = mesh_builder_xyz(
             vertices,
