@@ -1,6 +1,7 @@
 [tool.poetry]
 name = "octree-creation-app"
-version = "0.3.0-alpha.1"
+version = "0.2.0-beta.3"
+license = "MIT"
 description = "Octree creation app."
 authors = ["Mira Geoscience <support@mirageoscience.com>"]
 maintainers = ["Dominique Fournier <dominiquef@mirageoscience.com>"]
@@ -57,11 +58,6 @@ geoh5py = {git = "https://github.com/MiraGeoscience/geoh5py.git", rev = "release
 geoapps-utils = {git = "https://github.com/MiraGeoscience/geoapps-utils.git", rev = "release/0.4.0"}
 
 
-## indirect dependencies, forcing them here for installation through Conda not pip
-#---------------------------------------------------------------------------------
-h5py = "^3.2.1"  # from geoh5py
-Pillow = "~10.3.0"  # from geoh5py
-pydantic = "^2.5.2"  # from geoh5py, geoapps-utils
 
 ## about pip dependencies
 # to be specified to work with conda-lock
