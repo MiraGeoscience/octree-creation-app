@@ -67,7 +67,7 @@ dependencies:
   - python_abi=3.11=5_cp311
   - readline=8.2=h8228510_1
   - scipy=1.14.1=py311he9a78e4_2
-  - setuptools=75.6.0=pyhff2d567_1
+  - setuptools=75.7.0=pyhff2d567_0
   - tk=8.6.13=noxft_h4845f30_101
   - typing-extensions=4.12.2=hd8ed1ab_1
   - typing_extensions=4.12.2=pyha770c72_1
@@ -77,8 +77,8 @@ dependencies:
   - xorg-libxdmcp=1.1.5=hb9d3cd8_0
   - zstd=1.5.6=ha6fb4c9_0
   - pip:
-      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils.git@9104f37515a3a5e4c2f4643b7f9aaa6811cfaa7d
-      - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@25300f8b45a1141bc9011f356f58bec25f7f1af1
+      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils.git@d9d940c09872cb4be004a3ee0f9dd9feed16beba
+      - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@007caa22abdfc12d5b56f10e7daf54ef5602819f
 
 variables:
   KMP_WARNINGS: 0
