@@ -8,7 +8,7 @@
     "workspace_geoh5": "",
     "objects": {
         "enabled": true,
-        "group": "1- Core",
+        "group": "Core",
         "label": "Core hull extent",
         "main": true,
         "meshType": [
@@ -29,28 +29,28 @@
     },
     "u_cell_size": {
         "enabled": true,
-        "group": "2- Core cell size",
+        "group": "Core cell size",
         "label": "Easting (m)",
         "main": true,
         "value": 25.0
     },
     "v_cell_size": {
         "enabled": true,
-        "group": "2- Core cell size",
+        "group": "Core cell size",
         "label": "Northing (m)",
         "main": true,
         "value": 25.0
     },
     "w_cell_size": {
         "enabled": true,
-        "group": "2- Core cell size",
+        "group": "Core cell size",
         "label": "Vertical (m)",
         "main": true,
         "value": 25.0
     },
     "horizontal_padding": {
         "enabled": true,
-        "group": "3- Padding distance",
+        "group": "Padding distance",
         "label": "Horizontal (m)",
         "main": true,
         "value": 1000.0,
@@ -58,7 +58,7 @@
     },
     "vertical_padding": {
         "enabled": true,
-        "group": "3- Padding distance",
+        "group": "Padding distance",
         "label": "Vertical (m)",
         "main": true,
         "value": 1000.0,
@@ -66,7 +66,7 @@
     },
     "depth_core": {
         "enabled": true,
-        "group": "1- Core",
+        "group": "Core",
         "label": "Minimum Depth (m)",
         "main": true,
         "value": 500.0,
