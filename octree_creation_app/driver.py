@@ -7,6 +7,8 @@
 #  (see LICENSE file at the root of this source code package).                           '
 #                                                                                        '
 # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+
 from __future__ import annotations
 
 import logging
@@ -85,9 +87,15 @@ class OctreeDriver(BaseDriver):
     @staticmethod
     def base_treemesh(params: OctreeParams) -> TreeMesh:
         """Create a base TreeMesh object from extents."""
+
         entity = params.objects
+        if hasattr(entity, "complement"):
+            vertices = np.vstack([entity.vertices, entity.complement.vertices])
+        else:
+            vertices = entity.vertices
+
         mesh: TreeMesh = mesh_builder_xyz(
-            entity.vertices,
+            vertices,
             [
                 params.u_cell_size,
                 params.v_cell_size,
