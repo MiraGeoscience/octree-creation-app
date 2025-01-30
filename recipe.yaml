@@ -1,19 +1,22 @@
-{% set name = "octree-creation-app" %}
-{% set version = "0.3.0a1" %}
+schema_version: 1
+
+context:
+  name: octree-creation-app
+  version: 0.3.0a1
 
 package:
-  name: {{ name|lower }}
-  version: {{ version }}
+  name: ${{ name|lower }}
+  version: ${{ version }}
 
 source:
   # url: https://github.com/MiraGeoscience/{{ name }}/archive/v{{ version }}.tar.gz
   # sha256: b3359c7b3333a3208fa78c4f114eae8b5be0b256ece51aa4b9d14b5f2998bf3b
-  path: ../{{ name }}
+  path: ../${{ name }}
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   number: 0
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
 
 requirements:
   host:
@@ -33,8 +36,7 @@ requirements:
     - pydantic >=2.5.2,<2.6.0
 
 about:
-  home: https://www.mirageoscience.com/mining-industry-software/python-integration/
-  summary: 'Octree creation app.'
+  summary: Octree creation app.
   description: |
     The octree-creation-app package lets users create Octree mesh objects with local
     refinements using the SimPEG.discretize package. The refinements can be performed
@@ -42,8 +44,9 @@ about:
   license: MIT
   license_file:
     - LICENSE
-  doc_url: https://mirageoscience-octree-creation-app.readthedocs-hosted.com/
-  dev_url: https://github.com/MiraGeoscience/octree-creation-app
+  homepage: https://www.mirageoscience.com/mining-industry-software/python-integration/
+  repository: https://github.com/MiraGeoscience/octree-creation-app
+  documentation: https://mirageoscience-octree-creation-app.readthedocs-hosted.com/
 
 extra:
   recipe-maintainers:
