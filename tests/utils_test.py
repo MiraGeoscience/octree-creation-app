@@ -209,9 +209,9 @@ def test_get_neighbouring_cells():
     neighbours = get_neighbouring_cells(mesh, [ind])
 
     assert len(neighbours) == 3, "Incorrect number of neighbours axes returned."
-    assert all(
-        len(axis) == 2 for axis in neighbours
-    ), "Incorrect number of neighbours returned."
+    assert all(len(axis) == 2 for axis in neighbours), (
+        "Incorrect number of neighbours returned."
+    )
     assert np.allclose(np.r_[neighbours].flatten(), np.r_[76, 78, 75, 79, 73, 81])
 
 
