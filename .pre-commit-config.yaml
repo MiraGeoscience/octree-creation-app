@@ -36,7 +36,7 @@ repos:
             types-toml,
             types-PyYAML,
         ]
-        exclude: ^(docs|simpeg_drivers-assets)/
+        exclude: ^(docs|octree_creation_app-assets)/
 -   repo: https://github.com/codingjoe/relint
     rev: 3.3.1
     hooks:
