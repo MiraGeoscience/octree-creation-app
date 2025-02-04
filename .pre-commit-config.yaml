@@ -30,13 +30,13 @@ repos:
     hooks:
     -   id: mypy
         additional_dependencies: [
-#            numpy==1.26.*,  # TODO: fix mypy errors related to numpy
+            numpy==1.26.*,
             pydantic==2.5.*,
             tomli, # to read config from pyproject.toml
             types-toml,
             types-PyYAML,
         ]
-        exclude: ^(docs|octree_creation_app-assets|pyproject.toml)/
+        exclude: ^(docs|octree_creation_app-assets)/
 -   repo: https://github.com/codingjoe/relint
     rev: 3.3.1
     hooks:
