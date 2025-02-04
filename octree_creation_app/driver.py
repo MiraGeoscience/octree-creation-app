@@ -1,10 +1,12 @@
-#  Copyright (c) 2024 Mira Geoscience Ltd.
-#
-#  This file is part of octree-creation-app package.
-#
-#  octree-creation-app is distributed under the terms and conditions of the MIT License
-#  (see LICENSE file at the root of this source code package).
-
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#  Copyright (c) 2024-2025 Mira Geoscience Ltd.                                          '
+#                                                                                        '
+#  This file is part of octree-creation-app package.                                     '
+#                                                                                        '
+#  octree-creation-app is distributed under the terms and conditions of the MIT License  '
+#  (see LICENSE file at the root of this source code package).                           '
+#                                                                                        '
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 from __future__ import annotations
 
 import sys
@@ -13,15 +15,16 @@ import numpy as np
 from discretize import TreeMesh
 from discretize.utils import mesh_builder_xyz
 from geoapps_utils.driver.driver import BaseDriver
-from geoapps_utils.locations import get_locations
+from geoapps_utils.utils.locations import get_locations
 from geoh5py.objects import Curve, ObjectBase, Octree, Points, Surface
+from geoh5py.objects.surveys.direct_current import BaseElectrode
 from geoh5py.shared.utils import fetch_active_workspace
 from geoh5py.ui_json import utils
 from scipy import interpolate
-from scipy.spatial import Delaunay, cKDTree
+from scipy.spatial import Delaunay, QhullError, cKDTree
 
 from octree_creation_app.params import OctreeParams
-from octree_creation_app.utils import densify_curve, treemesh_2_octree
+from octree_creation_app.utils import densify_curve, surface_strip, treemesh_2_octree
 
 
 class OctreeDriver(BaseDriver):
@@ -73,55 +76,92 @@ class OctreeDriver(BaseDriver):
 
         for label, value in params.free_parameter_dict.items():
             refinement_object = getattr(params, value["object"])
-            levels = utils.str2list(getattr(params, value["levels"]))
             if not isinstance(refinement_object, ObjectBase):
                 continue
+            levels = utils.str2list(getattr(params, value["levels"]))
 
-            print(f"Applying {label} on: {getattr(params, value['object']).name}")
-
-            if getattr(params, value["horizon"]):
-                mesh = OctreeDriver.refine_tree_from_surface(
-                    mesh,
-                    refinement_object,
-                    levels,
-                    params.diagonal_balance,
-                    max_distance=getattr(params, value["distance"]),
-                )
-
-            elif isinstance(refinement_object, Curve):
-                mesh = OctreeDriver.refine_tree_from_curve(
-                    mesh, refinement_object, levels, params.diagonal_balance
-                )
-
-            elif isinstance(refinement_object, Surface):
-                mesh = OctreeDriver.refine_tree_from_triangulation(
-                    mesh, refinement_object, levels, params.diagonal_balance
-                )
-
-            elif isinstance(refinement_object, Points):
-                mesh = OctreeDriver.refine_tree_from_points(
-                    mesh,
-                    refinement_object,
-                    levels,
+            objects = [refinement_object]
+            if hasattr(refinement_object, "complement"):
+                objects.append(refinement_object.complement)
+            for obj in objects:
+                mesh = OctreeDriver.refine_by_object_type(
+                    mesh=mesh,
+                    refinement_object=obj,
+                    levels=levels,
+                    horizon=getattr(params, value["horizon"]),
+                    distance=getattr(params, value["distance"]),
                     diagonal_balance=params.diagonal_balance,
                 )
 
-            else:
-                raise NotImplementedError(
-                    f"Refinement for object {type(refinement_object)} is not implemented."
-                )
+            print(f"Applying {label} on: {getattr(params, value['object']).name}")
 
         print("Finalizing . . .")
         mesh.finalize()
         octree = treemesh_2_octree(params.geoh5, mesh, name=params.ga_group_name)
-
+        print("Done.")
         return octree
+
+    @staticmethod
+    def refine_by_object_type(
+        mesh: TreeMesh,
+        refinement_object: ObjectBase,
+        levels: list[int],
+        *,
+        horizon: bool,
+        distance: float | None,
+        diagonal_balance: bool,
+    ) -> TreeMesh:
+        """Refine Treemesh as a based on object type."""
+        if horizon:
+            try:
+                mesh = OctreeDriver.refine_tree_from_surface(
+                    mesh,
+                    refinement_object,
+                    levels,
+                    diagonal_balance=diagonal_balance,
+                    max_distance=np.inf if distance is None else distance,
+                )
+            except QhullError:
+                base_cell_size = np.min([h.min() for h in mesh.h])
+                mesh = OctreeDriver.refine_tree_from_surface(
+                    mesh,
+                    surface_strip(refinement_object, 2 * base_cell_size),
+                    levels,
+                    diagonal_balance=diagonal_balance,
+                    max_distance=np.inf if distance is None else distance,
+                )
+
+        elif isinstance(refinement_object, Curve):
+            mesh = OctreeDriver.refine_tree_from_curve(
+                mesh, refinement_object, levels, diagonal_balance=diagonal_balance
+            )
+
+        elif isinstance(refinement_object, Surface):
+            mesh = OctreeDriver.refine_tree_from_triangulation(
+                mesh, refinement_object, levels, diagonal_balance=diagonal_balance
+            )
+
+        elif isinstance(refinement_object, Points):
+            mesh = OctreeDriver.refine_tree_from_points(
+                mesh,
+                refinement_object,
+                levels,
+                diagonal_balance=diagonal_balance,
+            )
+
+        else:
+            raise NotImplementedError(
+                f"Refinement for object {type(refinement_object)} is not implemented."
+            )
+
+        return mesh
 
     @staticmethod
     def refine_tree_from_curve(
         mesh: TreeMesh,
         curve: Curve,
         levels: list[int] | np.ndarray,
+        *,
         diagonal_balance: bool = True,
         finalize: bool = False,
     ) -> TreeMesh:
@@ -141,10 +181,17 @@ class OctreeDriver(BaseDriver):
         if not isinstance(curve, Curve):
             raise TypeError("Refinement object must be a Curve.")
 
+        if curve.vertices is None:
+            return mesh
+
         if isinstance(levels, list):
             levels = np.array(levels)
 
-        locations = densify_curve(curve, mesh.h[0][0])
+        if isinstance(curve, BaseElectrode):
+            locations = curve.vertices
+        else:
+            locations = densify_curve(curve, mesh.h[0][0])
+
         mesh = OctreeDriver.refine_tree_from_points(
             mesh, locations, levels, diagonal_balance=diagonal_balance, finalize=False
         )
@@ -159,6 +206,7 @@ class OctreeDriver(BaseDriver):
         mesh: TreeMesh,
         points: ObjectBase | np.ndarray,
         levels: list[int] | np.ndarray,
+        *,
         diagonal_balance: bool = True,
         finalize: bool = False,
     ) -> TreeMesh:
@@ -203,10 +251,11 @@ class OctreeDriver(BaseDriver):
         return mesh
 
     @staticmethod
-    def refine_tree_from_surface(  # pylint: disable=too-many-arguments, too-many-locals
+    def refine_tree_from_surface(  # pylint: disable=too-many-locals
         mesh: TreeMesh,
         surface: ObjectBase,
         levels: list[int] | np.ndarray,
+        *,
         diagonal_balance: bool = True,
         max_distance: float = np.inf,
         finalize: bool = False,
@@ -230,8 +279,8 @@ class OctreeDriver(BaseDriver):
 
         xyz = get_locations(surface.workspace, surface)
         triang = Delaunay(xyz[:, :2])
-        tree = cKDTree(xyz[:, :2])
 
+        tree = cKDTree(xyz[:, :2])
         interp = interpolate.LinearNDInterpolator(triang, xyz[:, -1])
         levels = np.array(levels)
 
@@ -246,6 +295,7 @@ class OctreeDriver(BaseDriver):
             dz = OctreeDriver.cell_size_from_level(mesh, ind, 2)
 
             # Create a grid at the octree level in xy
+            assert surface.extent is not None
             cell_center_x, cell_center_y = np.meshgrid(
                 np.arange(surface.extent[0, 0], surface.extent[1, 0], dx),
                 np.arange(surface.extent[0, 1], surface.extent[1, 1], dy),
@@ -309,6 +359,9 @@ class OctreeDriver(BaseDriver):
             vertices[surface.cells[:, 1], :] - vertices[surface.cells[:, 0], :],
             vertices[surface.cells[:, 2], :] - vertices[surface.cells[:, 0], :],
         )
+        if surface.n_vertices is None:
+            raise ValueError("Surface object must have n_vertices.")
+
         average_normals = np.zeros((surface.n_vertices, 3))
 
         for vert_ids in surface.cells.T:

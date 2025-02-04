@@ -6,7 +6,7 @@ Basic usage
 The main entry point is the ``octree_mesh.ui.json`` file (stored under the ``octree_creation_app-assets`` directory).
 The ``ui.json`` has the dual purpose of (1) rendering a user-interface from Geoscience ANALYST and (2) storing the input
 parameters chosen by the user for the program to run. To learn more about the ui.json interface visit the
-`UIJson documentation <https://geoh5py.readthedocs.io/en/v0.8.0-rc.1/content/uijson_format/usage.html#usage-with-geoscience-analyst-pro>`_ page.
+`UIJson documentation <https://mirageoscience-geoh5py.readthedocs-hosted.com/en/stable/content/uijson_format/usage.html#usage-with-geoscience-analyst-pro>`_ page.
 
 
 User-interface
@@ -51,9 +51,9 @@ From command line
 -----------------
 
 The application can also be run from the command line if all required fields in the ui.json are provided.
-This is useful for more advanced users that may want to automate the mesh creation process, or re-run an existing mesh with different parameters.
+This is useful for more advanced users wanting to automate the mesh creation process or re-run an existing mesh with different parameters.
 
-To run the application from the command line, use the following command in an Anaconda Prompt:
+To run the application from the command line, use the following command in a Conda Prompt:
 
 ``conda activate octree_creation_app``
 

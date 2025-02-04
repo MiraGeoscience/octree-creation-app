@@ -13,10 +13,9 @@
         "main": true
     },
     "conda_environment_boolean": false,
-    "workspace": "",
     "objects": {
         "enabled": true,
-        "group": "1- Core",
+        "group": "Core",
         "label": "Core hull extent",
         "main": true,
         "meshType": [
@@ -26,34 +25,39 @@
             "{b99bd6e5-4fe1-45a5-bd2f-75fc31f91b38}",
             "{0b639533-f35b-44d8-92a8-f70ecff3fd26}",
             "{9b08bb5a-300c-48fe-9007-d206f971ea92}",
-            "{19730589-fd28-4649-9de0-ad47249d9aba}"
+            "{19730589-fd28-4649-9de0-ad47249d9aba}",
+            "{b3a47539-0301-4b27-922e-1dde9d882c60}",
+            "{a81c6b0a-f290-4bc8-b72d-60e59964bfe8}",
+            "{41018a45-01a0-4c61-a7cb-9f32d8159df4}",
+            "{deebe11a-b57b-4a03-99d6-8f27b25eb2a8}",
+            "{275ecee9-9c24-4378-bf94-65f3c5fbe163}"
         ],
         "value": ""
     },
     "u_cell_size": {
         "enabled": true,
-        "group": "2- Core cell size",
+        "group": "Core cell size",
         "label": "Easting (m)",
         "main": true,
         "value": 25.0
     },
     "v_cell_size": {
         "enabled": true,
-        "group": "2- Core cell size",
+        "group": "Core cell size",
         "label": "Northing (m)",
         "main": true,
         "value": 25.0
     },
     "w_cell_size": {
         "enabled": true,
-        "group": "2- Core cell size",
+        "group": "Core cell size",
         "label": "Vertical (m)",
         "main": true,
         "value": 25.0
     },
     "horizontal_padding": {
         "enabled": true,
-        "group": "3- Padding distance",
+        "group": "Padding distance",
         "label": "Horizontal (m)",
         "main": true,
         "value": 1000.0,
@@ -61,7 +65,7 @@
     },
     "vertical_padding": {
         "enabled": true,
-        "group": "3- Padding distance",
+        "group": "Padding distance",
         "label": "Vertical (m)",
         "main": true,
         "value": 1000.0,
@@ -69,7 +73,7 @@
     },
     "depth_core": {
         "enabled": true,
-        "group": "1- Core",
+        "group": "Core",
         "label": "Minimum Depth (m)",
         "main": true,
         "value": 500.0,
@@ -109,7 +113,12 @@
             "{b99bd6e5-4fe1-45a5-bd2f-75fc31f91b38}",
             "{0b639533-f35b-44d8-92a8-f70ecff3fd26}",
             "{9b08bb5a-300c-48fe-9007-d206f971ea92}",
-            "{19730589-fd28-4649-9de0-ad47249d9aba}"
+            "{19730589-fd28-4649-9de0-ad47249d9aba}",
+            "{b3a47539-0301-4b27-922e-1dde9d882c60}",
+            "{a81c6b0a-f290-4bc8-b72d-60e59964bfe8}",
+            "{41018a45-01a0-4c61-a7cb-9f32d8159df4}",
+            "{deebe11a-b57b-4a03-99d6-8f27b25eb2a8}",
+            "{275ecee9-9c24-4378-bf94-65f3c5fbe163}"
         ],
         "value": "",
         "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details."
@@ -149,7 +158,12 @@
             "{b99bd6e5-4fe1-45a5-bd2f-75fc31f91b38}",
             "{0b639533-f35b-44d8-92a8-f70ecff3fd26}",
             "{9b08bb5a-300c-48fe-9007-d206f971ea92}",
-            "{19730589-fd28-4649-9de0-ad47249d9aba}"
+            "{19730589-fd28-4649-9de0-ad47249d9aba}",
+            "{b3a47539-0301-4b27-922e-1dde9d882c60}",
+            "{a81c6b0a-f290-4bc8-b72d-60e59964bfe8}",
+            "{41018a45-01a0-4c61-a7cb-9f32d8159df4}",
+            "{deebe11a-b57b-4a03-99d6-8f27b25eb2a8}",
+            "{275ecee9-9c24-4378-bf94-65f3c5fbe163}"
         ],
         "value": "",
         "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details."
@@ -189,7 +203,12 @@
             "{b99bd6e5-4fe1-45a5-bd2f-75fc31f91b38}",
             "{0b639533-f35b-44d8-92a8-f70ecff3fd26}",
             "{9b08bb5a-300c-48fe-9007-d206f971ea92}",
-            "{19730589-fd28-4649-9de0-ad47249d9aba}"
+            "{19730589-fd28-4649-9de0-ad47249d9aba}",
+            "{b3a47539-0301-4b27-922e-1dde9d882c60}",
+            "{a81c6b0a-f290-4bc8-b72d-60e59964bfe8}",
+            "{41018a45-01a0-4c61-a7cb-9f32d8159df4}",
+            "{deebe11a-b57b-4a03-99d6-8f27b25eb2a8}",
+            "{275ecee9-9c24-4378-bf94-65f3c5fbe163}"
         ],
         "value": "",
         "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details."

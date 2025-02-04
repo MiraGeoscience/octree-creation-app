@@ -1,8 +1,8 @@
 |coverage| |maintainability| |precommit_ci| |style| |version| |status| |pyversions|
 
-.. |docs| image:: https://readthedocs.org/projects/octree-creation-app/badge/
+.. |docs| image:: https://readthedocs.com/projects/mirageoscience-octree-creation-app/badge/?version=latest
     :alt: Documentation Status
-    :target: https://octree-creation-app.readthedocs.io/en/latest/?badge=latest
+    :target: https://mirageoscience-octree-creation-app.readthedocs-hosted.com/en/latest/?badge=latest
 
 .. |coverage| image:: https://codecov.io/gh/MiraGeoscience/octree-creation-app/graph/badge.svg?token=8DzYB9EWdR
     :alt: Code coverage
@@ -158,7 +158,7 @@ SOFTWARE.
 
 Third Party Software
 ^^^^^^^^^^^^^^^^^^^^
-The octree-creation-app Software may provide links to third party libraries or code (collectively “Third Party Software”)
+The octree-creation-app Software may provide links to third party libraries or code (collectively "Third Party Software")
 to implement various functions. Third Party Software does not comprise part of the Software.
 The use of Third Party Software is governed by the terms of such software license(s).
 Third Party Software notices and/or additional terms and conditions are located in the
@@ -168,4 +168,4 @@ Third Party Software notices and/or additional terms and conditions are located 
 
 Copyright
 ^^^^^^^^^
-Copyright (c) 2023 Mira Geoscience Ltd.
+Copyright (c) 2023-2025 Mira Geoscience Ltd.

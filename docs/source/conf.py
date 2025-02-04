@@ -1,3 +1,17 @@
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#  Copyright (c) 2024-2025 Mira Geoscience Ltd.                                          '
+#                                                                                        '
+#  This file is part of octree-creation-app package.                                     '
+#                                                                                        '
+#  octree-creation-app is distributed under the terms and conditions of the MIT License  '
+#  (see LICENSE file at the root of this source code package).                           '
+#                                                                                        '
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+from datetime import datetime
+from importlib.metadata import version
+from packaging.version import Version
+
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -7,10 +21,17 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "octree-creation"
-release = "0.1.1"
+author = "Mira Geoscience Ltd."
+project_copyright = "%Y, Mira Geoscience Ltd"
+
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+
+# The full version, including alpha/beta/rc tags.
+release = version("octree-creation-app")
+# The shorter X.Y.Z version.
+version = Version(release).base_version
 
 extensions = [
     "sphinx.ext.autodoc",
@@ -31,7 +52,18 @@ autodoc_typehints = "signature"
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "alabaster"
-html_static_path = ["_static"]
+html_theme_options = {
+    'description': f"version {release}",
+}
 
 # Enable numref
 numfig = True
+
+def get_copyright_notice():
+    return f"Copyright {datetime.now().strftime(project_copyright)}"
+
+
+rst_epilog = f"""
+.. |copyright_notice| replace:: {get_copyright_notice()}.
+"""
+

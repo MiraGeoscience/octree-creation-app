@@ -1,10 +1,12 @@
-#  Copyright (c) 2024 Mira Geoscience Ltd.
-#
-#  This file is part of octree-creation-app package.
-#
-#  octree-creation-app is distributed under the terms and conditions of the MIT License
-#  (see LICENSE file at the root of this source code package).
-
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+#  Copyright (c) 2024-2025 Mira Geoscience Ltd.                                          '
+#                                                                                        '
+#  This file is part of octree-creation-app package.                                     '
+#                                                                                        '
+#  octree-creation-app is distributed under the terms and conditions of the MIT License  '
+#  (see LICENSE file at the root of this source code package).                           '
+#                                                                                        '
+# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 from pathlib import Path
 
 import numpy as np
@@ -18,11 +20,38 @@ from octree_creation_app.utils import (
     collocate_octrees,
     create_octree_from_octrees,
     densify_curve,
+    find_endpoints,
     get_neighbouring_cells,
     get_octree_attributes,
     octree_2_treemesh,
+    surface_strip,
     treemesh_2_octree,
 )
+
+
+def test_find_endpoints():
+    locs = np.array([[-1, -1, 0], [0, 0, 0], [1, 1, 0]])
+    endpoints = find_endpoints(locs)
+    assert np.allclose(endpoints, np.array([[-1, -1, 0], [1, 1, 0]]))
+    locs = np.array([[-1, 1, 0], [0, 0, 0], [1, -1, 0]])
+    endpoints = find_endpoints(locs)
+    assert np.allclose(endpoints, np.array([[-1, 1, 0], [1, -1, 0]]))
+    locs = np.array([[0, -1, 0], [0, 0, 0], [0, 1, 0]])
+    endpoints = find_endpoints(locs)
+    assert np.allclose(endpoints, np.array([[0, -1, 0], [0, 1, 0]]))
+    locs = np.array([[-1, 0, 0], [0, 0, 0], [1, 0, 0]])
+    endpoints = find_endpoints(locs)
+    assert np.allclose(endpoints, np.array([[-1, 0, 0], [1, 0, 0]]))
+
+
+def test_surface_strip(tmp_path):
+    with Workspace.create(tmp_path / "test.geoh5") as workspace:
+        line = Points.create(
+            workspace, vertices=np.array([[-1, 0, 0], [0, 0, 0], [1, 0, 0]])
+        )
+        strip = surface_strip(line, 1)
+        assert strip.extent is not None
+        assert np.allclose(strip.extent, np.array([[-2, -1, 0], [2, 1, 0]]))
 
 
 def test_not_implemented_negative():
