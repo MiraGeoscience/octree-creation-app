@@ -3,6 +3,7 @@ schema_version: 1
 context:
   name: octree-creation-app
   version: 0.3.0a1
+  python_min: "3.10.0"
 
 package:
   name: ${{ name|lower }}
@@ -20,12 +21,12 @@ build:
 
 requirements:
   host:
-    - python >=3.10.0,<4.0.0
+    - python ${{ python_min }}
     - poetry-core >=1.0.0
     - setuptools
     - pip
   run:
-    - python >=3.10.0,<4.0.0
+    - python >=${{ python_min }}
     - discretize >=0.10.0,<0.11.0
     - numpy >=1.26.0,<1.27.0
     - scipy >=1.14.0,<1.15.0
