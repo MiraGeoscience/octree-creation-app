@@ -10,6 +10,7 @@
 
 from datetime import datetime
 from importlib.metadata import version
+from packaging.version import Version
 
 # Configuration file for the Sphinx documentation builder.
 #
@@ -29,8 +30,8 @@ project_copyright = "%Y, Mira Geoscience Ltd"
 
 # The full version, including alpha/beta/rc tags.
 release = version("octree-creation-app")
-# The short X.Y.Z version.
-version = ".".join(release.split(".")[:3])
+# The shorter X.Y.Z version.
+version = Version(release).base_version
 
 extensions = [
     "sphinx.ext.autodoc",
