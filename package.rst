@@ -1,18 +1,18 @@
-geoapps
-================
+Octree-creation-app
+===================
 
-The **geoapps** project has been created for the development and sharing of open-source
-applications in geoscience, directly leverage the powerful visualization capabilities of
-`Geoscience ANALYST <https://mirageoscience.com/mining-industry-software/geoscience-analyst/>`_ along with open-source code from the Python ecosystem.
+The **octree-creation-app** package lets users create Octree mesh objects with
+local refinements using the `SimPEG.discretize <https://discretize.simpeg.xyz/en/latest/>`_ package. The refinements can be
+performed on any number of ``Objects`` stored in a ``geoh5`` file.
 
 
 Installation
 ^^^^^^^^^^^^
-**geoapps** is currently written for Python 3.10 or higher.
+**octree-creation-app** is currently written for Python 3.10 or higher.
 
-Install **geoapps** from PyPI::
+Install **octree-creation-app** from PyPI::
 
-    $ pip install geoapps
+    $ pip install octree-creation-app
 
 
 Feedback
@@ -20,7 +20,7 @@ Feedback
 Have comments or suggestions? Submit feedback.
 All the content can be found on the github_ repository.
 
-.. _github: https://github.com/MiraGeoscience/geoapps
+.. _github: https://github.com/MiraGeoscience/octree-creation-app
 
 
 Visit `Mira Geoscience website <https://mirageoscience.com/>`_ to learn more about our products
@@ -53,7 +53,7 @@ SOFTWARE.
 
 Third Party Software
 ^^^^^^^^^^^^^^^^^^^^
-The geoapps Software may provide links to third party libraries or code (collectively “Third Party Software”)
+The octree-creation-app Software may provide links to third party libraries or code (collectively “Third Party Software”)
 to implement various functions. Third Party Software does not comprise part of the Software.
 The use of Third Party Software is governed by the terms of such software license(s).
 Third Party Software notices and/or additional terms and conditions are located in the
