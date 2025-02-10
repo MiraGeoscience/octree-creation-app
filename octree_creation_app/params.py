@@ -148,7 +148,7 @@ class OctreeParams(BaseData):
         :param data: Dictionary of parameters and values without nesting structure.
         """
 
-        update = cls.super().collect_input_from_dict(base_model, data)
+        update = super().collect_input_from_dict(base_model, data)
         update["refinements"] = collect_refinements_from_dict(data)
 
         return update
