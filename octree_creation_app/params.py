@@ -138,8 +138,8 @@ class OctreeParams(BaseData):
 
         return out
 
-    @staticmethod
-    def collect_input_from_dict(base_model: type[BaseModel], data: dict[str, Any]):
+    @classmethod
+    def collect_input_from_dict(cls, base_model: type[BaseModel], data: dict[str, Any]):
         """
         Recursively replace BaseModel objects with dictionary of 'data' values.
 
@@ -148,7 +148,7 @@ class OctreeParams(BaseData):
         :param data: Dictionary of parameters and values without nesting structure.
         """
 
-        update = super().collect_input_from_dict(base_model, data)
+        update = cls.super().collect_input_from_dict(base_model, data)
         update["refinements"] = collect_refinements_from_dict(data)
 
         return update
