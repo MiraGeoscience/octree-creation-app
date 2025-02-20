@@ -576,3 +576,60 @@ def test_refine_complement(tmp_path: Path, setup_test_octree):  # pylint: disabl
             point
         )
         assert all(k == 5 for k in treemesh[ind].h)
+
+
+def test_regular_grid(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
+    (
+        cell_sizes,
+        depth_core,
+        horizontal_padding,
+        _,
+        minimum_level,
+        refinement,
+        treemesh,
+        vertical_padding,
+    ) = setup_test_octree
+
+    x, y = np.meshgrid(
+        np.arange(0, 100, 5) + np.random.randn(1),
+        np.arange(0, 100, 5) + np.random.randn(1),
+    )
+    locations = np.c_[x.flatten(), y.flatten(), np.ones(400) * np.random.randn(1)]
+
+    with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
+        points = Points.create(workspace, vertices=locations)
+
+        params_dict = {
+            "geoh5": workspace,
+            "objects": points,
+            "u_cell_size": cell_sizes[0],
+            "v_cell_size": cell_sizes[1],
+            "w_cell_size": cell_sizes[2],
+            "horizontal_padding": horizontal_padding,
+            "vertical_padding": vertical_padding,
+            "depth_core": depth_core,
+            "diagonal_balance": False,
+            "minimum_level": minimum_level,
+            "refinements": [
+                {
+                    "refinement_object": points,
+                    "levels": refinement,
+                    "horizon": False,
+                }
+            ],
+        }
+        params = OctreeParams(**params_dict)
+        params.write_ui_json(tmp_path / "testOctree.ui.json")
+        driver = OctreeDriver(params)
+        driver.run()
+
+        rec_octree = workspace.get_entity("Octree_Mesh")[0]
+
+        treemesh = octree_2_treemesh(rec_octree)
+
+    # center of curve should be refined because of point complement
+    ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
+        locations
+    )
+
+    np.testing.assert_allclose(treemesh.cell_centers[ind], locations)
