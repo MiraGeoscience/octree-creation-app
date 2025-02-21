@@ -105,6 +105,9 @@ class OctreeDriver(BaseDriver):
             mesh_type="tree",
             depth_core=params.depth_core,
         )
+
+        deltas = OctreeDriver.tree_offset(mesh, vertices)
+        mesh.origin += deltas
         return mesh
 
     @staticmethod
@@ -449,6 +452,28 @@ class OctreeDriver(BaseDriver):
         :return: Cell size at the given level of refinement.
         """
         return octree.h[axis][0] * 2**level
+
+    @staticmethod
+    def tree_offset(mesh: TreeMesh, vertices: np.ndarray) -> np.ndarray:
+        """
+        Compute the offset required to center the mesh around the vertices.
+
+        :param mesh: Tree mesh to center.
+        :param vertices: Vertices to center around.
+
+        :return: Offset required to center
+        """
+        # Center on the nearest central vertices
+        center = np.mean(vertices, axis=0)
+        ind_mid = np.argmin(np.linalg.norm(vertices - center, axis=1))
+
+        offsets = []
+        for ii in range(mesh.dim):
+            cell_centers = mesh.origin[ii] + np.cumsum(mesh.h[ii]) - mesh.h[ii] / 2
+            nearest = np.searchsorted(cell_centers, vertices[ind_mid, ii])
+            offsets.append(vertices[ind_mid, ii] - cell_centers[nearest])
+
+        return np.r_[offsets]
 
 
 if __name__ == "__main__":
