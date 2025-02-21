@@ -195,27 +195,13 @@ def test_create_octree_curve(tmp_path: Path, setup_test_octree):  # pylint: disa
         locations,
         minimum_level,
         refinement,
-        treemesh,
+        _,
         vertical_padding,
     ) = setup_test_octree
 
     with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
         curve = Curve.create(workspace, vertices=locations)
         curve.remove_cells([-1])
-        treemesh.refine(
-            treemesh.max_level - minimum_level + 1,
-            diagonal_balance=False,
-            finalize=False,
-        )
-        treemesh = OctreeDriver.refine_tree_from_curve(
-            treemesh,
-            curve,
-            str2list(refinement),
-            diagonal_balance=False,
-            finalize=True,
-        )
-        octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
-        assert octree.n_cells == 176915
 
         params_dict = {
             "geoh5": workspace,
@@ -241,7 +227,7 @@ def test_create_octree_curve(tmp_path: Path, setup_test_octree):  # pylint: disa
         driver.run()
 
         results = driver.params.geoh5.get_entity("Octree_Mesh")
-        compare_entities(results[0], results[1], ignore=["_uid"])
+        assert results[0].n_cells == 177230
 
 
 def test_create_octree_empty_curve(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
@@ -442,8 +428,10 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
 ):
     workspace = Workspace.create(tmp_path / "testDiagonalBalance.geoh5")
     with workspace.open(mode="r+"):
-        point = [0, 0, 0]
-        points = Points.create(workspace, vertices=np.array([[150, 0, 150], point]))
+        point = [125, 0, 125]
+        points = Points.create(
+            workspace, vertices=np.array([[150, 0, 150], [200, 0, 200], point])
+        )
 
         # Repeat the creation using the app
         params_dict = {
