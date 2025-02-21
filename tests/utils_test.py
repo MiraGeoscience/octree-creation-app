@@ -192,7 +192,7 @@ def test_get_neighbouring_cells():
     """
     mesh = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
     mesh.insert_cells([100, 100, 100], mesh.max_level, finalize=True)
-    ind = mesh._get_containing_cell_indexes(  # pylint: disable=protected-access
+    ind = mesh.get_containing_cells(  # pylint: disable=protected-access
         [95.0, 95.0, 95.0]
     )
 
