@@ -192,9 +192,7 @@ def test_get_neighbouring_cells():
     """
     mesh = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
     mesh.insert_cells([100, 100, 100], mesh.max_level, finalize=True)
-    ind = mesh.get_containing_cells(
-        [95.0, 95.0, 95.0]
-    )
+    ind = mesh.get_containing_cells([95.0, 95.0, 95.0])
 
     with pytest.raises(
         TypeError, match="Input 'indices' must be a list or numpy.ndarray of indices."
