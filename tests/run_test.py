@@ -472,7 +472,7 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
         treemesh = octree_2_treemesh(mesh_obj)
         assert treemesh is not None
 
-        ind = treemesh.get_containing_cells(  # pylint: disable=protected-access
+        ind = treemesh.get_containing_cells(
             point
         )
         starting_cell = treemesh[ind]
