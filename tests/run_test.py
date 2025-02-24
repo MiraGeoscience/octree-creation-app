@@ -614,7 +614,7 @@ def test_regular_grid(tmp_path: Path, setup_test_octree):  # pylint: disable=too
         treemesh = octree_2_treemesh(rec_octree)
 
     # center of curve should be refined because of point complement
-    ind = treemesh.get_containing_cells(  # pylint: disable=protected-access
+    ind = treemesh.get_containing_cells(
         locations
     )
 
