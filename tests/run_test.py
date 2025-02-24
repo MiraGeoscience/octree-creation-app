@@ -554,7 +554,7 @@ def test_refine_complement(tmp_path: Path, setup_test_octree):  # pylint: disabl
         )
         assert all(k == 5 for k in treemesh[ind].h)
         # between curve and point complement should be > base cell size
-        ind = treemesh.get_containing_cells(  # pylint: disable=protected-access
+        ind = treemesh.get_containing_cells(
             np.array([[100.0, 0.0, 0.0]])
         )
         assert all(k == 20 for k in treemesh[ind].h)
