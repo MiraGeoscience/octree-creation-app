@@ -560,7 +560,7 @@ def test_refine_complement(tmp_path: Path, setup_test_octree):  # pylint: disabl
         assert all(k == 20 for k in treemesh[ind].h)
         # along curve path should be base cell size
         point = np.mean(locations[1:3, :], axis=0)
-        ind = treemesh.get_containing_cells(  # pylint: disable=protected-access
+        ind = treemesh.get_containing_cells(
             point
         )
         assert all(k == 5 for k in treemesh[ind].h)
