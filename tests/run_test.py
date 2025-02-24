@@ -549,7 +549,7 @@ def test_refine_complement(tmp_path: Path, setup_test_octree):  # pylint: disabl
         assert isinstance(treemesh, TreeMesh)
 
         # center of curve should be refined because of point complement
-        ind = treemesh.get_containing_cells(  # pylint: disable=protected-access
+        ind = treemesh.get_containing_cells(
             np.array([[0.0, 0.0, 0.0]])
         )
         assert all(k == 5 for k in treemesh[ind].h)
