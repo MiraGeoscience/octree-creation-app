@@ -80,48 +80,47 @@ def test_not_implemented_negative():
 
 
 def test_collocate_octrees(tmp_path: Path):
-    workspace = Workspace(tmp_path / "test.geoh5")
+    with Workspace.create(tmp_path / "test.geoh5") as workspace:
+        local_mesh1 = TreeMesh(
+            [[10] * 16, [10] * 16, [10] * 16], [1000, 0, 0], diagonal_balance=True
+        )
+        local_mesh1.insert_cells([120, 120, -40], local_mesh1.max_level, finalize=True)
+        local_omesh1 = treemesh_2_octree(workspace, local_mesh1)
 
-    local_mesh1 = TreeMesh(
-        [[10] * 16, [10] * 16, [10] * 16], [1000, 0, 0], diagonal_balance=True
-    )
-    local_mesh1.insert_cells([120, 120, -40], local_mesh1.max_level, finalize=True)
-    local_omesh1 = treemesh_2_octree(workspace, local_mesh1)
+        local_mesh2 = TreeMesh(
+            [[10] * 16, [10] * 16, [10] * 16], [-500, 500, -500], diagonal_balance=True
+        )
+        local_mesh2.insert_cells([40, 40, -120], local_mesh2.max_level, finalize=True)
+        local_omesh2 = treemesh_2_octree(workspace, local_mesh2)
 
-    local_mesh2 = TreeMesh(
-        [[10] * 16, [10] * 16, [10] * 16], [-500, 500, -500], diagonal_balance=True
-    )
-    local_mesh2.insert_cells([40, 40, -120], local_mesh2.max_level, finalize=True)
-    local_omesh2 = treemesh_2_octree(workspace, local_mesh2)
+        global_mesh = TreeMesh(
+            [[10] * 16, [10] * 16, [10] * 16], [0, 0, 0], diagonal_balance=True
+        )
+        global_mesh.insert_cells([620, 300, -300], global_mesh.max_level, finalize=True)
+        global_omesh = treemesh_2_octree(workspace, global_mesh)
 
-    global_mesh = TreeMesh(
-        [[10] * 16, [10] * 16, [10] * 16], [0, 0, 0], diagonal_balance=True
-    )
-    global_mesh.insert_cells([620, 300, -300], global_mesh.max_level, finalize=True)
-    global_omesh = treemesh_2_octree(workspace, global_mesh)
+        original_global_extent = global_omesh.extent
 
-    original_global_extent = global_omesh.extent
+        # Bounds do not overlap initially
+        for mesh in [local_omesh1, local_omesh2]:
+            if mesh.extent is not None and original_global_extent is not None:
+                for i in range(3):
+                    assert (mesh.extent[0][i] >= original_global_extent[0][i]) or (
+                        mesh.extent[1][i] <= original_global_extent[1][i]
+                    )
 
-    # Bounds do not overlap initially
-    for mesh in [local_omesh1, local_omesh2]:
-        if mesh.extent is not None and original_global_extent is not None:
-            for i in range(3):
-                assert (mesh.extent[0][i] >= original_global_extent[0][i]) or (
-                    mesh.extent[1][i] <= original_global_extent[1][i]
-                )
+        # Collocate octrees
+        collocate_octrees(global_omesh, [local_omesh1, local_omesh2])
+        global_extent = global_omesh.extent
+        assert np.all(global_extent == original_global_extent)
 
-    # Collocate octrees
-    collocate_octrees(global_omesh, [local_omesh1, local_omesh2])
-    global_extent = global_omesh.extent
-    assert np.all(global_extent == original_global_extent)
-
-    # Check that bounds overlap
-    for mesh in [local_omesh1, local_omesh2]:
-        if mesh.extent is not None and global_extent is not None:
-            for i in range(3):
-                assert (mesh.extent[0][i] >= global_extent[0][i]) or (
-                    mesh.extent[1][i] <= global_extent[1][i]
-                )
+        # Check that bounds overlap
+        for mesh in [local_omesh1, local_omesh2]:
+            if mesh.extent is not None and global_extent is not None:
+                for i in range(3):
+                    assert (mesh.extent[0][i] >= global_extent[0][i]) or (
+                        mesh.extent[1][i] <= global_extent[1][i]
+                    )
 
 
 def test_create_octree_from_octrees():

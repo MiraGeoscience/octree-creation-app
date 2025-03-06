@@ -123,7 +123,7 @@ def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
             cells += [np.ones(2**max_level) * cell_size[ind]]
 
     # Define the mesh and origin
-    treemesh = TreeMesh(cells, origin=origin)
+    treemesh = TreeMesh(cells, origin=origin, diagonal_balance=False)
 
     for mesh in meshes:
         if isinstance(mesh, Octree) and mesh.octree_cells is not None:
