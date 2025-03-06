@@ -343,7 +343,9 @@ def octree_2_treemesh(  # pylint: disable=too-many-locals
     cells = np.vstack(mesh.octree_cells.tolist())
     indexes = cells[:, :-1] * 2 + cells[:, -1][:, None]  # convert to cpp index
     levels = max_level - np.log2(cells[:, -1])
-    treemesh = TreeMesh(cell_sizes, x0=np.asarray(mesh.origin.tolist()))
+    treemesh = TreeMesh(
+        cell_sizes, x0=np.asarray(mesh.origin.tolist()), diagonal_balance=False
+    )
     treemesh.__setstate__((indexes, levels))
 
     return treemesh

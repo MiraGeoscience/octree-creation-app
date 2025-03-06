@@ -14,7 +14,6 @@ import pytest
 from discretize import TreeMesh
 from geoh5py import Workspace
 from geoh5py.objects import Curve, Octree, Points
-from geoh5py.shared.utils import fetch_active_workspace
 
 from octree_creation_app.utils import (
     collocate_octrees,
@@ -57,7 +56,9 @@ def test_surface_strip(tmp_path):
 def test_not_implemented_negative():
     workspace = Workspace()
 
-    local_mesh1 = TreeMesh([[10] * 16, [10] * 16, [-10] * 16], [1000, 0, 0])
+    local_mesh1 = TreeMesh(
+        [[10] * 16, [10] * 16, [-10] * 16], [1000, 0, 0], diagonal_balance=True
+    )
     local_mesh1.refine(3, finalize=True)
 
     with pytest.raises(NotImplementedError, match="Negative cell sizes not supported."):
@@ -81,15 +82,21 @@ def test_not_implemented_negative():
 def test_collocate_octrees(tmp_path: Path):
     workspace = Workspace(tmp_path / "test.geoh5")
 
-    local_mesh1 = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [1000, 0, 0])
+    local_mesh1 = TreeMesh(
+        [[10] * 16, [10] * 16, [10] * 16], [1000, 0, 0], diagonal_balance=True
+    )
     local_mesh1.insert_cells([120, 120, -40], local_mesh1.max_level, finalize=True)
     local_omesh1 = treemesh_2_octree(workspace, local_mesh1)
 
-    local_mesh2 = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [-500, 500, -500])
+    local_mesh2 = TreeMesh(
+        [[10] * 16, [10] * 16, [10] * 16], [-500, 500, -500], diagonal_balance=True
+    )
     local_mesh2.insert_cells([40, 40, -120], local_mesh2.max_level, finalize=True)
     local_omesh2 = treemesh_2_octree(workspace, local_mesh2)
 
-    global_mesh = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
+    global_mesh = TreeMesh(
+        [[10] * 16, [10] * 16, [10] * 16], [0, 0, 0], diagonal_balance=True
+    )
     global_mesh.insert_cells([620, 300, -300], global_mesh.max_level, finalize=True)
     global_omesh = treemesh_2_octree(workspace, global_mesh)
 
@@ -119,11 +126,15 @@ def test_collocate_octrees(tmp_path: Path):
 
 def test_create_octree_from_octrees():
     workspace = Workspace()
-    mesh1 = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
+    mesh1 = TreeMesh(
+        [[10] * 16, [10] * 16, [10] * 16], [0, 0, 0], diagonal_balance=False
+    )
     mesh1.insert_cells([120, 120, -40], mesh1.max_level, finalize=True)
     omesh1 = treemesh_2_octree(workspace, mesh1)
 
-    mesh2 = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
+    mesh2 = TreeMesh(
+        [[10] * 16, [10] * 16, [10] * 16], [0, 0, 0], diagonal_balance=False
+    )
     mesh2.insert_cells([40, 40, -120], mesh2.max_level, finalize=True)
     omesh2 = treemesh_2_octree(workspace, mesh2)
 
@@ -151,17 +162,21 @@ def test_create_octree_from_octrees():
 
 def test_create_octree_from_octrees_errors():
     workspace = Workspace()
-    mesh = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
+    mesh = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0], diagonal_balance=True)
     mesh.insert_cells([120, 120, -40], mesh.max_level, finalize=True)
     omesh = treemesh_2_octree(workspace, mesh)
 
-    mesh_invalid_dimension = TreeMesh([[10] * 16, [10] * 32, [10] * 16], [0, 0, 0])
+    mesh_invalid_dimension = TreeMesh(
+        [[10] * 16, [10] * 32, [10] * 16], [0, 0, 0], diagonal_balance=True
+    )
     mesh_invalid_dimension.insert_cells(
         [40, 40, -120], mesh_invalid_dimension.max_level, finalize=True
     )
     omesh_invalid_dimension = treemesh_2_octree(workspace, mesh_invalid_dimension)
 
-    mesh_invalid_origin = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [1, 0, 0])
+    mesh_invalid_origin = TreeMesh(
+        [[10] * 16, [10] * 16, [10] * 16], [1, 0, 0], diagonal_balance=True
+    )
     mesh_invalid_origin.insert_cells(
         [40, 40, -120], mesh_invalid_origin.max_level, finalize=True
     )
@@ -190,7 +205,9 @@ def test_get_neighbouring_cells():
     Check that the neighbouring cells are correctly identified and output
     of the right shape.
     """
-    mesh = TreeMesh([[10] * 16, [10] * 16, [10] * 16], [0, 0, 0])
+    mesh = TreeMesh(
+        [[10] * 16, [10] * 16, [10] * 16], [0, 0, 0], diagonal_balance=False
+    )
     mesh.insert_cells([100, 100, 100], mesh.max_level, finalize=True)
     ind = mesh.get_containing_cells([95.0, 95.0, 95.0])
 
@@ -265,7 +282,9 @@ def test_get_octree_attributes_with_octree(setup_test_octree):
 
 def test_octree_2_treemesh():
     with Workspace() as workspace:
-        mesh = TreeMesh([[10] * 4, [10] * 4, [10] * 4], [0, 0, 0])
+        mesh = TreeMesh(
+            [[10] * 4, [10] * 4, [10] * 4], [0, 0, 0], diagonal_balance=True
+        )
         mesh.insert_cells([5, 5, 5], mesh.max_level, finalize=True)
         omesh = treemesh_2_octree(workspace, mesh)
         tmesh = octree_2_treemesh(omesh)
@@ -275,7 +294,7 @@ def test_octree_2_treemesh():
 
 
 def test_roundtrip_octree_conversion(tmp_path):
-    with Workspace(tmp_path / "test.geoh5") as workspace:
+    with Workspace.create(tmp_path / "test.geoh5") as workspace:
         points = np.vstack(
             [
                 [10, 10, -10],
@@ -283,7 +302,9 @@ def test_roundtrip_octree_conversion(tmp_path):
             ]
         )
         Points.create(workspace, vertices=points)
-        mesh = TreeMesh([[10] * 16, [10] * 4, [10] * 8], [0, 0, 0])
+        mesh = TreeMesh(
+            [[10] * 16, [10] * 4, [10] * 8], [0, 0, 0], diagonal_balance=True
+        )
         mesh.insert_cells(points, [mesh.max_level] * points.shape[0], finalize=True)
         omesh = treemesh_2_octree(workspace, mesh, name="first")
 
@@ -296,10 +317,10 @@ def test_roundtrip_octree_conversion(tmp_path):
 
 
 def test_treemesh_2_octree(tmp_path: Path):
-    with fetch_active_workspace(
-        Workspace(tmp_path / "testTreemesh2Octree.geoh5")
-    ) as workspace:
-        mesh = TreeMesh([[10] * 16, [10] * 4, [10] * 8], [0, 0, 0])
+    with Workspace.create(tmp_path / "testTreemesh2Octree.geoh5") as workspace:
+        mesh = TreeMesh(
+            [[10] * 16, [10] * 4, [10] * 8], [0, 0, 0], diagonal_balance=True
+        )
         mesh.insert_cells([10, 10, 10], mesh.max_level, finalize=True)
         omesh = treemesh_2_octree(workspace, mesh, name="test_mesh")
 
