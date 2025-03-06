@@ -54,7 +54,6 @@ def test_create_octree_radial(tmp_path: Path, setup_test_octree):  # pylint: dis
             treemesh,
             points,
             str2list(refinement),
-            diagonal_balance=False,
             finalize=True,
         )
         octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
@@ -119,14 +118,12 @@ def test_create_octree_surface(tmp_path: Path, setup_test_octree):  # pylint: di
 
         treemesh.refine(
             treemesh.max_level - minimum_level + 1,
-            diagonal_balance=False,
             finalize=False,
         )
         treemesh = OctreeDriver.refine_tree_from_surface(
             treemesh,
             surface,
             str2list(refinement),
-            diagonal_balance=False,
             finalize=True,
         )
 
@@ -179,7 +176,6 @@ def test_create_octree_surface_straight_line(tmp_path: Path, setup_test_octree):
             str2list(refinement),
             horizon=True,
             distance=None,
-            diagonal_balance=False,
         )
         treemesh.finalize()
         treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
@@ -245,7 +241,7 @@ def test_create_octree_empty_curve(tmp_path: Path, setup_test_octree):  # pylint
     with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
         # Create sources along line
         extent = Points.create(workspace, vertices=locations)
-        curve = Curve.create(workspace)
+        curve = Curve.create(workspace, vertices=[(0, 0, 0), (0, 0, 0)])
         curve.remove_cells([0])
 
         params_dict = {
@@ -385,7 +381,6 @@ def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):  # pyli
             treemesh,
             sphere,
             [3, 3],
-            diagonal_balance=False,
             finalize=True,
         )
         octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
@@ -426,8 +421,7 @@ def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):  # pyli
 def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
     tmp_path: Path, diagonal_balance, exp_values, exp_counts
 ):
-    workspace = Workspace.create(tmp_path / "testDiagonalBalance.geoh5")
-    with workspace.open(mode="r+"):
+    with Workspace.create(tmp_path / "testDiagonalBalance.geoh5") as workspace:
         point = [125, 0, 125]
         points = Points.create(
             workspace, vertices=np.array([[150, 0, 150], [200, 0, 200], point])

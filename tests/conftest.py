@@ -13,7 +13,7 @@ from discretize.utils import mesh_builder_xyz
 
 
 @pytest.fixture
-def setup_test_octree():
+def setup_test_octree(diagonal_balance=False):
     """
     Create a circle of points and treemesh from extent.
     """
@@ -42,6 +42,7 @@ def setup_test_octree():
         padding_distance=paddings,
         mesh_type="tree",
         depth_core=depth_core,
+        tree_diagonal_balance=diagonal_balance,
     )
 
     return (
