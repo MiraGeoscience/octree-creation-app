@@ -104,13 +104,13 @@ def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
 
         if dimensions is None:
             dimensions = attributes["dimensions"]
-            origin = attributes["origin"]
-        else:
-            if not np.allclose(dimensions, attributes["dimensions"]):
-                raise ValueError("Meshes must have same dimensions")
+        elif not np.allclose(dimensions, attributes["dimensions"]):
+            raise ValueError("Meshes must have same dimensions")
 
-            if not np.allclose(origin, attributes["origin"]):
-                raise ValueError("Meshes must have same origin")
+        if origin is None:
+            origin = attributes["origin"]
+        elif not np.allclose(origin, attributes["origin"]):
+            raise ValueError("Meshes must have same origin")
 
         cell_size.append(attributes["cell_size"])
 
