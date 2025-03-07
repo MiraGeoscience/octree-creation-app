@@ -31,11 +31,11 @@ dependencies:
   - libedit=3.1.20250104=pl5321h7949ede_0
   - libev=4.33=hd590300_2
   - libffi=3.4.6=h2dba641_0
-  - libgcc=14.2.0=h77fa898_1
-  - libgcc-ng=14.2.0=h69a702a_1
-  - libgfortran=14.2.0=h69a702a_1
-  - libgfortran5=14.2.0=hd5240d6_1
-  - libgomp=14.2.0=h77fa898_1
+  - libgcc=14.2.0=h767d61c_2
+  - libgcc-ng=14.2.0=h69a702a_2
+  - libgfortran=14.2.0=h69a702a_2
+  - libgfortran5=14.2.0=hf1ad2bd_2
+  - libgomp=14.2.0=h767d61c_2
   - libjpeg-turbo=3.0.0=hd590300_1
   - liblapack=3.9.0=31_h7ac8fdf_openblas
   - liblzma=5.6.4=hb9d3cd8_0
@@ -45,8 +45,8 @@ dependencies:
   - libpng=1.6.47=h943b412_0
   - libsqlite=3.49.1=hee588c1_1
   - libssh2=1.11.1=hf672d98_0
-  - libstdcxx=14.2.0=hc0a3c3a_1
-  - libstdcxx-ng=14.2.0=h4852527_1
+  - libstdcxx=14.2.0=h8f9b012_2
+  - libstdcxx-ng=14.2.0=h4852527_2
   - libtiff=4.7.0=hd9ff511_3
   - libuuid=2.38.1=h0b41bf4_0
   - libwebp-base=1.5.0=h851e524_0
@@ -64,9 +64,9 @@ dependencies:
   - pydantic-core=2.27.2=py310h505e2c1_0
   - python=3.10.16=he725a3c_1_cpython
   - python_abi=3.10=5_cp310
-  - readline=8.2=h8228510_1
+  - readline=8.2=h8c095d6_2
   - scipy=1.14.1=py310hfcf56fc_2
-  - setuptools=75.8.0=pyhff2d567_0
+  - setuptools=75.8.2=pyhff2d567_0
   - tk=8.6.13=noxft_h4845f30_101
   - typing-extensions=4.12.2=hd8ed1ab_1
   - typing_extensions=4.12.2=pyha770c72_1
@@ -74,10 +74,10 @@ dependencies:
   - wheel=0.45.1=pyhd8ed1ab_1
   - xorg-libxau=1.0.12=hb9d3cd8_0
   - xorg-libxdmcp=1.1.5=hb9d3cd8_0
-  - zstd=1.5.7=hb8e6e7a_0
+  - zstd=1.5.7=hb8e6e7a_1
   - pip:
-      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils.git@4d829b7b8759d7537a8184aa506548ddccf72041
-      - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@99300455d1d5627d8a2e95a7217da2bab4921f48
+      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils.git@1ed273892ca0494a3b612d075a66dd4a1de2283a
+      - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@fcd14f4a511583b410f91c3d8e97be1fc755bdb5
 
 variables:
   KMP_WARNINGS: 0

@@ -23,8 +23,8 @@ dependencies:
   - hdf5=1.14.3=nompi_hb2c4d47_109
   - iniconfig=2.0.0=pyhd8ed1ab_1
   - intel-openmp=2024.2.1=h57928b3_1083
-  - isort=6.0.0=pyhd8ed1ab_0
-  - jinja2=3.1.5=pyhd8ed1ab_0
+  - isort=6.0.1=pyhd8ed1ab_0
+  - jinja2=3.1.6=pyhd8ed1ab_0
   - krb5=1.21.3=hdf4eb48_0
   - lcms2=2.17=hbcf6048_0
   - lerc=4.0.0=h63175ca_0
@@ -35,8 +35,8 @@ dependencies:
   - libdeflate=1.23=h9062f6e_0
   - libexpat=2.6.4=he0c23c2_0
   - libffi=3.4.6=h537db12_0
-  - libgcc=14.2.0=h1383e82_1
-  - libgomp=14.2.0=h1383e82_1
+  - libgcc=14.2.0=h1383e82_2
+  - libgomp=14.2.0=h1383e82_2
   - libhwloc=2.11.2=default_ha69328c_1001
   - libiconv=1.18=h135ad9c_1
   - libjpeg-turbo=3.0.0=hcfcfb64_1
@@ -67,13 +67,13 @@ dependencies:
   - pydantic-core=2.27.2=py312h2615798_0
   - pygments=2.19.1=pyhd8ed1ab_0
   - pylint=3.3.4=pyh29332c3_0
-  - pytest=8.3.4=pyhd8ed1ab_1
+  - pytest=8.3.5=pyhd8ed1ab_0
   - pytest-cov=6.0.0=pyhd8ed1ab_1
-  - python=3.12.9=h3f84c4b_0_cpython
+  - python=3.12.9=h3f84c4b_1_cpython
   - python_abi=3.12=5_cp312
   - pyyaml=6.0.2=py312h31fea79_2
   - scipy=1.14.1=py312h337df96_2
-  - setuptools=75.8.0=pyhff2d567_0
+  - setuptools=75.8.2=pyhff2d567_0
   - tbb=2021.13.0=h62715c5_1
   - tk=8.6.13=h5226925_1
   - toml=0.10.2=pyhd8ed1ab_1
@@ -83,17 +83,17 @@ dependencies:
   - typing_extensions=4.12.2=pyha770c72_1
   - tzdata=2025a=h78e105d_0
   - ucrt=10.0.22621.0=h57928b3_1
-  - vc=14.3=h5fd82a7_24
-  - vc14_runtime=14.42.34433=h6356254_24
-  - vs2015_runtime=14.42.34433=hfef2bbc_24
+  - vc=14.3=hbf610ac_24
+  - vc14_runtime=14.42.34438=hfd919c2_24
+  - vs2015_runtime=14.42.34438=h7142326_24
   - wheel=0.45.1=pyhd8ed1ab_1
   - xorg-libxau=1.0.12=h0e40799_0
   - xorg-libxdmcp=1.1.5=h0e40799_0
   - yaml=0.2.5=h8ffe710_2
-  - zstd=1.5.7=hbeecb71_0
+  - zstd=1.5.7=hbeecb71_1
   - pip:
-      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils.git@4d829b7b8759d7537a8184aa506548ddccf72041
-      - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@99300455d1d5627d8a2e95a7217da2bab4921f48
+      - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils.git@1ed273892ca0494a3b612d075a66dd4a1de2283a
+      - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@fcd14f4a511583b410f91c3d8e97be1fc755bdb5
 
 variables:
   KMP_WARNINGS: 0
