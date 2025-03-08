@@ -33,6 +33,19 @@ requirements:
     - numpy >=1.26.0, <1.27.dev
     - scipy >=1.14.0, <1.15.dev
 
+tests:
+  - python:
+      imports:
+        - octree_creation_app
+  - script:
+      - pytest ./tests
+    requirements:
+      run:
+        - pytest
+    files:
+      source:
+        - tests/
+
 about:
   summary: Octree creation app.
   description: |
