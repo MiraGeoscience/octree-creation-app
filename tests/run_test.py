@@ -315,9 +315,9 @@ def test_create_octree_dipoles(tmp_path: Path, setup_test_octree):  # pylint: di
             workspace,
             vertices=vertices,
             cells=np.vstack(dipoles).astype("uint32"),
-            ab_cell_id=np.hstack(current_id).astype("int32"),
         )
-
+        potentials.ab_cell_id = np.hstack(current_id).astype("int32")
+        potentials.current_electrodes = currents
         params_dict = {
             "geoh5": workspace,
             "objects": potentials,

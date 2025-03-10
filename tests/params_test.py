@@ -76,89 +76,89 @@ def test_active_refinements():
 
 
 def test_params_from_dict(tmp_path):
-    ws = Workspace(tmp_path / "test.geoh5")
-    points = Points.create(ws, name="test", vertices=np.random.rand(100, 3))
+    with Workspace.create(tmp_path / f"{__name__}.geoh5") as ws:
+        points = Points.create(ws, name="test", vertices=np.random.rand(100, 3))
 
-    kwargs = {
-        "geoh5": ws,
-        "objects": points,
-        "refinements": [{"refinement_object": points}],
-    }
-    params = OctreeParams(**kwargs)
-    assert params.geoh5 == ws
-    assert params.objects == points
-    assert params.refinements is not None
-    refinement = params.refinements[0]  # pylint: disable=unsubscriptable-object
-    assert refinement.refinement_object == points
-    assert refinement.levels == [4, 2]
-    assert refinement.horizon is False
-    assert refinement.distance == np.inf
-
-    kwargs = {
-        "geoh5": ws,
-        "objects": points,
-        "Refinement A object": points,
-        "Refinement A levels": [4, 4, 4],
-        "Refinement A horizon": False,
-        "Refinement A distance": 200,
-    }
-    with pytest.warns(UserWarning):
+        kwargs = {
+            "geoh5": ws,
+            "objects": points,
+            "refinements": [{"refinement_object": points}],
+        }
         params = OctreeParams(**kwargs)
+        assert params.geoh5 == ws
+        assert params.objects == points
+        assert params.refinements is not None
+        refinement = params.refinements[0]  # pylint: disable=unsubscriptable-object
+        assert refinement.refinement_object == points
+        assert refinement.levels == [4, 2]
+        assert refinement.horizon is False
+        assert refinement.distance == np.inf
 
-
-def test_refinement_serializer(tmp_path):
-    ws = Workspace(tmp_path / "test.geoh5")
-    points = Points.create(ws, name="test", vertices=np.random.rand(100, 3))
-    out_group = UIJsonGroup.create(ws, name="AutoMesh")
-
-    kwargs = {
-        "geoh5": ws,
-        "objects": points,
-        "refinements": [
-            {
-                "refinement_object": points,
-                "levels": [4, 4, 4],
-                "horizon": False,
-                "distance": 200,
-            },
-            {
-                "refinement_object": points,
-                "horizon": True,
-            },
-        ],
-        "out_group": out_group,
-    }
-    params = OctreeParams(**kwargs)
-    dump = params.model_dump()
-    assert dump["geoh5"] == ws
-    assert dump["objects"] == points
-    assert dump["Refinement A object"] == points
-    assert dump["Refinement A levels"] == "4, 4, 4"
-    assert not dump["Refinement A horizon"]
-    assert dump["Refinement A distance"] == 200
-    assert dump["Refinement B object"] == points
-    assert dump["Refinement B levels"] == "4, 2"
-    assert dump["Refinement B horizon"]
-    assert dump["Refinement B distance"] == np.inf
-
-
-def test_treemesh_from_params(tmp_path):
-    ws = Workspace(tmp_path / "test.geoh5")
-    points = Points.create(ws, name="test", vertices=np.random.rand(100, 3))
-    uijson_path = assets_path() / "uijson/octree_mesh.ui.json"
-    ifile = InputFile.read_ui_json(uijson_path, validate=False)
-    ifile.update_ui_values(
-        {
+        kwargs = {
             "geoh5": ws,
             "objects": points,
             "Refinement A object": points,
-            "Refinement A levels": [4, 2],
+            "Refinement A levels": [4, 4, 4],
             "Refinement A horizon": False,
-            "Refinement A distance": 1000,
+            "Refinement A distance": 200,
         }
-    )
-    params = OctreeParams.build(ifile)
-    mesh = OctreeDriver.octree_from_params(params)
-    assert mesh.u_cell_size == 25.0
-    assert mesh.v_cell_size == 25.0
-    assert mesh.w_cell_size == 25.0
+        with pytest.warns(UserWarning):
+            params = OctreeParams(**kwargs)
+
+
+def test_refinement_serializer(tmp_path):
+    with Workspace.create(tmp_path / f"{__name__}.geoh5") as ws:
+        points = Points.create(ws, name="test", vertices=np.random.rand(100, 3))
+        out_group = UIJsonGroup.create(ws, name="AutoMesh")
+
+        kwargs = {
+            "geoh5": ws,
+            "objects": points,
+            "refinements": [
+                {
+                    "refinement_object": points,
+                    "levels": [4, 4, 4],
+                    "horizon": False,
+                    "distance": 200,
+                },
+                {
+                    "refinement_object": points,
+                    "horizon": True,
+                },
+            ],
+            "out_group": out_group,
+        }
+        params = OctreeParams(**kwargs)
+        dump = params.model_dump()
+        assert dump["geoh5"] == ws
+        assert dump["objects"] == points
+        assert dump["Refinement A object"] == points
+        assert dump["Refinement A levels"] == "4, 4, 4"
+        assert not dump["Refinement A horizon"]
+        assert dump["Refinement A distance"] == 200
+        assert dump["Refinement B object"] == points
+        assert dump["Refinement B levels"] == "4, 2"
+        assert dump["Refinement B horizon"]
+        assert dump["Refinement B distance"] == np.inf
+
+
+def test_treemesh_from_params(tmp_path):
+    with Workspace.create(tmp_path / f"{__name__}.geoh5") as ws:
+        points = Points.create(ws, name="test", vertices=np.random.rand(100, 3))
+        uijson_path = assets_path() / "uijson/octree_mesh.ui.json"
+        ifile = InputFile.read_ui_json(uijson_path, validate=False)
+        ifile.update_ui_values(
+            {
+                "geoh5": ws,
+                "objects": points,
+                "Refinement A object": points,
+                "Refinement A levels": [4, 2],
+                "Refinement A horizon": False,
+                "Refinement A distance": 1000,
+            }
+        )
+        params = OctreeParams.build(ifile)
+        mesh = OctreeDriver.octree_from_params(params)
+        assert mesh.u_cell_size == 25.0
+        assert mesh.v_cell_size == 25.0
+        assert mesh.w_cell_size == 25.0
