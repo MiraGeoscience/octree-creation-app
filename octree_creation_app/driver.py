@@ -115,7 +115,9 @@ class OctreeDriver(BaseDriver):
         return mesh
 
     @staticmethod
-    def refine_objects(mesh: TreeMesh, refinements: list[RefinementParams]) -> TreeMesh:
+    def refine_objects(
+        mesh: TreeMesh, refinements: list[RefinementParams | None]
+    ) -> TreeMesh:
         """
         Refine by object or object + complement.
 
@@ -123,6 +125,8 @@ class OctreeDriver(BaseDriver):
         :param refinements: List of refinements to apply.
         """
         for refinement in refinements:
+            if refinement is None:
+                continue
             kwargs = refinement.model_dump()
             kwargs["levels"] = [int(k) for k in kwargs["levels"].split(",")]
             refinement_object = [kwargs.pop("refinement_object")]

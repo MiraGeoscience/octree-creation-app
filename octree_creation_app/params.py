@@ -82,12 +82,12 @@ class OctreeParams(BaseData):
     w_cell_size: float = 25.0
     horizontal_padding: float = 500.0
     vertical_padding: float = 200.0
-    refinements: list[RefinementParams] | None = None
+    refinements: list[RefinementParams | None] | None = None
     out_group: UIJsonGroup | None = None
 
     @model_validator(mode="before")
     @classmethod
-    def collect_refinements(cls, values):
+    def collect_refinements(cls, values: dict):
         """Collect refinements from the input dictionary."""
         if "refinements" not in values:
             refinements = collect_refinements_from_dict(values)
@@ -106,13 +106,19 @@ class OctreeParams(BaseData):
         """Convert refinements to a individual parameters."""
         dump = handler(self, info)
         refinements = dump.pop("refinements")
-        refinement_params = {}
+        refinement_params: dict[str, Any] = {}
         for i, group in enumerate(refinements):
             group_id = string.ascii_uppercase[i]
-            for param, value in group.items():
-                param_type = "object" if param == "refinement_object" else param
-                param_name = f"Refinement {group_id} {param_type}"
-                refinement_params[param_name] = value
+            if group is None:
+                refinement_params[f"Refinement {group_id} object"] = None
+                refinement_params[f"Refinement {group_id} levels"] = None
+                refinement_params[f"Refinement {group_id} horizon"] = None
+                refinement_params[f"Refinement {group_id} distance"] = None
+            else:
+                for param, value in group.items():
+                    param_type = "object" if param == "refinement_object" else param
+                    param_name = f"Refinement {group_id} {param_type}"
+                    refinement_params[param_name] = value
 
         return dict(dump, **refinement_params)
 
@@ -211,23 +217,26 @@ class RefinementParams(BaseModel):
         return ", ".join(str(v) for v in value)
 
 
-def collect_refinements_from_dict(data: dict) -> list[dict]:
+def collect_refinements_from_dict(data: dict) -> list[dict | None]:
     """Collect active refinement dictionaries from input dictionary."""
-    refinements = []
-    for identifier in active_refinements(data):
+    refinements: list[dict | None] = []
+    for identifier in refinement_identifiers(data):
         refinement_params = {}
         for param in ["object", "levels", "horizon", "distance"]:
             name = f"refinement_{param}" if param == "object" else param
             refinement_name = f"Refinement {identifier} {param}"
             refinement_params[name] = data.get(refinement_name, None)
 
-        refinements.append(refinement_params)
+        if refinement_params["refinement_object"] is None:
+            refinements.append(None)
+        else:
+            refinements.append(refinement_params)
 
     return refinements
 
 
-def active_refinements(data: dict) -> list[str]:
+def refinement_identifiers(data: dict) -> list[str]:
     """Return identifiers for active refinements (object not none)."""
     refinements = [k for k in data if "Refinement" in k]
-    active = [k for k in refinements if "object" in k and data[k] is not None]
+    active = [k for k in refinements if "object" in k]
     return np.unique([k.split(" ")[1] for k in active])
