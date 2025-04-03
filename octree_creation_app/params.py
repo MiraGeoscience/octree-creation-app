@@ -29,6 +29,7 @@ from pydantic import (
 )
 from typing_extensions import Self
 
+import octree_creation_app
 from octree_creation_app import assets_path
 
 
@@ -66,12 +67,14 @@ class OctreeParams(BaseData):
 
     name: ClassVar[str] = "Octree_Mesh"
     default_ui_json: ClassVar[Path] = assets_path() / "uijson/octree_mesh.ui.json"
-    title: ClassVar[str] = "Octree Mesh Creator"
-    run_command: ClassVar[str] = "octree_creation_app.driver"
 
+    version: str = octree_creation_app.__version__
+    title: str = "Octree Mesh Creator"
+    run_command: str = "octree_creation_app.driver"
     conda_environment: str = "octree_creation_app"
     objects: Points
     depth_core: float = 500.0
+    ga_group_name: str = "Octree Mesh"  # TODO: Alias this in uijson (mesh_name)
     diagonal_balance: bool = True
     minimum_level: int = 8
     u_cell_size: float = 25.0
