@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: "octree-creation-app"
-  version: "0.3.0a1"
+  version: "0.4.0a1"
   python_min: "3.10"
 
 package:
@@ -10,8 +10,6 @@ package:
   version: ${{ version }}
 
 source:
-  # url: https://github.com/MiraGeoscience/{{ name }}/archive/v{{ version }}.tar.gz
-  # sha256: b3359c7b3333a3208fa78c4f114eae8b5be0b256ece51aa4b9d14b5f2998bf3b
   path: ../${{ name }}
 
 build:
@@ -27,14 +25,27 @@ requirements:
     - pip
   run:
     - python >=${{ python_min }}
-    - discretize >=0.10.0,<0.11.0
-    - numpy >=1.26.0,<1.27.0
-    - scipy >=1.14.0,<1.15.0
-    - geoh5py >=0.11.0a1,<0.12.0a.dev
-    - geoapps-utils >=0.5.0a1,<0.6.0a.dev
-    - h5py >=3.2.1,<4.0.0
-    - pillow >=10.3.0,<10.4.0
-    - pydantic >=2.5.2,<3.0.0
+    # Mira packages
+    - geoh5py >=0.12.0a, <0.13.dev
+    - geoapps-utils >=0.6.0a, <0.7.dev
+    # direct dependencies
+    - discretize >=0.11.0, <0.12.dev
+    - numpy >=1.26.0, <1.27.dev
+    - pydantic >=2.5.2, <3.0.dev
+    - scipy >=1.14.0, <1.15.dev
+
+tests:
+  - python:
+      imports:
+        - octree_creation_app
+  - script:
+      - pytest --ignore=tests/version_test.py
+    requirements:
+      run:
+        - pytest
+    files:
+      source:
+        - tests/
 
 about:
   summary: Octree creation app.
