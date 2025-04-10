@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "octree-creation-app"
-version = "0.3.0-alpha.1"
+version = "0.3.0-alpha.2"
 license = "MIT"
 description = "Octree creation app."
 authors = ["Mira Geoscience <support@mirageoscience.com>"]
@@ -44,16 +44,17 @@ python = "^3.10"
 
 discretize = "0.11.*"
 numpy = "~1.26.0"  # also in geoh5py
+pydantic = "^2.5.2"  # also in geoh5py, curve-apps, geoapps-utils
 scipy = "~1.14.0"
 
 ## Pip dependencies from Git repositories
 #------------------------------------
 
-#geoh5py = {version = ">=0.11.0a1, <0.12.0a.dev", source = "pypi", allow-prereleases = true}
-geoh5py = {git = "https://github.com/MiraGeoscience/geoh5py.git", rev = "release/0.11.0-a.3"}
+#geoh5py = {version = ">=0.11.0a3, <0.12.dev", source = "pypi", allow-prereleases = true}
+geoh5py = {git = "https://github.com/MiraGeoscience/geoh5py.git", rev = "release/0.11.0"}
 
-#geoapps-utils = { version = "0.5.0a1, <0.6.0a.dev", source = "pypi", allow-prereleases = true}
-geoapps-utils = {git = "https://github.com/MiraGeoscience/geoapps-utils.git", rev = "release/0.5.0-a.3"}
+#geoapps-utils = { version = "0.5.0a3, <0.6.dev", source = "pypi", allow-prereleases = true}
+geoapps-utils = {git = "https://github.com/MiraGeoscience/geoapps-utils.git", rev = "release/0.5.0"}
 
 
 ## about pip dependencies
@@ -82,9 +83,8 @@ channels = ['conda-forge']
 [tool.conda-lock.dependencies]
 ## indirect dependencies, forcing them here for installation through Conda not pip
 #---------------------------------------------------------------------------------
-h5py = ">=3.2.1, <4.0.0"  # from geoh5py
-Pillow = ">=10.3.0, <10.4.0"  # from geoh5py
-pydantic = ">=2.5.2, <3.0.0"  # from geoh5py, curve-apps, geoapps-utils
+h5py = ">=3.2.1, <4.0.dev"  # from geoh5py
+Pillow = ">=10.3.0, <10.4.dev"  # from geoh5py
 
 [tool.ruff]
 target-version = "py310"
