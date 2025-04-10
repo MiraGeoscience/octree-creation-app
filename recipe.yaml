@@ -31,6 +31,7 @@ requirements:
     # direct dependencies
     - discretize >=0.11.0, <0.12.dev
     - numpy >=1.26.0, <1.27.dev
+    - pydantic = ">=2.5.2, <3.0.dev"
     - scipy >=1.14.0, <1.15.dev
 
 tests:
