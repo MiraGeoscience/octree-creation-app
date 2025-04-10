@@ -222,7 +222,7 @@ def test_create_octree_curve(tmp_path: Path, setup_test_octree):  # pylint: disa
         driver = OctreeDriver(params)
         driver.run()
 
-        results = driver.params.geoh5.get_entity("Octree_Mesh")
+        results = driver.params.geoh5.get_entity("Octree Mesh")
         assert results[0].n_cells == 177230
 
 
@@ -267,7 +267,7 @@ def test_create_octree_empty_curve(tmp_path: Path, setup_test_octree):  # pylint
         driver = OctreeDriver(params)
         driver.run()
 
-        results = driver.params.geoh5.get_entity("Octree_Mesh")[0]
+        results = driver.params.geoh5.get_entity("Octree Mesh")[0]
         assert isinstance(results, Octree)
         assert results.n_cells == 4
 
@@ -341,7 +341,7 @@ def test_create_octree_dipoles(tmp_path: Path, setup_test_octree):  # pylint: di
         driver = OctreeDriver(params)
         driver.run()
 
-        assert driver.params.geoh5.get_entity("Octree_Mesh")[0]
+        assert driver.params.geoh5.get_entity("Octree Mesh")[0]
 
 
 def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
@@ -449,8 +449,7 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
         }
 
         params = OctreeParams(**params_dict, diagonal_balance=diagonal_balance)
-        # driver = OctreeDriver(params)
-        # driver.run()
+
         filename = "diag_balance.ui.json"
 
         params.write_ui_json(tmp_path / filename)
@@ -459,7 +458,7 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
 
     with workspace.open(mode="r"):
         results = []
-        mesh_obj = workspace.get_entity("Octree_Mesh")[0]
+        mesh_obj = workspace.get_entity("Octree Mesh")[0]
 
         assert isinstance(mesh_obj, Octree)
 
@@ -536,7 +535,7 @@ def test_refine_complement(tmp_path: Path, setup_test_octree):  # pylint: disabl
         driver = OctreeDriver(params)
         driver.run()
 
-        rec_octree = workspace.get_entity("Octree_Mesh")[0]
+        rec_octree = workspace.get_entity("Octree Mesh")[0]
         treemesh = octree_2_treemesh(rec_octree)
         assert isinstance(treemesh, TreeMesh)
 
@@ -597,7 +596,7 @@ def test_regular_grid(tmp_path: Path, setup_test_octree):  # pylint: disable=too
         driver = OctreeDriver(params)
         driver.run()
 
-        rec_octree = workspace.get_entity("Octree_Mesh")[0]
+        rec_octree = workspace.get_entity("Octree Mesh")[0]
 
         treemesh = octree_2_treemesh(rec_octree)
 

@@ -19,8 +19,8 @@ from octree_creation_app import assets_path
 from octree_creation_app.driver import OctreeDriver
 from octree_creation_app.params import (
     OctreeParams,
-    active_refinements,
     collect_refinements_from_dict,
+    refinement_identifiers,
 )
 
 
@@ -33,33 +33,21 @@ def test_collect_refinements_from_dict():
         "Refinement A horizon": False,
         "Refinement A distance": 1000,
         "Refinement B object": None,
-        "Refinement B levels": [4, 2],
-        "Refinement B horizon": False,
-        "Refinement B distance": 1000,
+        "Refinement B levels": None,
+        "Refinement B horizon": None,
+        "Refinement B distance": None,
     }
     refinements = collect_refinements_from_dict(data)
-    assert len(refinements) == 1
+    assert len(refinements) == 2
+    assert refinements[0] is not None
     assert all(
         k in refinements[0]
         for k in ["refinement_object", "levels", "horizon", "distance"]
     )
-
-    # Test handling of missing params, should return full refinement
-    # dictionary with None values
-
-    data = {
-        "Refinement A object": "I am not None. Collect me.",
-    }
-    refinements = collect_refinements_from_dict(data)
-    assert len(refinements) == 1
-    assert all(
-        k in refinements[0]
-        for k in ["refinement_object", "levels", "horizon", "distance"]
-    )
-    assert all(refinements[0][k] is None for k in ["levels", "horizon", "distance"])
+    assert refinements[1] is None
 
 
-def test_active_refinements():
+def test_refinement_identifiers():
     data = {
         "Not a refinement": "ignore me",
         "Refinement A object": "I am not None. Collect me.",
@@ -67,12 +55,13 @@ def test_active_refinements():
         "Refinement A horizon": False,
         "Refinement A distance": 1000,
         "Refinement B object": None,
-        "Refinement B levels": [4, 2],
-        "Refinement B horizon": False,
-        "Refinement B distance": 1000,
+        "Refinement B levels": None,
+        "Refinement B horizon": None,
+        "Refinement B distance": None,
     }
-    active = active_refinements(data)
-    assert active == ["A"]
+    active = refinement_identifiers(data)
+    assert len(active) == 2
+    assert all(k in active for k in ["A", "B"])
 
 
 def test_params_from_dict(tmp_path):
@@ -89,6 +78,7 @@ def test_params_from_dict(tmp_path):
         assert params.objects == points
         assert params.refinements is not None
         refinement = params.refinements[0]  # pylint: disable=unsubscriptable-object
+        assert refinement is not None
         assert refinement.refinement_object == points
         assert refinement.levels == [4, 2]
         assert refinement.horizon is False
@@ -103,7 +93,7 @@ def test_params_from_dict(tmp_path):
             "Refinement A distance": 200,
         }
         with pytest.warns(UserWarning):
-            params = OctreeParams(**kwargs)
+            _ = OctreeParams(**kwargs)
 
 
 def test_refinement_serializer(tmp_path):
