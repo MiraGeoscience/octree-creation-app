@@ -1,11 +1,12 @@
 {
-    "version": "0.3.0",
-    "title": "Octree Mesh Creator",
+    "version": "0.3.0-alpha.2",
+    "title": "Octree Mesh Designer",
+    "icon": "octreegrid",
+    "documentation": "https://mirageoscience-octree-creation-app.readthedocs-hosted.com/en/latest/",
     "conda_environment": "octree_creation_app",
     "run_command": "octree_creation_app.driver",
     "geoh5": "",
     "monitoring_directory": "",
-    "workspace_geoh5": "",
     "objects": {
         "enabled": true,
         "group": "Core",
@@ -54,7 +55,7 @@
         "label": "Horizontal (m)",
         "main": true,
         "value": 1000.0,
-        "tooltip": "Horizontal distance added around the 'Core hull extent'."
+        "tooltip": "Horizontal distance added around the 'Core hull extent'"
     },
     "vertical_padding": {
         "enabled": true,
@@ -62,15 +63,15 @@
         "label": "Vertical (m)",
         "main": true,
         "value": 1000.0,
-        "tooltip": "Vertical distance of the mesh added above and below the 'Core hull extent'."
+        "tooltip": "Vertical distance of the mesh added above and below the 'Core hull extent'"
     },
     "depth_core": {
         "enabled": true,
         "group": "Core",
-        "label": "Minimum Depth (m)",
+        "label": "Minimum depth (m)",
         "main": true,
         "value": 500.0,
-        "tooltip": "Depth of the mesh below the core hull extent."
+        "tooltip": "Depth of the mesh below the core hull extent"
     },
     "ga_group_name": {
         "group": "Basic",
@@ -79,18 +80,18 @@
     },
     "diagonal_balance": {
         "group": "Basic",
-        "label": "Diagonal Balance",
+        "label": "Diagonal balance",
         "main": true,
         "value": true,
-        "tooltip": "Assure single octree level change on corner neighbours. UBC compatible mesh."
+        "tooltip": "Assure single octree level change on corner neighbours. UBC compatible mesh"
     },
     "minimum_level": {
         "enabled": true,
         "group": "Basic",
-        "label": "Minimum refinement level.",
+        "label": "Minimum refinement level",
         "main": true,
         "min": 1,
-        "tooltip": "Minimum refinement in padding region: 2**(n-1) x base_cell.",
+        "tooltip": "Minimum refinement in padding region: 2**(n-1) x base_cell",
         "value": 4
     },
     "Refinement A object": {
@@ -113,20 +114,20 @@
             "{275ecee9-9c24-4378-bf94-65f3c5fbe163}"
         ],
         "value": "",
-        "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details."
+        "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details"
     },
     "Refinement A levels": {
         "enabled": true,
         "group": "Refinement A",
         "label": "Levels",
         "value": "4,4,4",
-        "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details."
+        "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details"
     },
     "Refinement A horizon": {
         "enabled": false,
         "group": "Refinement A",
         "label": "Use as horizon",
-        "tooltip": "Object vertices are triangulated. Refinement levels are applied as depth layers.",
+        "tooltip": "Object vertices are triangulated. Refinement levels are applied as depth layers",
         "value": false
     },
     "Refinement A distance": {
@@ -135,7 +136,7 @@
         "dependency": "Refinement A horizon",
         "dependencyType": "enabled",
         "label": "Distance",
-        "tooltip": "Radial horizontal distance to extend the refinement around each vertex.",
+        "tooltip": "Radial horizontal distance to extend the refinement around each vertex",
         "value": 1000.0
     },
     "Refinement B object": {
@@ -158,20 +159,20 @@
             "{275ecee9-9c24-4378-bf94-65f3c5fbe163}"
         ],
         "value": "",
-        "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details."
+        "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details"
     },
     "Refinement B levels": {
         "enabled": true,
         "group": "Refinement B",
         "label": "Levels",
         "value": "0,0,2",
-        "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details."
+        "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details"
     },
     "Refinement B horizon": {
         "enabled": false,
         "group": "Refinement B",
         "label": "Use as horizon",
-        "tooltip": "Object vertices are triangulated. Refinement levels are applied as depth layers.",
+        "tooltip": "Object vertices are triangulated. Refinement levels are applied as depth layers",
         "value": false
     },
     "Refinement B distance": {
@@ -180,7 +181,7 @@
         "dependency": "Refinement B horizon",
         "dependencyType": "enabled",
         "label": "Distance",
-        "tooltip": "Radial horizontal distance to extend the refinement around each vertex.",
+        "tooltip": "Radial horizontal distance to extend the refinement around each vertex",
         "value": 1000.0
     },
     "Refinement C object": {
@@ -203,20 +204,20 @@
             "{275ecee9-9c24-4378-bf94-65f3c5fbe163}"
         ],
         "value": "",
-        "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details."
+        "tooltip": "Object used to refine the mesh. Refinement strategy varies depending on the object type. See documentation for details"
     },
     "Refinement C levels": {
         "enabled": true,
         "group": "Refinement C",
         "label": "Levels",
         "value": "",
-        "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details."
+        "tooltip": "Number of consecutive cells requested at each octree level. See documentation for details"
     },
     "Refinement C horizon": {
         "enabled": false,
         "group": "Refinement C",
         "label": "Use as horizon",
-        "tooltip": "Object vertices are triangulated. Refinement levels are applied as depth layers.",
+        "tooltip": "Object vertices are triangulated. Refinement levels are applied as depth layers",
         "value": false
     },
     "Refinement C distance": {
@@ -225,7 +226,7 @@
         "dependency": "Refinement C horizon",
         "dependencyType": "enabled",
         "label": "Distance",
-        "tooltip": "Radial horizontal distance to extend the refinement around each vertex.",
+        "tooltip": "Radial horizontal distance to extend the refinement around each vertex",
         "value": 1000.0
     },
     "out_group": {
