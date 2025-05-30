@@ -1,5 +1,5 @@
 {
-    "version": "0.3.0-alpha.2",
+    "version": "0.3.0-alpha.3",
     "title": "Octree Mesh Designer",
     "icon": "octreegrid",
     "documentation": "https://mirageoscience-octree-creation-app.readthedocs-hosted.com/en/latest/",
@@ -75,8 +75,9 @@
     },
     "ga_group_name": {
         "group": "Basic",
+        "main": true,
         "label": "Name",
-        "value": "Octree Mesh"
+        "value": "Octree mesh"
     },
     "diagonal_balance": {
         "group": "Basic",
