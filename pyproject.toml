@@ -13,7 +13,7 @@ requires-python = ">=3.10,<4.0"
 license = { text = "MIT" }
 description = "Octree creation app."
 authors = [{ name = "Mira Geoscience", email = "support@mirageoscience.com" }]
-maintainers = [   
+maintainers = [
      { name = "Dominique Fournier", email = "dominiquef@mirageoscience.com" }
 ]
 readme = "package.rst"
@@ -173,4 +173,3 @@ fail_under = 90
 [tool.coverage.html]
 skip_empty = true
 skip_covered = true
-
