@@ -27,7 +27,6 @@ from pydantic import (
     model_serializer,
     model_validator,
 )
-from typing_extensions import Self
 
 import octree_creation_app
 from octree_creation_app import assets_path
@@ -121,31 +120,6 @@ class OctreeParams(BaseData):
                     refinement_params[param_name] = value
 
         return dict(dump, **refinement_params)
-
-    @classmethod
-    def build(cls, input_data: InputFile | dict) -> Self:
-        """
-        Build a dataclass from a dictionary or InputFile.
-
-        :param input_data: Dictionary of parameters and values.
-
-        :return: Dataclass of application parameters.
-        """
-
-        data = input_data
-
-        if isinstance(input_data, InputFile) and input_data.data is not None:
-            data = input_data.data.copy()
-
-        if not isinstance(data, dict):
-            raise TypeError("Input data must be a dictionary or InputFile.")
-
-        kwargs = OctreeParams.collect_input_from_dict(cls, data)  # type: ignore
-        out = cls(**kwargs)
-        if isinstance(input_data, InputFile):
-            out._input_file = input_data
-
-        return out
 
     @classmethod
     def collect_input_from_dict(cls, base_model: type[BaseModel], data: dict[str, Any]):
