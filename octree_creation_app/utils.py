@@ -104,13 +104,13 @@ def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
 
         if dimensions is None:
             dimensions = attributes["dimensions"]
-            origin = attributes["origin"]
-        else:
-            if not np.allclose(dimensions, attributes["dimensions"]):
-                raise ValueError("Meshes must have same dimensions")
+        elif not np.allclose(dimensions, attributes["dimensions"]):
+            raise ValueError("Meshes must have same dimensions")
 
-            if not np.allclose(origin, attributes["origin"]):
-                raise ValueError("Meshes must have same origin")
+        if origin is None:
+            origin = attributes["origin"]
+        elif not np.allclose(origin, attributes["origin"]):
+            raise ValueError("Meshes must have same origin")
 
         cell_size.append(attributes["cell_size"])
 
@@ -123,7 +123,7 @@ def create_octree_from_octrees(meshes: list[Octree | TreeMesh]) -> TreeMesh:
             cells += [np.ones(2**max_level) * cell_size[ind]]
 
     # Define the mesh and origin
-    treemesh = TreeMesh(cells, origin=origin)
+    treemesh = TreeMesh(cells, origin=origin, diagonal_balance=False)
 
     for mesh in meshes:
         if isinstance(mesh, Octree) and mesh.octree_cells is not None:
@@ -343,7 +343,9 @@ def octree_2_treemesh(  # pylint: disable=too-many-locals
     cells = np.vstack(mesh.octree_cells.tolist())
     indexes = cells[:, :-1] * 2 + cells[:, -1][:, None]  # convert to cpp index
     levels = max_level - np.log2(cells[:, -1])
-    treemesh = TreeMesh(cell_sizes, x0=np.asarray(mesh.origin.tolist()))
+    treemesh = TreeMesh(
+        cell_sizes, x0=np.asarray(mesh.origin.tolist()), diagonal_balance=False
+    )
     treemesh.__setstate__((indexes, levels))
 
     return treemesh

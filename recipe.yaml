@@ -1,0 +1,66 @@
+schema_version: 1
+
+context:
+  name: "octree-creation-app"
+  version: "0.3.0"
+  python_min: "3.10"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  path: ../${{ name }}
+
+build:
+  number: 0
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+
+requirements:
+  host:
+    - python ==${{ python_min }}
+    - poetry-core >=1.0.0
+    - setuptools
+    - pip
+  run:
+    - python >=${{ python_min }}
+    # Mira packages
+    - geoh5py >=0.11.0, <0.12.dev
+    - geoapps-utils >=0.5.0, <0.6.dev
+    # direct dependencies
+    - discretize >=0.11.0, <0.12.dev
+    - numpy >=1.26.0, <1.27.dev
+    - pydantic >=2.5.2, <3.0.dev
+    - scipy >=1.14.0, <1.15.dev
+
+tests:
+  - python:
+      imports:
+        - octree_creation_app
+  - script:
+      - pytest --ignore=tests/version_test.py
+    requirements:
+      run:
+        - pytest
+    files:
+      source:
+        - tests/
+
+about:
+  summary: Octree creation app.
+  description: |
+    The octree-creation-app package lets users create Octree mesh objects with local
+    refinements using the SimPEG.discretize package. The refinements can be performed
+    on any number of Objects stored in a geoh5 file.
+  license: MIT
+  license_file:
+    - LICENSE
+  homepage: https://www.mirageoscience.com/mining-industry-software/python-integration/
+  repository: https://github.com/MiraGeoscience/octree-creation-app
+  documentation: https://mirageoscience-octree-creation-app.readthedocs-hosted.com/
+
+extra:
+  recipe-maintainers:
+    - andrewg-mira
+    - sebhmg

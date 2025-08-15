@@ -9,7 +9,6 @@
 # ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import numpy as np
@@ -24,7 +23,6 @@ from geoh5py.objects import (
     Surface,
 )
 from geoh5py.shared.utils import compare_entities
-from geoh5py.ui_json import InputFile
 from geoh5py.ui_json.utils import str2list
 from geoh5py.workspace import Workspace
 from scipy.spatial import Delaunay
@@ -56,7 +54,6 @@ def test_create_octree_radial(tmp_path: Path, setup_test_octree):  # pylint: dis
             treemesh,
             points,
             str2list(refinement),
-            diagonal_balance=False,
             finalize=True,
         )
         octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
@@ -76,14 +73,18 @@ def test_create_octree_radial(tmp_path: Path, setup_test_octree):  # pylint: dis
             "vertical_padding": vertical_padding,
             "depth_core": depth_core,
             "diagonal_balance": False,
-            "Refinement A object": points.uid,
-            "Refinement A levels": refinement,
-            "Refinement A horizon": False,
-            "Refinement B object": None,
             "minimum_level": minimum_level,
+            "refinements": [
+                {
+                    "refinement_object": points,
+                    "levels": refinement,
+                    "horizon": False,
+                }
+            ],
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        params.write_ui_json(tmp_path / "testOctree.ui.json")
+        # params.write_input_file(name="testOctree", path=tmp_path, validate=False)
         driver = OctreeDriver(params)
         driver.run()
 
@@ -117,14 +118,12 @@ def test_create_octree_surface(tmp_path: Path, setup_test_octree):  # pylint: di
 
         treemesh.refine(
             treemesh.max_level - minimum_level + 1,
-            diagonal_balance=False,
             finalize=False,
         )
         treemesh = OctreeDriver.refine_tree_from_surface(
             treemesh,
             surface,
             str2list(refinement),
-            diagonal_balance=False,
             finalize=True,
         )
 
@@ -145,15 +144,18 @@ def test_create_octree_surface(tmp_path: Path, setup_test_octree):  # pylint: di
             "vertical_padding": vertical_padding,
             "depth_core": depth_core,
             "diagonal_balance": False,
-            "Refinement A object": surface,
-            "Refinement A levels": refinement,
-            "Refinement A horizon": True,
-            "Refinement A distance": 1000.0,
-            "Refinement B object": None,
             "minimum_level": minimum_level,
+            "refinements": [
+                {
+                    "refinement_object": surface,
+                    "levels": refinement,
+                    "horizon": True,
+                    "distance": 1000.0,
+                }
+            ],
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        params.write_ui_json(tmp_path / "testOctree.ui.json")
         driver = OctreeDriver(params)
         driver.run()
 
@@ -174,7 +176,6 @@ def test_create_octree_surface_straight_line(tmp_path: Path, setup_test_octree):
             str2list(refinement),
             horizon=True,
             distance=None,
-            diagonal_balance=False,
         )
         treemesh.finalize()
         treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
@@ -190,27 +191,13 @@ def test_create_octree_curve(tmp_path: Path, setup_test_octree):  # pylint: disa
         locations,
         minimum_level,
         refinement,
-        treemesh,
+        _,
         vertical_padding,
     ) = setup_test_octree
 
     with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
         curve = Curve.create(workspace, vertices=locations)
         curve.remove_cells([-1])
-        treemesh.refine(
-            treemesh.max_level - minimum_level + 1,
-            diagonal_balance=False,
-            finalize=False,
-        )
-        treemesh = OctreeDriver.refine_tree_from_curve(
-            treemesh,
-            curve,
-            str2list(refinement),
-            diagonal_balance=False,
-            finalize=True,
-        )
-        octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
-        assert octree.n_cells == 176915
 
         params_dict = {
             "geoh5": workspace,
@@ -222,19 +209,21 @@ def test_create_octree_curve(tmp_path: Path, setup_test_octree):  # pylint: disa
             "vertical_padding": vertical_padding,
             "depth_core": depth_core,
             "diagonal_balance": False,
-            "Refinement A object": curve,
-            "Refinement A levels": refinement,
-            "Refinement A horizon": False,
-            "Refinement B object": None,
             "minimum_level": minimum_level,
+            "refinements": [
+                {
+                    "refinement_object": curve,
+                    "levels": refinement,
+                }
+            ],
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        params.write_ui_json(tmp_path / "testOctree.ui.json")
         driver = OctreeDriver(params)
         driver.run()
 
-        results = driver.params.geoh5.get_entity("Octree_Mesh")
-        compare_entities(results[0], results[1], ignore=["_uid"])
+        results = driver.params.geoh5.get_entity("Octree Mesh")
+        assert results[0].n_cells == 177230
 
 
 def test_create_octree_empty_curve(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
@@ -252,7 +241,7 @@ def test_create_octree_empty_curve(tmp_path: Path, setup_test_octree):  # pylint
     with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
         # Create sources along line
         extent = Points.create(workspace, vertices=locations)
-        curve = Curve.create(workspace)
+        curve = Curve.create(workspace, vertices=[(0, 0, 0), (0, 0, 0)])
         curve.remove_cells([0])
 
         params_dict = {
@@ -265,18 +254,20 @@ def test_create_octree_empty_curve(tmp_path: Path, setup_test_octree):  # pylint
             "vertical_padding": vertical_padding,
             "depth_core": depth_core,
             "diagonal_balance": False,
-            "Refinement A object": curve,
-            "Refinement A levels": refinement,
-            "Refinement A horizon": False,
-            "Refinement B object": None,
             "minimum_level": 10,
+            "refinements": [
+                {
+                    "refinement_object": curve,
+                    "levels": refinement,
+                }
+            ],
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        params.write_ui_json(tmp_path / "testOctree.ui.json")
         driver = OctreeDriver(params)
         driver.run()
 
-        results = driver.params.geoh5.get_entity("Octree_Mesh")[0]
+        results = driver.params.geoh5.get_entity("Octree Mesh")[0]
         assert isinstance(results, Octree)
         assert results.n_cells == 4
 
@@ -324,9 +315,9 @@ def test_create_octree_dipoles(tmp_path: Path, setup_test_octree):  # pylint: di
             workspace,
             vertices=vertices,
             cells=np.vstack(dipoles).astype("uint32"),
-            ab_cell_id=np.hstack(current_id).astype("int32"),
         )
-
+        potentials.ab_cell_id = np.hstack(current_id).astype("int32")
+        potentials.current_electrodes = currents
         params_dict = {
             "geoh5": workspace,
             "objects": potentials,
@@ -337,18 +328,20 @@ def test_create_octree_dipoles(tmp_path: Path, setup_test_octree):  # pylint: di
             "vertical_padding": vertical_padding,
             "depth_core": depth_core,
             "diagonal_balance": False,
-            "Refinement A object": potentials,
-            "Refinement A levels": refinement,
-            "Refinement A horizon": False,
-            "Refinement B object": None,
             "minimum_level": minimum_level,
+            "refinements": [
+                {
+                    "refinement_object": potentials,
+                    "levels": refinement,
+                }
+            ],
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        params.write_ui_json(tmp_path / "testOctree.ui.json")
         driver = OctreeDriver(params)
         driver.run()
 
-        assert driver.params.geoh5.get_entity("Octree_Mesh")[0]
+        assert driver.params.geoh5.get_entity("Octree Mesh")[0]
 
 
 def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
@@ -388,7 +381,6 @@ def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):  # pyli
             treemesh,
             sphere,
             [3, 3],
-            diagonal_balance=False,
             finalize=True,
         )
         octree = treemesh_2_octree(workspace, treemesh, name="Octree_Mesh")
@@ -405,14 +397,16 @@ def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):  # pyli
             "vertical_padding": vertical_padding,
             "depth_core": depth_core,
             "diagonal_balance": False,
-            "Refinement A object": sphere,
-            "Refinement A levels": refinement,
-            "Refinement A horizon": False,
-            "Refinement B object": None,
             "minimum_level": minimum_level,
+            "refinements": [
+                {
+                    "refinement_object": sphere,
+                    "levels": refinement,
+                }
+            ],
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        params.write_ui_json(tmp_path / "testOctree.ui.json")
         driver = OctreeDriver(params)
         driver.run()
 
@@ -427,48 +421,51 @@ def test_create_octree_triangulation(tmp_path: Path, setup_test_octree):  # pyli
 def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
     tmp_path: Path, diagonal_balance, exp_values, exp_counts
 ):
-    workspace = Workspace.create(tmp_path / "testDiagonalBalance.geoh5")
-    with workspace.open(mode="r+"):
-        point = [0, 0, 0]
-        points = Points.create(workspace, vertices=np.array([[150, 0, 150], point]))
+    with Workspace.create(tmp_path / "testDiagonalBalance.geoh5") as workspace:
+        point = [125, 0, 125]
+        points = Points.create(
+            workspace, vertices=np.array([[150, 0, 150], [200, 0, 200], point])
+        )
 
         # Repeat the creation using the app
         params_dict = {
             "geoh5": workspace,
-            "objects": str(points.uid),
+            "objects": points,
             "u_cell_size": 10.0,
             "v_cell_size": 10.0,
             "w_cell_size": 10.0,
             "horizontal_padding": 500.0,
             "vertical_padding": 200.0,
             "depth_core": 400.0,
-            "Refinement A object": points.uid,
-            "Refinement A levels": "1",
-            "Refinement A horizon": False,
-            "Refinement A distance": 1000.0,
+            "minimum_level": 4,
+            "refinements": [
+                {
+                    "refinement_object": points,
+                    "levels": 1,
+                    "horizon": False,
+                    "distance": 1000.0,
+                }
+            ],
         }
 
-        params = OctreeParams(
-            **params_dict, diagonal_balance=diagonal_balance, ga_group_name="mesh"
-        )
+        params = OctreeParams(**params_dict, diagonal_balance=diagonal_balance)
+
         filename = "diag_balance.ui.json"
 
-        params.write_input_file(name=filename, path=tmp_path, validate=False)
+        params.write_ui_json(tmp_path / filename)
 
     OctreeDriver.start(tmp_path / filename)
 
     with workspace.open(mode="r"):
         results = []
-        mesh_obj = workspace.get_entity("mesh")[0]
+        mesh_obj = workspace.get_entity("Octree Mesh")[0]
 
         assert isinstance(mesh_obj, Octree)
 
         treemesh = octree_2_treemesh(mesh_obj)
         assert treemesh is not None
 
-        ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
-            point
-        )
+        ind = treemesh.get_containing_cells(point)
         starting_cell = treemesh[ind]
 
         level = starting_cell._level  # pylint: disable=protected-access
@@ -493,65 +490,6 @@ def test_octree_diagonal_balance(  # pylint: disable=too-many-locals
 
         assert (values == np.array(exp_values)).all()
         assert (counts == np.array(exp_counts)).all()
-
-
-def test_backward_compatible_type(tmp_path):
-    workspace = Workspace.create(tmp_path / "testDiagonalBalance.geoh5")
-    with workspace.open(mode="r+"):
-        points = Points.create(workspace, vertices=np.random.randn(5, 3))
-
-        # Repeat the creation using the app
-        params_dict = {
-            "geoh5": workspace,
-            "objects": str(points.uid),
-            "u_cell_size": 10.0,
-            "v_cell_size": 10.0,
-            "w_cell_size": 10.0,
-            "horizontal_padding": 500.0,
-            "vertical_padding": 200.0,
-            "depth_core": 400.0,
-            "Refinement A object": points.uid,
-            "Refinement A levels": "1",
-            "Refinement A horizon": False,
-            "Refinement A distance": 1000.0,
-        }
-
-        params = OctreeParams(**params_dict)
-        filename = "old_version.ui.json"
-        params.write_input_file(name=filename, path=tmp_path, validate=False)
-
-    ifile = params.input_file
-    assert isinstance(ifile, InputFile)
-    assert ifile.ui_json is not None
-
-    # Mock the old format
-    horizon = ifile.ui_json["Refinement A horizon"].copy()
-    horizon["choiceList"] = ["surface", "radial"]
-    horizon["value"] = "surface"
-
-    distance = ifile.ui_json["Refinement A distance"].copy()
-    distance["enabled"] = True
-    distance["value"] = 1.0
-    del distance["dependency"]
-    del distance["dependencyType"]
-    del ifile.ui_json["Refinement A horizon"]
-    del ifile.ui_json["Refinement A distance"]
-
-    ui_json = {}
-    for key, value in ifile.ui_json.items():
-        if key == "Refinement A levels":
-            ui_json[key] = value
-            ui_json["Refinement A type"] = horizon
-            ui_json["Refinement A distance"] = distance
-        else:
-            ui_json[key] = value
-    ifile.ui_json = ui_json
-
-    with open(tmp_path / filename, "w", encoding="utf-8") as file:
-        json.dump(ifile.stringify(ifile.demote(ifile.ui_json)), file, indent=4)
-
-    with pytest.warns(FutureWarning, match="Old refinement format"):
-        OctreeDriver.start(tmp_path / filename)
 
 
 def test_refine_complement(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
@@ -583,34 +521,86 @@ def test_refine_complement(tmp_path: Path, setup_test_octree):  # pylint: disabl
             "vertical_padding": vertical_padding,
             "depth_core": depth_core,
             "diagonal_balance": False,
-            "Refinement A object": curve.uid,
-            "Refinement A levels": refinement,
-            "Refinement A horizon": False,
-            "Refinement B object": None,
             "minimum_level": minimum_level,
+            "refinements": [
+                {
+                    "refinement_object": curve,
+                    "levels": refinement,
+                    "horizon": False,
+                }
+            ],
         }
         params = OctreeParams(**params_dict)
-        params.write_input_file(name="testOctree", path=tmp_path, validate=False)
+        params.write_ui_json(tmp_path / "testOctree.ui.json")
         driver = OctreeDriver(params)
         driver.run()
 
-        rec_octree = workspace.get_entity("Octree_Mesh")[0]
+        rec_octree = workspace.get_entity("Octree Mesh")[0]
         treemesh = octree_2_treemesh(rec_octree)
         assert isinstance(treemesh, TreeMesh)
 
         # center of curve should be refined because of point complement
-        ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
-            np.array([[0.0, 0.0, 0.0]])
-        )
+        ind = treemesh.get_containing_cells(np.array([[0.0, 0.0, 0.0]]))
         assert all(k == 5 for k in treemesh[ind].h)
         # between curve and point complement should be > base cell size
-        ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
-            np.array([[100.0, 0.0, 0.0]])
-        )
+        ind = treemesh.get_containing_cells(np.array([[100.0, 0.0, 0.0]]))
         assert all(k == 20 for k in treemesh[ind].h)
         # along curve path should be base cell size
         point = np.mean(locations[1:3, :], axis=0)
-        ind = treemesh._get_containing_cell_indexes(  # pylint: disable=protected-access
-            point
-        )
+        ind = treemesh.get_containing_cells(point)
         assert all(k == 5 for k in treemesh[ind].h)
+
+
+def test_regular_grid(tmp_path: Path, setup_test_octree):  # pylint: disable=too-many-locals
+    (
+        cell_sizes,
+        depth_core,
+        horizontal_padding,
+        _,
+        minimum_level,
+        refinement,
+        treemesh,
+        vertical_padding,
+    ) = setup_test_octree
+
+    x, y = np.meshgrid(
+        np.arange(0, 100, 5) + np.random.randn(1),
+        np.arange(0, 100, 5) + np.random.randn(1),
+    )
+    locations = np.c_[x.flatten(), y.flatten(), np.ones(400) * np.random.randn(1)]
+
+    with Workspace.create(tmp_path / "testOctree.geoh5") as workspace:
+        points = Points.create(workspace, vertices=locations)
+
+        params_dict = {
+            "geoh5": workspace,
+            "objects": points,
+            "u_cell_size": cell_sizes[0],
+            "v_cell_size": cell_sizes[1],
+            "w_cell_size": cell_sizes[2],
+            "horizontal_padding": horizontal_padding,
+            "vertical_padding": vertical_padding,
+            "depth_core": depth_core,
+            "diagonal_balance": False,
+            "minimum_level": minimum_level,
+            "refinements": [
+                {
+                    "refinement_object": points,
+                    "levels": refinement,
+                    "horizon": False,
+                }
+            ],
+        }
+        params = OctreeParams(**params_dict)
+        params.write_ui_json(tmp_path / "testOctree.ui.json")
+        driver = OctreeDriver(params)
+        driver.run()
+
+        rec_octree = workspace.get_entity("Octree Mesh")[0]
+
+        treemesh = octree_2_treemesh(rec_octree)
+
+    # center of curve should be refined because of point complement
+    ind = treemesh.get_containing_cells(locations)
+
+    np.testing.assert_allclose(treemesh.cell_centers[ind], locations)
