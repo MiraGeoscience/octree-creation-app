@@ -1,27 +1,29 @@
-[tool.poetry]
+[build-system]
+requires = ["poetry-core>=1.8.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
 name = "octree-creation-app"
-version = "0.4.0-alpha.1"
-license = "MIT"
+version = "0.4.0a1"
+requires-python = ">=3.10,<4.0"
 description = "Octree creation app."
-authors = ["Mira Geoscience <support@mirageoscience.com>"]
-maintainers = ["Dominique Fournier <dominiquef@mirageoscience.com>"]
+license = "MIT"
+readme = "package.rst"
+dynamic = ["dependencies", "classifiers"]
+authors = [{ name = "Mira Geoscience", email = "support@mirageoscience.com" }]
+maintainers = [
+     { name = "Dominique Fournier", email = "dominiquef@mirageoscience.com" }
+]
+
+[project.urls]
 repository = "https://github.com/MiraGeoscience/octree-creation-app"
 documentation  = "https://mirageoscience-octree-creation-app.readthedocs-hosted.com/"
 homepage = "https://www.mirageoscience.com/mining-industry-software/python-integration/"
-readme = "package.rst"
 
-packages = [
-     { include = "octree_creation_app" },
-     { include = "octree_creation_app-assets" },
-]
+[project.scripts]
 
-include = [
-    { path = "COPYING" },
-    { path = "COPYING.LESSER" },
-    { path = "LICENSE" },
-    { path = "README.rst" },
-    { path = "docs/**/THIRD_PARTY_SOFTWARE.rst" },
-]
+[tool.poetry]
+requires-poetry = '>=2.0,<3.0'
 
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -37,11 +39,20 @@ classifiers = [
     "Natural Language :: English",
 ]
 
-[tool.poetry.scripts]
+packages = [
+     { include = "octree_creation_app" },
+     { include = "octree_creation_app-assets" },
+]
+
+include = [
+    { path = "COPYING" },
+    { path = "COPYING.LESSER" },
+    { path = "LICENSE" },
+    { path = "README.rst" },
+    { path = "docs/**/THIRD_PARTY_SOFTWARE.rst" },
+]
 
 [tool.poetry.dependencies]
-python = "^3.10"
-
 discretize = "0.11.*"
 numpy = "~1.26.0"  # also in geoh5py
 pydantic = "^2.5.2"  # also in geoh5py, curve-apps, geoapps-utils
@@ -158,7 +169,3 @@ fail_under = 90
 [tool.coverage.html]
 skip_empty = true
 skip_covered = true
-
-[build-system]
-requires = ["poetry-core>=1.0.0", "setuptools"]
-build-backend = "poetry.core.masonry.api"
