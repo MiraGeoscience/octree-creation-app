@@ -52,7 +52,7 @@ dependencies:
   - liblzma=5.8.1=hb9d3cd8_2
   - libnghttp2=1.64.0=h161d5f1_0
   - libnsl=2.0.1=hb9d3cd8_1
-  - libopenblas=0.3.30=pthreads_h94d23a6_1
+  - libopenblas=0.3.30=pthreads_h94d23a6_2
   - libpng=1.6.50=h421ea60_1
   - libsqlite=3.50.4=h0c1763c_0
   - libssh2=1.11.1=hcf80075_0
@@ -102,7 +102,7 @@ dependencies:
   - yaml=0.2.5=h280c20c_3
   - zstd=1.5.7=hb8e6e7a_2
   - pip:
-    - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils.git@92337521c307020e6da736a437b20103993fc2cd
+    - geoapps-utils @ git+https://github.com/MiraGeoscience/geoapps-utils.git@183ed8f654bc393eeafdf89b2c258a224f4b4b73
     - geoh5py @ git+https://github.com/MiraGeoscience/geoh5py.git@cef8a1a904ab0338cd7ecb0f762db5f7a35f02e8
 
 variables:

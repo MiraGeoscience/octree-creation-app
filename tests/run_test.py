@@ -599,7 +599,7 @@ def test_regular_grid(tmp_path: Path, setup_test_octree):  # pylint: disable=too
         rec_octree = workspace.get_entity("Octree Mesh")[0]
 
         treemesh = octree_2_treemesh(rec_octree)
-
+        assert isinstance(treemesh, TreeMesh)
     # center of curve should be refined because of point complement
     ind = treemesh.get_containing_cells(locations)
 
