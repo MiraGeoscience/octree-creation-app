@@ -32,6 +32,10 @@
     :alt: Maintainability
     :target: https://codeclimate.com/github/MiraGeoscience/octree-creation-app/maintainability
 
+.. warning::
+    :no_entry: **DEPRECATED** - See instead https://github.com/MiraGeoscience/grid-apps
+
+
 
 Octree Creation
 ===============
