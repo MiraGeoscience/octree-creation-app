@@ -33,6 +33,11 @@
     :target: https://codeclimate.com/github/MiraGeoscience/octree-creation-app/maintainability
 
 
+.. warning::
+    **DEPRECATED** - See instead https://github.com/MiraGeoscience/grid-apps
+
+
+
 Octree Creation
 ===============
 The **octree-creation-app** package lets users create Octree mesh objects with local refinements using the SimPEG.discretize package. The refinements can be performed on any number of ``Objects`` stored in a ``geoh5`` file.
